@@ -1,6 +1,7 @@
 import ServerClient from "./ServerClient/ServerClient";
 import UXClient from "./UXClient/UXClient";
 import Utils from "./UXClient/Utils";
+import { ADXClient } from "./ServerClient";
 
 class TsiClient {
     public server = new ServerClient();
@@ -10,3 +11,4 @@ class TsiClient {
 export default TsiClient;
 
 (<any>window).TsiClient = TsiClient;
+(<any>window).ADXClient = ADXClient;
