@@ -1,9 +1,23 @@
+import { JsonObjectExpression } from "typescript";
+
 interface RawDataFrameBase {
   FrameType: string;
 }
 
+enum TableKind {
+  PrimaryResult = "PrimaryResult",
+}
+
+interface RawDataTableColumn {
+  ColumnName: string;
+  ColumnType: string;
+}
+
 interface RawDataTable extends RawDataFrameBase {
   FrameType: "DataTable";
+  TableKind: TableKind;
+  Columns: RawDataTableColumn[];
+  Rows: JsonObjectExpression[][];
 }
 
 interface RawDataSetHeader extends RawDataFrameBase {
@@ -37,5 +51,27 @@ export class ADXResponse {
           break;
       }
     }
+  }
+
+  get primaryTables() {
+    return this.dataTables.filter(
+      (table) => table.TableKind == TableKind.PrimaryResult
+    );
+  }
+
+  /**
+   * Converts an ADX Table (columns, rows) into an array of keyed objects
+   *
+   * @param table - The raw ADX Data Table to convert
+   * @returns An array of native keyed objects
+   */
+
+  unfoldTable(table: RawDataTable) {
+    return table.Rows.map((row) =>
+      table.Columns.reduce((obj, col, i) => {
+        obj[col.ColumnName] = row[i];
+        return obj;
+      }, {})
+    );
   }
 }

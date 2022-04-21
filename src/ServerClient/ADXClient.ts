@@ -44,13 +44,17 @@ export class ADXClient {
       return;
     }
 
-    await this.parseResponse(response);
+    if (!response.ok) {
+      throw Error(`Query call failed with status: ${response.status}`);
+    }
+
+    return this.parseResponse(response);
   }
 
-  async parseResponse(fetchResponse: Response) {
+  private async parseResponse(fetchResponse: Response) {
     let rawResponse: RawADXResponse = await fetchResponse.json();
     let data = new ADXResponse(rawResponse);
 
-    console.log(data);
+    return data;
   }
 }
