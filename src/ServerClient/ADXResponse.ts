@@ -19,11 +19,14 @@ interface RawDataTableColumn {
   ColumnType: string;
 }
 
+type ADXValue = string | number | boolean | null
+
 interface RawDataTable extends RawDataFrameBase {
+  TableName: string;
   FrameType: FrameType.DataTable;
   TableKind: TableKind;
   Columns: RawDataTableColumn[];
-  Rows: JsonObjectExpression[][];
+  Rows: ADXValue[][];
 }
 
 interface RawDataSetHeader extends RawDataFrameBase {
@@ -63,6 +66,14 @@ export class ADXResponse {
     return this.dataTables.filter(
       (table) => table.TableKind == TableKind.PrimaryResult
     );
+  }
+
+  getTable(tableName: string) {
+    const table = this.dataTables.find((table) => table.TableName == tableName)
+    if (table) {
+      return table
+    }
+    throw new Error(`Cannot find table ${tableName} in response`)
   }
 
   /**
