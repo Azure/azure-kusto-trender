@@ -1,6 +1,16 @@
 import { ADXResponse, RawADXResponse } from "./ADXResponse";
 type ADXTokenProvider = () => Promise<string>;
 
+/**
+ * A basic JS wrapper for the ADX Kusto REST Query APIs.
+ *
+ * @remarks
+ * This class is designed to support the TSI Trender library, not to
+ * provide a fully featured ADX client.
+ *
+ * @see {@link https://docs.microsoft.com/en-us/azure/data-explorer/kusto/api/rest/ API Documentation}
+ */
+
 export class ADXClient {
   public clusterUrl: string;
   public database: string;
@@ -19,7 +29,6 @@ export class ADXClient {
   public get queryUrl() {
     return `${this.clusterUrl}/v2/rest/query`;
   }
-
   async executeQuery(query: string) {
     const token = await this.tokenProvider();
     let response: Response;
@@ -29,20 +38,16 @@ export class ADXClient {
       csl: query,
       properties: "",
     };
-    try {
-      response = await fetch(this.queryUrl, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
-    } catch (error) {
-      console.error(error);
-      return;
-    }
+
+    response = await fetch(this.queryUrl, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
 
     if (!response.ok) {
       throw Error(`Query call failed with status: ${response.status}`);

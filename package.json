@@ -2,15 +2,11 @@
     "name": "tsiclient",
     "main": "tsiclient.js",
     "description": "",
-    "version": "1.4.24",
+    "version": "1.4.13",
     "types": "tsiclient.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/Microsoft/tsiclient"
-    },
-    "engines": {
-        "node": "^14.20.0",
-        "npm": "^6.13.7"
     },
     "scripts": {
         "start": "webpack-dev-server --config webpack.dev.js",
@@ -31,7 +27,7 @@
         "css-loader": "^3.4.2",
         "file-loader": "^1.1.11",
         "mini-css-extract-plugin": "^0.4.5",
-        "node-sass": "^4.14.1",
+        "node-sass": "^7.0.1",
         "optimize-css-assets-webpack-plugin": "^5.0.4",
         "postcss-url": "^8.0.0",
         "rollup": "^2.26.11",
@@ -64,6 +60,7 @@
         "d3-interpolate-path": "^1.1.1",
         "moment": "^2.27.0",
         "moment-timezone": "^0.5.31",
+        "npm": "^6.13.7",
         "split.js": "^1.5.11"
     }
 }

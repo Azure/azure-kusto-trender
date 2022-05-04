@@ -1,7 +1,13 @@
 import { JsonObjectExpression } from "typescript";
 
+export enum FrameType {
+  DataTable = "DataTable",
+  DataSetHeader = "DataSetHeader",
+  DataSetCompletion = "DataSetCompletion",
+}
+
 interface RawDataFrameBase {
-  FrameType: string;
+  FrameType: FrameType;
 }
 
 enum TableKind {
@@ -14,18 +20,18 @@ interface RawDataTableColumn {
 }
 
 interface RawDataTable extends RawDataFrameBase {
-  FrameType: "DataTable";
+  FrameType: FrameType.DataTable;
   TableKind: TableKind;
   Columns: RawDataTableColumn[];
   Rows: JsonObjectExpression[][];
 }
 
 interface RawDataSetHeader extends RawDataFrameBase {
-  FrameType: "DataSetHeader";
+  FrameType: FrameType.DataSetHeader;
 }
 
 interface RawDataSetCompletion extends RawDataFrameBase {
-  FrameType: "DataSetCompletion";
+  FrameType: FrameType.DataSetCompletion;
 }
 
 type RawDataFrame = RawDataTable | RawDataSetHeader | RawDataSetCompletion;

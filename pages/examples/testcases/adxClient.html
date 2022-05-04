@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>adxClient</title>
+
+    <!-- styles are only used for styling header and auth elements, where possible -->
+    <link rel="stylesheet" type="text/css" href="../styles.css" />
+
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../boilerplate/head.js"></script>
+
+    <!-- boilerplate auth code is injected with auth.js, check it out for auth setup -->
+    <script src="../boilerplate/auth.js"></script>
+  </head>
+  <body style="font-family: 'Segoe UI', sans-serif">
+    <p>
+      This example runs any provided query and prints the raw values from the
+      ADXResponse object.
+    </p>
+    <input
+      type="text"
+      id="query"
+      name="query"
+      value="GetTotalAvailability('1h') | take 5"
+      autofocus
+    />
+    <input type="button" value="Execute Query" onclick="executeQuery()" />
+
+    <div id="results"></div>
+
+    <script>
+      window.onload = async function () {
+        const tokenProvider = () => {
+          return new Promise.resolve(
+             );
+        };
+
+        const cluster = new ADX.ADXClient(
+          tokenProvider,
+          "trender"
+        );
+
+        window.executeQuery = async function () {
+          const query = document.getElementById("query").value;
+          const resultsDiv = document.getElementById("results");
+          const keyValueHeaders = ["Key", "Value"];
+
+          while (resultsDiv.firstChild) {
+            resultsDiv.removeChild(resultsDiv.firstChild);
+          }
+
+          const result = await cluster.executeQuery(query);
+
+          resultsDiv.appendChild(createElement("h1", "Results"));
+
+          resultsDiv.appendChild(createElement("h2", "Data Set Completion"));
+          resultsDiv.appendChild(
+            createTable(
+              Object.entries(result.dataSetCompletion),
+              keyValueHeaders
+            )
+          );
+
+          resultsDiv.appendChild(createElement("h2", "Data Set Header"));
+          resultsDiv.appendChild(
+            createTable(Object.entries(result.dataSetHeader), keyValueHeaders)
+          );
+
+          resultsDiv.appendChild(createElement("h2", "Data Tables"));
+
+          result.dataTables.forEach((table, index) => {
+            resultsDiv.appendChild(
+              createElement(
+                "h3",
+                `${index} - ${table.TableName} (${table.TableKind})`
+              )
+            );
+
+            resultsDiv.appendChild(
+              createElement("p", `${table.Columns.length} rows`)
+            );
+            resultsDiv.appendChild(
+              createTable(
+                table.Rows,
+                table.Columns.map(
+                  (column) => `${column.ColumnName} (${column.ColumnType})`
+                )
+              )
+            );
+          });
+        };
+      };
+      function createElement(type, value) {
+        const element = document.createElement(type);
+        element.innerHTML = value;
+        return element;
+      }
+
+      function createTable(rows, headers) {
+        const table = document.createElement("table");
+        const body = document.createElement("tbody");
+
+        if (headers) {
+          const headerRow = table.insertRow();
+
+          headers.forEach((header) => {
+            var headerCell = document.createElement("th");
+            headerCell.innerHTML = header;
+            headerRow.appendChild(headerCell);
+          });
+        }
+
+        rows.forEach((values) => {
+          const row = table.insertRow();
+          values.forEach((value) => {
+            row.insertCell().innerHTML = value;
+          });
+        });
+
+        return table;
+      }
+    </script>
+    <style>
+      body {
+        color: white;
+        padding: 2em;
+      }
+
+      #query {
+        border: none;
+        padding: 1em;
+        font-family: monospace;
+        color: white;
+        background-color: #444;
+        min-width: 400px;
+      }
+      h1 {
+        color: rgb(210, 229, 249);
+      }
+
+      h2 {
+        color: rgb(183, 208, 235);
+      }
+
+      h3 {
+        color: rgb(137, 170, 205);
+      }
+      table {
+        background: #333;
+        border-collapse: collapse;
+      }
+      td {
+        border: solid #bebebe 1px;
+        padding: 0.5em;
+        font-family: monospace;
+      }
+
+      th {
+        border: solid #bebebe 1px;
+        background: #ccc;
+        color: rgb(74, 74, 74);
+        padding: 0.5em;
+        font-family: monospace;
+      }
+    </style>
+  </body>
+</html>
