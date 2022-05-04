@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../../boilerplate/head.js"></script>
+  </head>
+  <body style="font-family: 'Segoe UI', sans-serif">
+    <div id="availability" style="width: 100%; height: 160px; z-index: 1"></div>
+    <script>
+      window.onload = async function () {
+        const tokenProvider = () => {
+          return new Promise.resolve(
+           );
+        };
+
+        const cluster = new ADX.ADXTrenderClient(
+          tokenProvider,
+          "trender"
+        );
+
+        const result = await cluster.getAvailability();
+
+        var tsiClient = new TsiClient();
+        var availability = new tsiClient.ux.AvailabilityChart(
+          document.getElementById("availability")
+        );
+        
+        availability.render(
+          result.availability,
+          { legend: "hidden", theme: "light", color: "royalblue" },
+          {
+            range: result.range,
+            intervalSize: "1h",
+          }
+        );
+      };
+    </script>
+  </body>
+</html>

@@ -7,9 +7,13 @@ interface AvailabilityRange {
   to: string;
 }
 
+interface AvailabilityWrapper{
+  availabilityCount: Record<"", Record<string, number>>
+}
+
 interface AvailabilityValue {
   range: AvailabilityRange;
-  data: Record<string, number>;
+  availability: AvailabilityWrapper[];
 }
 
 /**
@@ -23,7 +27,7 @@ export class ADXTrenderClient extends ADXClient {
   async getAvailability() {
     const tableName = "TrenderAvailability";
     const result = await this.executeQuery(
-      `GetAvailability('1h') | as ${tableName}`
+      `GetTotalAvailability('1h') | as ${tableName}`
     );
 
     const rows = result.getTable(tableName).Rows;
@@ -32,17 +36,25 @@ export class ADXTrenderClient extends ADXClient {
       throw new Error("Availability array is empty.");
     }
 
-    const data = rows.reduce((obj, val) => {
-      obj[val[0].toString()] = val[1];
+    let from = rows[0][0];
+    let to = from;
+
+    const values = rows.reduce((obj, val) => {
+      const date = val[0].toString();
+      if (date < from) from = date;
+      if (date > to) to = date;
+      obj[date] = { count: val[1] };
       return obj;
     }, {});
 
     return {
-      data,
+      availability: [{ availabilityCount: { "": values } }],
       range: {
-        to: rows[0][0],
-        from: rows[rows.length - 1][0],
+        to,
+        from,
       },
     } as AvailabilityValue;
   }
+
+
 }
