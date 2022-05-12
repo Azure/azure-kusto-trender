@@ -7,8 +7,8 @@ interface AvailabilityRange {
   to: string;
 }
 
-interface AvailabilityWrapper{
-  availabilityCount: Record<"", Record<string, number>>
+interface AvailabilityWrapper {
+  availabilityCount: Record<"", Record<string, number>>;
 }
 
 interface AvailabilityValue {
@@ -23,6 +23,8 @@ interface AvailabilityValue {
 export class ADXTrenderClient extends ADXClient {
   /**
    * Returns availability information in a trender-friendly format.
+   *
+   * @remarks This function always returns a one hour interval.
    */
   async getAvailability() {
     const tableName = "TrenderAvailability";
@@ -55,6 +57,54 @@ export class ADXTrenderClient extends ADXClient {
       },
     } as AvailabilityValue;
   }
+
+  async getAggregates(
+    tags: string[],
+    startDate: Date,
+    endDate: Date,
+    interval: string
+  ) {
+    const tableName = "TrenderAggregates";
+    const result = await this.executeQuery(
+      "declare query_parameters(TimeSeries:dynamic,StartTime:datetime,EndTime:datetime,Interval:timespan);" +
+        `GetAggregates(TimeSeries, StartTime, EndTime, Interval) | order by TimeSeriesId | as ${tableName}`,
+      {
+        parameters: {
+          TimeSeries: `dynamic(${JSON.stringify(tags)})`,
+          StartTime: startDate,
+          EndTime: endDate,
+          Interval: interval,
+        },
+      }
+    );
+    const table = result.getTable(tableName);
+
+    if (table.Rows.length == 0) {
+      throw new Error("Aggregates array is empty.");
+    }
+
+    const headers = table.Columns.map((c) => c.ColumnName);
+    headers.splice(0, 2);
+
+    return [
+      {
+        "": table.Rows.reduce((prev, curr) => {
+          const id = curr.shift() as string;
+          const timestamp = curr.shift();
+
+          if (!prev.hasOwnProperty(id)) {
+            prev[id] = {};
+          }
+
+          prev[id][timestamp] = headers.reduce((obj, col, i) => {
+            obj[col] = curr[i];
+            return obj;
+          }, {});
+
+          return prev;
+        }, {}),
+      },
+    ];
 
 
 }

@@ -1,6 +1,10 @@
 import { ADXResponse, RawADXResponse } from "./ADXResponse";
 type ADXTokenProvider = () => Promise<string>;
 
+interface ADXQueryProperties {
+  parameters: Record<string, unknown>
+}
+
 /**
  * A basic JS wrapper for the ADX Kusto REST Query APIs.
  *
@@ -29,14 +33,14 @@ export class ADXClient {
   public get queryUrl() {
     return `${this.clusterUrl}/v2/rest/query`;
   }
-  async executeQuery(query: string) {
+  async executeQuery(query: string, properties?: ADXQueryProperties) {
     const token = await this.tokenProvider();
     let response: Response;
 
     const body = {
       db: this.database,
       csl: query,
-      properties: "",
+      properties,
     };
 
     response = await fetch(this.queryUrl, {
