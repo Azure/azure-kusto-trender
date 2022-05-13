@@ -5,18 +5,19 @@ import { Component } from '../../Interfaces/Component';
 import { ChartOptions } from '../../Models/ChartOptions';
 import ServerClient from '../../../ServerClient';
 import Utils from '../../Utils';
+import HierarchyDelegate from '../../../ServerClient/HierarchyDelegate';
 
 class ModelAutocomplete extends Component{
     public chartOptions: any = new ChartOptions();  // TODO handle onkeyup and oninput in chart options
     public ap: any; // awesomplete object
-    private server: ServerClient;
+    private delegate: ServerClient;
 
     constructor(renderTarget: Element){ 
         super(renderTarget); 
         this.server = new ServerClient();
     }
 
-    public render(environmentFqdn: string, getToken: any, chartOptions: any){
+    public render(environmentFqdn: string, chartOptions: any){
         this.chartOptions.setOptions(chartOptions);
         let targetElement = d3.select(this.renderTarget);	
         targetElement.html('');	
