@@ -235,9 +235,10 @@ class HierarchyNavigation extends Component {
       .append("div")
       .classed("tsi-hierarchy-search", true);
     let modelAutocomplete = new ModelAutocomplete(
-      this.searchWrapperElem.node() as Element
+      this.searchWrapperElem.node() as Element,
+      this.delegate
     );
-    modelAutocomplete.render(environmentFqdn, getToken, {
+    modelAutocomplete.render(environmentFqdn, {
       onInput: autocompleteOnInput,
       onKeydown: (event, ap) => {
         handleKeydown(event, ap);
