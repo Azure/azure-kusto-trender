@@ -1,10 +1,10 @@
-import * as d3 from 'd3';
-import './ModelAutocomplete.scss';
-import 'awesomplete';
-import { Component } from '../../Interfaces/Component';
-import { ChartOptions } from '../../Models/ChartOptions';
-import Utils from '../../Utils';
-import HierarchyDelegate from '../../../ServerClient/HierarchyDelegate';
+import * as d3 from "d3";
+import "./ModelAutocomplete.scss";
+import "awesomplete";
+import { Component } from "../../Interfaces/Component";
+import { ChartOptions } from "../../Models/ChartOptions";
+import Utils from "../../Utils";
+import { HierarchyDelegate } from "../../../ServerClient/HierarchyDelegate";
 
 class ModelAutocomplete extends Component {
   public chartOptions: any = new ChartOptions(); // TODO handle onkeyup and oninput in chart options
@@ -97,10 +97,12 @@ class ModelAutocomplete extends Component {
     var searchText;
     var self = this;
 
-    input.on("input", async function () {
+    input.on("input", async function (event) {
       searchText = (<any>this).value;
       if (searchText.replace(/ /g, "") && !noSuggest) {
-        const suggestions = await self.delegate.getInstancesSuggestions(searchText)
+        const suggestions = await self.delegate.getInstancesSuggestions(
+          searchText
+        );
 
         self.ap.list = suggestions.map((s) => s.searchString);
         self.ap.ul.setAttribute("role", "listbox");
@@ -124,10 +126,7 @@ class ModelAutocomplete extends Component {
       } else {
         self.ap.close();
       }
-      self.chartOptions.onInput(
-        searchText,
-        noSuggest ? { which: 13 } : d3.event
-      );
+      self.chartOptions.onInput(searchText, noSuggest ? { which: 13 } : event);
       noSuggest = false;
       clear.classed("tsi-shown", searchText.length);
     });

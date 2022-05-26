@@ -1,11 +1,11 @@
-import * as d3 from 'd3';
-import './ModelSearch.scss';
+import * as d3 from "d3";
+import "./ModelSearch.scss";
 import Utils from "../../Utils";
-import {Component} from "./../../Interfaces/Component";
-import 'awesomplete';
-import Hierarchy from '../Hierarchy/Hierarchy';
-import ModelAutocomplete from '../ModelAutocomplete/ModelAutocomplete';
-import HierarchyDelegate from '../../../ServerClient/HierarchyDelegate';
+import { Component } from "./../../Interfaces/Component";
+import "awesomplete";
+import Hierarchy from "../Hierarchy/Hierarchy";
+import ModelAutocomplete from "../ModelAutocomplete/ModelAutocomplete";
+import { HierarchyDelegate } from "../../../ServerClient/HierarchyDelegate";
 
 class ModelSearch extends Component {
   private delegate: HierarchyDelegate;
@@ -74,7 +74,10 @@ class ModelSearch extends Component {
       }
     };
 
-    let modelAutocomplete = new ModelAutocomplete(inputWrapper.node(), this.delegate);
+    let modelAutocomplete = new ModelAutocomplete(
+      inputWrapper.node(),
+      this.delegate
+    );
     modelAutocomplete.render(environmentFqdn, {
       onInput: autocompleteOnInput,
       onKeydown: (event, ap) => {
@@ -142,6 +145,7 @@ class ModelSearch extends Component {
         } else {
           noResults.style("display", "none");
         }
+
         instances.forEach((i) => {
           let handleClick = (
             elt,
@@ -156,13 +160,13 @@ class ModelSearch extends Component {
               (i as any).type = self.types.filter((t) => {
                 return (
                   t.name.replace(/\s/g, "") ===
-                    i.highlights.typeName
-                        .split("<hit>")
-                        .join("")
-                        .split("</hit>")
-                        .join("")
-                        .replace(/\s/g, ""))
-                ;
+                  i.highlights.typeName
+                    .split("<hit>")
+                    .join("")
+                    .split("</hit>")
+                    .join("")
+                    .replace(/\s/g, "")
+                );
               })[0];
               let contextMenuActions = self.chartOptions.onInstanceClick(i);
               self.contextMenu = self.wrapper.append("div");
@@ -271,10 +275,10 @@ class ModelSearch extends Component {
       }
     };
 
-    this.hierarchies = await this.delegate.getHierarchies()
+    this.hierarchies = await this.delegate.getHierarchies();
 
     // get types
-    this.types = await this.delegate.getTimeSeriesTypes()
+    this.types = await this.delegate.getTimeSeriesTypes();
   }
 
   public handleKeydown(event, ap) {
@@ -376,4 +380,4 @@ class ModelSearch extends Component {
   }
 }
 
-export default ModelSearch
+export default ModelSearch;

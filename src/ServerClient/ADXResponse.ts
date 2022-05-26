@@ -19,7 +19,7 @@ interface RawDataTableColumn {
   ColumnType: string;
 }
 
-type ADXValue = string | number | boolean | null
+type ADXValue = string | number | boolean | null;
 
 interface RawDataTable extends RawDataFrameBase {
   TableName: string;
@@ -69,11 +69,11 @@ export class ADXResponse {
   }
 
   getTable(tableName: string) {
-    const table = this.dataTables.find((table) => table.TableName == tableName)
+    const table = this.dataTables.find((table) => table.TableName == tableName);
     if (table) {
-      return table
+      return table;
     }
-    throw new Error(`Cannot find table ${tableName} in response`)
+    throw new Error(`Cannot find table ${tableName} in response`);
   }
 
   /**
@@ -83,12 +83,12 @@ export class ADXResponse {
    * @returns An array of native keyed objects
    */
 
-  unfoldTable(table: RawDataTable) {
+  unfoldTable<RowType extends Object>(table: RawDataTable): RowType[] {
     return table.Rows.map((row) =>
       table.Columns.reduce((obj, col, i) => {
         obj[col.ColumnName] = row[i];
         return obj;
-      }, {})
+      }, {} as RowType)
     );
   }
 }

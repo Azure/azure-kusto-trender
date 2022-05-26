@@ -1,11 +1,41 @@
-interface PathSearchPayload {
-  searchString?: string;
-  path?: string[];
-}
+import { ADXTrenderClient, PathSearchPayload } from "./ADXTrenderClient";
 
+export class HierarchyDelegate {
+  public client: ADXTrenderClient;
 
-export default class HierarchyDelegate {
+  constructor(client: ADXTrenderClient) {
+    this.client = client;
+  }
+
+  async getInstances() {
+    console.log("getInstances");
+    throw "";
+    return {
+      instances: [
+        {
+          typeId: "1be09af9-f089-4d6b-9f0b-48018b5f7393",
+          timeSeriesId: ["20.102.78.88/46101"],
+          name: "Points.5k-4.20k_611_PISim_1220",
+          description: "",
+          hierarchyIds: ["72df205e-c0fd-44c9-9fa8-c62ba720de6c"],
+          instanceFields: {
+            Low: "0",
+            High: "100",
+            PointSource: "",
+            DigitalSet: "",
+            EngUnits: "",
+            PointType: "Float64",
+            Description: "",
+            L1: "I/O Model",
+            L2: "fusion-geoscada",
+          },
+        },
+      ],
+    };
+  }
+
   async getTimeSeriesTypes() {
+    console.log("getTimeSeriesTypes");
     return [
       {
         id: "1be09af9-f089-4d6b-9f0b-48018b5f7393",
@@ -24,30 +54,14 @@ export default class HierarchyDelegate {
   }
 
   async getHierarchies() {
-    return [
-      {
-        id: "72df205e-c0fd-44c9-9fa8-c62ba720de6c",
-        name: "I/O Model",
-        source: {
-          instanceFieldNames: [
-            "L1",
-            "L2",
-            "L3",
-            "L4",
-            "L5",
-            "L6",
-            "L7",
-            "L8",
-            "L9",
-            "L10",
-            "L11",
-          ],
-        },
-      },
-    ];
+    return (await this.client.getHierarchies()).map((h) => ({
+      name: h.HierarchyName,
+      id: h.HierarchyId,
+    }));
   }
 
   async getInstancesSuggestions(text: string) {
+    console.log("getInstancesSuggestions", text);
     return [
       {
         searchString: "f39ef799-eaa3-4019-81ef-a939b6921728",
@@ -102,7 +116,102 @@ export default class HierarchyDelegate {
     ];
   }
 
-  async getInstancesPathSearch(payload: PathSearchPayload) {
+  async getInstancesPathSearch(hierarchy: string, payload: PathSearchPayload) {
+    console.log("getInstancesPathSearch", payload);
+
+    hierarchy = "72df205e-c0fd-44c9-9fa8-c62ba720de6c";
+
+    const result = await this.client.getHierarchyLevel(hierarchy, payload);
+    console.log(result);
+    const out = {
+      hierarchyNodes: {
+        hits: result.children.map((child) => ({
+          name: child.ChildName,
+          cumulativeInstanceCount: child.TagCount,
+        })),
+
+        hitCount: result.children.length,
+      },
+      instances: {
+        hits: result.tags.map((tag) => ({
+          timeSeriesId: [tag.TimeSeriesId],
+          typeId: "1be09af9-f089-4d6b-9f0b-48018b5f7393", // ⛳️
+          hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
+          highlights: {
+            timeSeriesId: [tag.TimeSeriesId],
+            typeName: "TurbineSensor",
+            name: "",
+            description: "ContosoFarm1W6_GenPower1",
+            hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
+            hierarchyNames: ["Contoso WindFarm Hierarchy"],
+            instanceFieldNames: ["Name", "Plant", "Unit", "System"],
+            instanceFieldValues: [
+              "ActivePower",
+              "Contoso Plant 1",
+              "W6",
+              "Generator System",
+            ],
+          },
+        })),
+        hitCount: result.tags.length,
+      },
+    };
+
+    console.log(out);
+
+    return out;
+
+    /*
+
+    // first call
+
+
+    // second call
+
+    path	[…]
+      0	"Contoso WindFarm Hierarchy"
+
+    Traverse("{hierarchyId}", 1) | distinct current_level_value
+
+    // third call
+
+    path	[…]
+      0	"Contoso WindFarm Hierarchy"
+      2	"Plant 1"
+
+    Traverse("{hierarchyId}", 1) | distinct current_level_value
+
+    // later
+
+    {
+      "searchString": "",
+      "path": [
+        "Contoso WindFarm Hierarchy",
+        "Contoso Plant 1",
+        "W6",
+        "Gearbox System",
+        "GearboxOilLevel"
+      ],
+      "instances": {
+        "recursive": false,
+        "sort": {
+          "by": "DisplayName"
+        },
+        "highlights": true,
+        "pageSize": 10
+      },
+      "hierarchies": {
+        "expand": {
+          "kind": "OneLevel"
+        },
+        "sort": {
+          "by": "Name"
+        },
+        "pageSize": 10
+      }
+    }
+
+    */
     return {
       hierarchyNodes: {
         hits: [
@@ -114,6 +223,7 @@ export default class HierarchyDelegate {
   }
 
   async getInstancesSearch(text: string) {
+    console.log("getInstancesSearch", text);
     return {
       instances: {
         hits: [

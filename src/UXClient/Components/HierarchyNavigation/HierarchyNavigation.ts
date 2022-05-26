@@ -1,18 +1,19 @@
-import * as d3 from 'd3';
-import './HierarchyNavigation.scss';
+import * as d3 from "d3";
+import "./HierarchyNavigation.scss";
 import Utils from "../../Utils";
-import {Component} from "./../../Interfaces/Component";
-import ServerClient from '../../../ServerClient';
-import ModelAutocomplete from '../ModelAutocomplete';
-import { KeyCodes, InstancesSort, HierarchiesExpand, HierarchiesSort } from '../../Constants/Enums';
-import HierarchyDelegate from '../../../ServerClient/HierarchyDelegate';
-
+import { Component } from "./../../Interfaces/Component";
+import ModelAutocomplete from "../ModelAutocomplete";
+import {
+  KeyCodes,
+  InstancesSort,
+  HierarchiesExpand,
+  HierarchiesSort,
+} from "../../Constants/Enums";
+import { HierarchyDelegate } from "../../../ServerClient/HierarchyDelegate";
 
 class HierarchyNavigation extends Component {
-  private delegate: HierarchyDelegate = new HierarchyDelegate();
+  private delegate: HierarchyDelegate;
 
-  private server: ServerClient;
-  private getToken;
   private environmentFqdn;
   private clickedInstance;
   private isHierarchySelectionActive;
@@ -47,7 +48,6 @@ class HierarchyNavigation extends Component {
 
   constructor(renderTarget: Element) {
     super(renderTarget);
-    this.server = new ServerClient();
     function isTarget() {
       return d3.event.target === this || this.contains(d3.event.target);
     }
@@ -106,13 +106,12 @@ class HierarchyNavigation extends Component {
 
   public async render(
     environmentFqdn: string,
-    getToken: any,
+    delegate: HierarchyDelegate,
     hierarchyNavOptions: any = {}
   ) {
-
     let self = this;
+    this.delegate = delegate;
     this.chartOptions.setOptions(hierarchyNavOptions);
-    this.getToken = getToken;
     this.environmentFqdn = environmentFqdn;
     this.resettingVariablesForEnvChange();
 
@@ -122,13 +121,13 @@ class HierarchyNavigation extends Component {
       .append("div")
       .attr("class", "tsi-hierarchy-nav-wrapper");
     super.themify(hierarchyNavWrapper, this.chartOptions.theme);
-    
-    const types = await this.delegate.getTimeSeriesTypes()
+
+    const types = await this.delegate.getTimeSeriesTypes();
     types.forEach((t) => {
       this.envTypes[t.id] = t;
     });
 
-    const hierarchies = await this.delegate.getHierarchies()
+    const hierarchies = await this.delegate.getHierarchies();
     hierarchies.forEach((h) => {
       this.envHierarchies[h.name] = h;
     });
@@ -151,7 +150,6 @@ class HierarchyNavigation extends Component {
         }
       }
     }
-    
 
     // .getTimeseriesInstancesPathSearch(token, environmentFqdn, {
     //         searchString: "",
@@ -186,7 +184,7 @@ class HierarchyNavigation extends Component {
 
     console.log(1)
 
-      // hierarchy selection button
+    // hierarchy selection button
     let hierarchySelectionWrapper = hierarchyNavWrapper
       .append("div")
       .classed("tsi-hierarchy-selection-wrapper", true);
@@ -212,14 +210,11 @@ class HierarchyNavigation extends Component {
       .text(
         this.selectedHierarchyName === HierarchySelectionValues.All
           ? this.getString("All hierarchies")
-          : this.selectedHierarchyName ===
-            HierarchySelectionValues.Unparented
+          : this.selectedHierarchyName === HierarchySelectionValues.Unparented
           ? this.getString("Unassigned Time Series Instances")
           : this.selectedHierarchyName
       );
-    this.hierarchySelectorElem
-      .append("i")
-      .classed("tsi-down-caret-icon", true);
+    this.hierarchySelectorElem.append("i").classed("tsi-down-caret-icon", true);
     // hierarchy flyout list
     this.hierarchyListWrapperElem = hierarchySelectionWrapper
       .append("div")
@@ -303,10 +298,8 @@ class HierarchyNavigation extends Component {
           return;
         }
         self.path =
-          self.selectedHierarchyName ===
-            HierarchySelectionValues.All ||
-          self.selectedHierarchyName ===
-            HierarchySelectionValues.Unparented
+          self.selectedHierarchyName === HierarchySelectionValues.All ||
+          self.selectedHierarchyName === HierarchySelectionValues.Unparented
             ? []
             : [self.selectedHierarchyName];
         self.noResultsElem.style("display", "none");
@@ -362,9 +355,7 @@ class HierarchyNavigation extends Component {
           return;
         }
         self.searchWrapperElem.select("input").node().value = "";
-        self.searchWrapperElem
-          .select(".tsi-clear")
-          .dispatch("click");
+        self.searchWrapperElem.select(".tsi-clear").dispatch("click");
         self.noResultsElem.style("display", "none");
       });
 
@@ -393,7 +384,7 @@ class HierarchyNavigation extends Component {
         self.selectHierarchy(HierarchySelectionValues.All, false);
         self.showInstance(self.timeSeriesIdForLookup);
       });
-  
+
     this.notFoundElem
       .append("i")
       .attr("class", "tsi-clear")
@@ -705,29 +696,16 @@ class HierarchyNavigation extends Component {
     this.setModeAndRequestParamsForFilter();
     let escapedTsidString = Utils.escapedTsidForExactSearch(tsid?.join(" "));
     this.searchString = `"${escapedTsidString}"`; //TODO: null vs string null check for exact search and escape for character : fix from backend will come here!!
-
+    debugger;
     return Promise.all(
       hNames.map((hName) => {
         let payload = hName
           ? this.requestPayload([hName])
           : this.requestPayload(null);
-        return this.getToken()
-          .then((token) =>
-            this.server
-              .getTimeseriesInstancesPathSearch(
-                token,
-                this.environmentFqdn,
-                payload,
-                null,
-                null
-              )
-              .catch((err) => {
-                throw err;
-              })
-          )
-          .catch((err) => {
-            throw err;
-          });
+        return this.delegate.getInstancesPathSearch(
+          this.envHierarchies[this.selectedHierarchyName]?.id,
+          payload
+        );
       })
     ).catch((err) =>
       this.chartOptions.onError(
@@ -760,27 +738,7 @@ class HierarchyNavigation extends Component {
 
   // pull instance to get its name to search in the tree if exist
   private getInstance = (timeSeriesID) => {
-    return this.getToken()
-      .then((token) => {
-        return this.server
-          .getTimeseriesInstances(token, this.environmentFqdn, 1, [
-            timeSeriesID,
-          ])
-          .catch((err) =>
-            this.chartOptions.onError(
-              "Error in hierarchy navigation",
-              "Failed to get instance details",
-              err instanceof XMLHttpRequest ? err : null
-            )
-          );
-      })
-      .catch((err) =>
-        this.chartOptions.onError(
-          "Error in hierarchy navigation",
-          "Failed to get token",
-          err instanceof XMLHttpRequest ? err : null
-        )
-      );
+    return this.delegate.getInstances();
   };
 
   // simulate expand operation for each hierarchy node in a full path until the instance and then locate the instance
@@ -1329,13 +1287,16 @@ class HierarchyNavigation extends Component {
       });
   };
 
-  private async pathSearch  (
+  private async pathSearch(
     payload,
     instancesContinuationToken = null,
     hierarchiesContinuationToken = null
   ) {
-    return this.delegate.getInstancesPathSearch(payload)
-  };
+    return this.delegate.getInstancesPathSearch(
+      this.envHierarchies[this.selectedHierarchyName]?.id,
+      payload
+    );
+  }
 
   private renderSearchResult = (
     r,
@@ -1358,7 +1319,6 @@ class HierarchyNavigation extends Component {
       hitCountElem.text(r.hierarchyNodes.hitCount);
       hierarchyData = self.fillDataRecursively(
         r.hierarchyNodes,
-        this.getToken,
         this.environmentFqdn,
         payload,
         payload
@@ -1442,7 +1402,6 @@ class HierarchyNavigation extends Component {
   // creates in-depth data object using the server response for hierarchyNodes to show in the tree all expanded, considering UntilChildren
   private fillDataRecursively(
     hierarchyNodes,
-    getToken,
     envFqdn,
     payload,
     payloadForContinuation = null
@@ -1487,7 +1446,6 @@ class HierarchyNavigation extends Component {
       if (h.hierarchyNodes && h.hierarchyNodes.hits.length) {
         hierarchy.children = this.fillDataRecursively(
           h.hierarchyNodes,
-          getToken,
           envFqdn,
           this.requestPayload(hierarchy.path),
           payloadForContinuation
@@ -2070,44 +2028,70 @@ class HierarchyNavigation extends Component {
   };
 }
 
-function HierarchyNode (name, parentPath, level, cumulativeInstanceCount = null) {
-    this.name = name;
-    this.path = parentPath.concat([name]);
-    this.expand = () => {};
-    this.level = level;
-    this.cumulativeInstanceCount = cumulativeInstanceCount;
-    this.node = null;
-    this.children = null;
+function HierarchyNode(
+  name,
+  parentPath,
+  level,
+  cumulativeInstanceCount = null
+) {
+  this.name = name;
+  this.path = parentPath.concat([name]);
+  this.expand = () => {};
+  this.level = level;
+  this.cumulativeInstanceCount = cumulativeInstanceCount;
+  this.node = null;
+  this.children = null;
+  this.isExpanded = false;
+  this.collapse = () => {
     this.isExpanded = false;
-    this.collapse = () => {this.isExpanded = false; this.node.classed('tsi-expanded', false); this.node.selectAll('ul').remove();};
+    this.node.classed("tsi-expanded", false);
+    this.node.selectAll("ul").remove();
+  };
 }
 
-function InstanceNode (tsId, name = null, type, hierarchyIds, highlights, level) {
-    this.timeSeriesId = tsId;
-    this.name = name;
-    this.type = type;
-    this.hierarchyIds = hierarchyIds;
-    this.highlights = highlights;
-    this.suppressDrawContextMenu = false;
-    this.isLeaf = true;
-    this.level = level;
-    this.node = null;
+function InstanceNode(
+  tsId,
+  name = null,
+  type,
+  hierarchyIds,
+  highlights,
+  level
+) {
+  this.timeSeriesId = tsId;
+  this.name = name;
+  this.type = type;
+  this.hierarchyIds = hierarchyIds;
+  this.highlights = highlights;
+  this.suppressDrawContextMenu = false;
+  this.isLeaf = true;
+  this.level = level;
+  this.node = null;
 }
 
 interface ContextMenuItems {
-    name: string,
-    kind: string,
-    action: any
-};
+  name: string;
+  kind: string;
+  action: any;
+}
 
 interface ContextMenuOptions {
-    isSelectionEnabled: boolean,
-    isFilterEnabled: boolean,
-    onClose: any
-};
+  isSelectionEnabled: boolean;
+  isFilterEnabled: boolean;
+  onClose: any;
+}
 
-export enum HierarchySelectionValues {All = "0", Unparented = "-1"};
-export enum ViewType {Hierarchy, List};
-export enum State {Navigate, Search, Filter};
+export enum HierarchySelectionValues {
+  All = "0",
+  Unparented = "-1",
+}
+export enum ViewType {
+  Hierarchy,
+  List,
+}
+export enum State {
+  Navigate,
+  Search,
+  Filter,
+}
 
-export default HierarchyNavigation
+export default HierarchyNavigation;
