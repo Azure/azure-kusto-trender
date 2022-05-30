@@ -42,12 +42,7 @@ export class HierarchyDelegate {
         name: "DefaultType",
         description: "Default type",
         variables: {
-          EventCount: {
-            kind: "aggregate",
-            aggregation: {
-              tsx: "count()",
-            },
-          },
+          EventCount: { kind: "aggregate", aggregation: { tsx: "count()" } },
         },
       },
     ];
@@ -118,6 +113,7 @@ export class HierarchyDelegate {
 
   async getInstancesPathSearch(hierarchy: string, payload: PathSearchPayload) {
     console.log("getInstancesPathSearch", payload);
+    // debugger;
 
     hierarchy = "72df205e-c0fd-44c9-9fa8-c62ba720de6c";
 
@@ -156,8 +152,6 @@ export class HierarchyDelegate {
         hitCount: result.tags.length,
       },
     };
-
-    console.log(out);
 
     return out;
 

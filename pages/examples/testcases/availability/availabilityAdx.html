@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- styles are only used for styling header and auth elements, where possible -->
+    <link rel="stylesheet" type="text/css" href="../../styles.css" />
+
     <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
     <script src="../../boilerplate/head.js"></script>
+
+    <!-- boilerplate auth code is injected with auth.js, check it out for auth setup -->
+    <script src="../../boilerplate/auth.js"></script>
   </head>
   <body style="font-family: 'Segoe UI', sans-serif">
     <div id="availability" style="width: 100%; height: 160px; z-index: 1"></div>
     <script>
       window.onload = async function () {
-        const tokenProvider = () => {
-          return new Promise.resolve(
-           );
-        };
+        initAuth("Availability with ADX");
 
         const cluster = new ADX.ADXTrenderClient(
-          tokenProvider,
+          authContext.getTsiToken,
           "trender"
         );
 
@@ -24,10 +27,10 @@
         var availability = new tsiClient.ux.AvailabilityChart(
           document.getElementById("availability")
         );
-        
+
         availability.render(
           result.availability,
-          { legend: "hidden", theme: "light", color: "royalblue" },
+          { legend: "hidden", theme: "dark", color: "royalblue" },
           {
             range: result.range,
             intervalSize: "1h",
@@ -35,5 +38,11 @@
         );
       };
     </script>
+    <style>
+      body {
+        color: white;
+        padding: 4em 2em;
+      }
+    </style>
   </body>
 </html>

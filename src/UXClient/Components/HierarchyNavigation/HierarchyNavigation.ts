@@ -182,7 +182,6 @@ class HierarchyNavigation extends Component {
       }
     };
 
-    console.log(1)
 
     // hierarchy selection button
     let hierarchySelectionWrapper = hierarchyNavWrapper
@@ -1090,6 +1089,7 @@ class HierarchyNavigation extends Component {
           : el;
       if (locInTarget) {
         if (
+          // ⛳️: performance hit
           target
             .selectAll(".tsi-name")
             .nodes()
@@ -1102,6 +1102,7 @@ class HierarchyNavigation extends Component {
           .classed("tsi-leaf", data[el].isLeaf);
       } else {
         if (
+          // ⛳️: performance hit
           list
             .selectAll(".tsi-name")
             .nodes()

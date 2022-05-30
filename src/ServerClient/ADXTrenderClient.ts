@@ -162,70 +162,6 @@ export class ADXTrenderClient extends ADXClient {
     }, {});
 
     return Object.keys(groups).map((key) => ({ [key]: groups[key] }));
-
-    // /
-
-    return [
-      {
-        Place1: {
-          SubPlace1: {
-            "2017-04-14T13:00:00Z": {
-              avg: 5833.7621310334625,
-              min: 0.41307308046089514,
-              max: 20000.424011946317,
-            },
-            "2017-04-14T13:02:00Z": {
-              avg: 4167.062647769229,
-              min: 0.38709327405513105,
-              max: 20000.385725915825,
-            },
-            "2017-04-14T13:04:00Z": {
-              avg: 1667.0298311716635,
-              min: 0.3474398853305438,
-              max: 20000.378889124662,
-            },
-          },
-        },
-      },
-      {
-        Place2: {
-          SubPlace1: {
-            "2017-04-14T13:00:00Z": {
-              avg: 5833.7621310334625,
-              min: 0.41307308046089514,
-              max: 20000.424011946317,
-            },
-            "2017-04-14T13:02:00Z": {
-              avg: 4167.062647769229,
-              min: 0.38709327405513105,
-              max: 20000.385725915825,
-            },
-            "2017-04-14T13:04:00Z": {
-              avg: 1667.0298311716635,
-              min: 0.3474398853305438,
-              max: 20000.378889124662,
-            },
-          },
-          SubPlace2: {
-            "2017-04-14T13:00:00Z": {
-              avg: 5833.7621310334625,
-              min: 0.41307308046089514,
-              max: 20000.424011946317,
-            },
-            "2017-04-14T13:02:00Z": {
-              avg: 4167.062647769229,
-              min: 0.38709327405513105,
-              max: 20000.385725915825,
-            },
-            "2017-04-14T13:04:00Z": {
-              avg: 1667.0298311716635,
-              min: 0.3474398853305438,
-              max: 20000.378889124662,
-            },
-          },
-        },
-      },
-    ];
   }
 
   // #region Hierarch
@@ -256,8 +192,8 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
       declare query_parameters(HierarchyId:string, Path: dynamic);
-      GetTagsForLevel(HierarchyId, Path) | as ${tagsTableName};
-      TempChildren(HierarchyId, Path) | as ${childrenTableName};
+      GetTagsForPath(HierarchyId, Path) | as ${tagsTableName};
+      GetChildrenForPath(HierarchyId, Path) | as ${childrenTableName};
     `;
 
     const result = await this.executeQuery(query, {

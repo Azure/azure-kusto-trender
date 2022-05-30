@@ -97,7 +97,7 @@ class ModelAutocomplete extends Component {
     var searchText;
     var self = this;
 
-    input.on("input", async function (event) {
+    input.on("input", async function () {
       searchText = (<any>this).value;
       if (searchText.replace(/ /g, "") && !noSuggest) {
         const suggestions = await self.delegate.getInstancesSuggestions(
@@ -126,7 +126,11 @@ class ModelAutocomplete extends Component {
       } else {
         self.ap.close();
       }
-      self.chartOptions.onInput(searchText, noSuggest ? { which: 13 } : event);
+      const event = d3.event;
+      self.chartOptions.onInput(
+        searchText,
+        noSuggest || !event ? { which: 13 } : d3.event
+      );
       noSuggest = false;
       clear.classed("tsi-shown", searchText.length);
     });
