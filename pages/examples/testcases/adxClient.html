@@ -21,7 +21,7 @@
       type="text"
       id="query"
       name="query"
-      value="GetTotalAvailability('1h') | take 5"
+      value="GetTotalAvailability(1h) | take 10 | as Results"
       autofocus
     />
     <input type="button" value="Execute Query" onclick="executeQuery()" />
@@ -30,9 +30,10 @@
 
     <script>
       window.onload = async function () {
+        initAuth("ADX Client");
+
         const tokenProvider = () => {
-          return new Promise.resolve(
-             );
+          return authContext.getTsiToken();
         };
 
         const cluster = new ADX.ADXClient(
@@ -123,7 +124,7 @@
     <style>
       body {
         color: white;
-        padding: 2em;
+        padding: 4em 2em;
       }
 
       #query {
@@ -132,7 +133,7 @@
         font-family: monospace;
         color: white;
         background-color: #444;
-        min-width: 400px;
+        min-width: 450px;
       }
       h1 {
         color: rgb(210, 229, 249);
