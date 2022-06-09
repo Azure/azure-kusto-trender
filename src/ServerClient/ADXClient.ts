@@ -2,7 +2,7 @@ import { ADXResponse, RawADXResponse } from "./ADXResponse";
 type ADXTokenProvider = () => Promise<string>;
 
 interface ADXQueryProperties {
-  parameters: Record<string, unknown>
+  parameters: Record<string, unknown>;
 }
 
 /**
@@ -30,9 +30,20 @@ export class ADXClient {
     this.tokenProvider = tokenProvider;
   }
 
+  /**
+   * Getter for the query rest endpoint Url
+   */
   public get queryUrl() {
     return `${this.clusterUrl}/v2/rest/query`;
   }
+
+  /**
+   * Executes a KQL query against the configured ADX cluster.
+   *
+   * @param query - KQL query
+   * @param properties - Optional
+   * @returns A Promise with an ADXRespnse object
+   */
   async executeQuery(query: string, properties?: ADXQueryProperties) {
     const token = await this.tokenProvider();
     let response: Response;
@@ -62,8 +73,6 @@ export class ADXClient {
 
   private async parseResponse(fetchResponse: Response) {
     let rawResponse: RawADXResponse = await fetchResponse.json();
-    let data = new ADXResponse(rawResponse);
-
-    return data;
+    return new ADXResponse(rawResponse);
   }
 }

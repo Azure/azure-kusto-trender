@@ -25,6 +25,13 @@
       autofocus
     />
     <input type="button" value="Execute Query" onclick="executeQuery()" />
+    <input
+      id="button"
+      type="button"
+      value="Execute Query"
+      onclick="executeQuery()"
+    />
+    <div><progress id="progress" style="display: none"></progress></div>
 
     <div id="results"></div>
 
@@ -44,13 +51,22 @@
         window.executeQuery = async function () {
           const query = document.getElementById("query").value;
           const resultsDiv = document.getElementById("results");
+          const progress = document.getElementById("progress");
+          const button = document.getElementById("button");
+
           const keyValueHeaders = ["Key", "Value"];
 
           while (resultsDiv.firstChild) {
             resultsDiv.removeChild(resultsDiv.firstChild);
           }
 
+          progress.style.display = "block";
+          button.disabled = true;
+
           const result = await cluster.executeQuery(query);
+
+          progress.style.display = "none";
+          button.disabled = false;
 
           resultsDiv.appendChild(createElement("h1", "Results"));
 

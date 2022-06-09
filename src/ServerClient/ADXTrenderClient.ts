@@ -2,9 +2,21 @@ import { StringLiteral } from "typescript";
 import { ADXClient } from "./ADXClient";
 import { ADXResponse, RawADXResponse } from "./ADXResponse";
 
+export enum HierarchiesExpandKind {
+  OneLevel = "OneLevel",
+  UntilChildren = "UntilChildren",
+}
+
+export interface HierarchiesSearchPayload {
+  expand: {
+    kind: HierarchiesExpandKind;
+  };
+}
+
 export interface PathSearchPayload {
   searchString?: string;
   path?: string[];
+  hierarchies?: HierarchiesSearchPayload;
 }
 
 interface AvailabilityRange {
@@ -78,9 +90,7 @@ export class ADXTrenderClient extends ADXClient {
   }
 
   /**
-   * Returns availability information in a trender-friendly format.
-   *
-   * @remarks This function always returns a one hour interval.
+   * Returns trender instances
    */
   async getInstances() {
     const tableName = "TrenderInstances";
@@ -95,6 +105,9 @@ export class ADXTrenderClient extends ADXClient {
     return rows;
   }
 
+  /**
+   * Returns an aggregate over time for the provided tags and time interval.
+   */
   async getAggregates(
     tags: string[],
     startDate: Date,
@@ -167,9 +180,7 @@ export class ADXTrenderClient extends ADXClient {
   // #region Hierarch
 
   /**
-   * Returns availability information in a trender-friendly format.
-   *
-   * @remarks This function always returns a one hour interval.
+   * Returns available hierarchies.
    */
   async getHierarchies() {
     const tableName = "HierarchyList";
@@ -212,6 +223,25 @@ export class ADXTrenderClient extends ADXClient {
       tags,
       children,
     };
+  }
+
+  /**
+   * Get suggested tag names for a search string.
+   */
+  async getSuggestions(searchString: string) {
+    const tableName = "TrenderSuggestions";
+
+    const query = `
+    declare query_parameters(SearchString:string);
+    Suggest(SearchString) | as ${tableName}
+    `;
+    const result = await this.executeQuery(query, {
+      parameters: { SearchString: searchString },
+    });
+
+    const rows = result.getTable(tableName).Rows.map((row) => row[0] as string);
+
+    return rows;
   }
 
   // #endregion

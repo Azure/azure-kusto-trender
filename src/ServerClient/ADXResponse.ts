@@ -40,6 +40,16 @@ interface RawDataSetCompletion extends RawDataFrameBase {
 type RawDataFrame = RawDataTable | RawDataSetHeader | RawDataSetCompletion;
 export type RawADXResponse = RawDataFrame[];
 
+/**
+ * A simple holder class for the ADX Response data.
+ *
+ * @remarks
+ * This class is designed to support the TSI Trender library, not to
+ * provide a fully featured ADX client.
+ *
+ * @see {@link https://docs.microsoft.com/en-us/azure/data-explorer/kusto/api/rest/ API Documentation}
+ */
+
 export class ADXResponse {
   dataSetHeader: RawDataSetHeader;
   dataSetCompletion: RawDataSetCompletion;
@@ -62,11 +72,23 @@ export class ADXResponse {
     }
   }
 
+  /**
+   * Getter for tables marked as primary. Used to easily filter out ADX metadata in the response.
+   */
+
   get primaryTables() {
     return this.dataTables.filter(
       (table) => table.TableKind == TableKind.PrimaryResult
     );
   }
+
+  /**
+   * Finds the table with the provided name in the response
+   * Use the `as` operator in KQL to name your tables
+   *
+   * @param tableName - A string to match each table name against
+   * @returns The Raw table
+   */
 
   getTable(tableName: string) {
     const table = this.dataTables.find((table) => table.TableName == tableName);

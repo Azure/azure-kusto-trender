@@ -1,5 +1,29 @@
-import { ADXTrenderClient, PathSearchPayload } from "./ADXTrenderClient";
+import {
+  ADXTrenderClient,
+  HierarchiesExpandKind,
+  PathSearchPayload,
+} from "./ADXTrenderClient";
 
+interface HierachyLevel {
+  hits: number;
+  name: string;
+  children: Record<string, HierachyLevel>;
+}
+function convertHierarchy(h: HierachyLevel) {
+  return {
+    name: h.name,
+    cumulativeInstanceCount: h.hits,
+    hierarchyNodes: {
+      hits: Object.values(h.children).map(convertHierarchy),
+      hitCount: h.children.length,
+    },
+  };
+}
+
+/**
+ * A helper that wraps {@link ADXTrenderClient} to help with hierarchy navigation.
+ * This class can be extended to modify the hierarchy component's behavior.
+ */
 export class HierarchyDelegate {
   public client: ADXTrenderClient;
 
@@ -7,38 +31,13 @@ export class HierarchyDelegate {
     this.client = client;
   }
 
-  async getInstances() {
-    console.log("getInstances");
-    throw "";
-    return {
-      instances: [
-        {
-          typeId: "1be09af9-f089-4d6b-9f0b-48018b5f7393",
-          timeSeriesId: ["20.102.78.88/46101"],
-          name: "Points.5k-4.20k_611_PISim_1220",
-          description: "",
-          hierarchyIds: ["72df205e-c0fd-44c9-9fa8-c62ba720de6c"],
-          instanceFields: {
-            Low: "0",
-            High: "100",
-            PointSource: "",
-            DigitalSet: "",
-            EngUnits: "",
-            PointType: "Float64",
-            Description: "",
-            L1: "I/O Model",
-            L2: "fusion-geoscada",
-          },
-        },
-      ],
-    };
-  }
+  private typeId = "ADX-TYPE-ID";
 
   async getTimeSeriesTypes() {
     console.log("getTimeSeriesTypes");
     return [
       {
-        id: "1be09af9-f089-4d6b-9f0b-48018b5f7393",
+        id: this.typeId,
         name: "DefaultType",
         description: "Default type",
         variables: {
@@ -57,6 +56,11 @@ export class HierarchyDelegate {
 
   async getInstancesSuggestions(text: string) {
     console.log("getInstancesSuggestions", text);
+
+    const result = await this.client.getSuggestions(text);
+
+    return result.map((searchString) => ({ searchString }));
+
     return [
       {
         searchString: "f39ef799-eaa3-4019-81ef-a939b6921728",
@@ -113,12 +117,76 @@ export class HierarchyDelegate {
 
   async getInstancesPathSearch(hierarchy: string, payload: PathSearchPayload) {
     console.log("getInstancesPathSearch", payload);
-    // debugger;
 
     hierarchy = "72df205e-c0fd-44c9-9fa8-c62ba720de6c";
 
+    if (
+      payload.searchString &&
+      payload.hierarchies?.expand?.kind ==
+        HierarchiesExpandKind.UntilChildren &&
+      payload.path.length == 0
+    ) {
+      console.log("yes");
+      const tableName = "TrenderHierarchySearch";
+      const query = `
+      declare query_parameters(Searchstring:string, Path: dynamic);
+      Search2(Searchstring, Path) | as ${tableName};
+    `;
+
+      const result = await this.client.executeQuery(query, {
+        parameters: {
+          Path: `dynamic(${JSON.stringify(payload.path)})`,
+          Searchstring: payload.searchString,
+        },
+      });
+
+      const unfolded = result.unfoldTable<{
+        TimeSeriesId: string;
+        Path: string;
+      }>(result.getTable(tableName));
+
+      const fullHierarchy: HierachyLevel = {
+        hits: 1,
+        name: "ROOT",
+        children: {},
+      };
+
+      unfolded.forEach((hit) => {
+        const parsed: string[] = JSON.parse(hit.Path);
+
+        var pointer = fullHierarchy;
+
+        parsed.forEach((level) => {
+          if (level in pointer.children) {
+            pointer.children[level].hits++;
+          } else {
+            pointer.children[level] = {
+              hits: 1,
+              name: level,
+              children: {},
+            };
+          }
+          pointer = pointer.children[level];
+        });
+      });
+
+      console.log(fullHierarchy);
+
+      const out = convertHierarchy(fullHierarchy);
+
+      return {
+        instances: {
+          hits: [],
+        },
+        hierarchyNodes: out.hierarchyNodes,
+      };
+      console.log(out);
+
+      console.log(result);
+    }
+
     const result = await this.client.getHierarchyLevel(hierarchy, payload);
-    console.log(result);
+
     const out = {
       hierarchyNodes: {
         hits: result.children.map((child) => ({
@@ -131,7 +199,7 @@ export class HierarchyDelegate {
       instances: {
         hits: result.tags.map((tag) => ({
           timeSeriesId: [tag.TimeSeriesId],
-          typeId: "1be09af9-f089-4d6b-9f0b-48018b5f7393", // ⛳️
+          typeId: this.typeId, // ⛳️
           hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
           highlights: {
             timeSeriesId: [tag.TimeSeriesId],
@@ -272,4 +340,30 @@ export class HierarchyDelegate {
   }
 }
   */
+  async getInstances() {
+    console.log("getInstances");
+    throw "";
+    return {
+      instances: [
+        {
+          typeId: "1be09af9-f089-4d6b-9f0b-48018b5f7393",
+          timeSeriesId: ["20.102.78.88/46101"],
+          name: "Points.5k-4.20k_611_PISim_1220",
+          description: "",
+          hierarchyIds: ["72df205e-c0fd-44c9-9fa8-c62ba720de6c"],
+          instanceFields: {
+            Low: "0",
+            High: "100",
+            PointSource: "",
+            DigitalSet: "",
+            EngUnits: "",
+            PointType: "Float64",
+            Description: "",
+            L1: "I/O Model",
+            L2: "fusion-geoscada",
+          },
+        },
+      ],
+    };
+  }
 }
