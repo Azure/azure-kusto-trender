@@ -190,8 +190,65 @@ const cluster = new ADX.ADXTrenderClient(
 
 To function properly, `ADXTrenderClient` requires the ADX Trender KQL Functions to be installed in the database you are pointing to. 
 
+Then, call any function to get data in a format that is ready to be used with the UI components:
+
+```ts
+var tsiClient = new TsiClient();
+var availability = new tsiClient.ux.AvailabilityChart(
+  document.getElementById("availability")
+);
+
+const result = await cluster.getAvailability();
+
+availability.render(
+  result.availability,
+  { legend: "hidden", theme: "dark", color: "royalblue" },
+  {
+    range: result.range,
+    intervalSize: "1h",
+  }
+);
+```
+
 ## HierarchyDelegate
 
 This class was built to provide a connector between the Hierarchy Navigation UI component and the `ADXTrenderClient`. If you would like to use the Hierarchy component without ADX, simply subclass `HierarchyDelegate` and provide your own implementation of each method.
 
-`HierarchyDelegate` expects an `ADXTrenderClient` configured
+`HierarchyDelegate` expects an `ADXTrenderClient` to be configured and passed at creation:
+
+```ts
+var delegate = new ADX.HierarchyDelegate(cluster)
+
+const hierarchy = new tsiClient.ux.HierarchyNavigation(document.getElementById('hierarchyNav'));
+
+hierarchy.render(delegate, {}, {}));
+```
+
+
+
+## TypeScript
+
+All classes within the ADX client are strongly typed.
+
+When unfolding data, the client doesn't know about the columns and therefore cannot provide type checking on the output. To provide your own type definition, `unfoldTable` can be given a generic type:
+
+```ts
+interface Greeting {
+  message: string
+}
+
+const query = "print message='Hello!' | as MyTable";
+const result = await cluster.executeQuery(query);
+
+result.getPrimaryTables();
+// Returns the results to your query, filtering ADX Metadata
+
+const myRawTable = result.getTable("MyTable");
+// Returns the named table
+
+const object = result.unfoldTable<Greeting>(myRawTable);
+
+// `object` has type `Greeting[]`
+// `object[0]` has type `Greeting`
+// `object[0].message` has type `string`
+```
