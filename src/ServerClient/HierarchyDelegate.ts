@@ -1,3 +1,4 @@
+import { ADXResponse } from ".";
 import {
   ADXTrenderClient,
   HierarchiesExpandKind,
@@ -9,6 +10,7 @@ interface HierachyLevel {
   name: string;
   children: Record<string, HierachyLevel>;
 }
+
 function convertHierarchy(h: HierachyLevel) {
   return {
     name: h.name,
@@ -120,23 +122,28 @@ export class HierarchyDelegate {
 
     hierarchy = "72df205e-c0fd-44c9-9fa8-c62ba720de6c";
 
+    var result = {
+      children: [],
+      tags: [],
+    };
+
     if (
       payload.searchString &&
-      payload.hierarchies?.expand?.kind ==
-        HierarchiesExpandKind.UntilChildren &&
-      payload.path.length == 0
+      payload.hierarchies?.expand?.kind == HierarchiesExpandKind.UntilChildren
     ) {
       console.log("yes");
       const tableName = "TrenderHierarchySearch";
+      const tagsTableName = "HierarchyTags";
       const query = `
-      declare query_parameters(Searchstring:string, Path: dynamic);
-      Search2(Searchstring, Path) | as ${tableName};
+      declare query_parameters(SearchString:string, Path: dynamic);
+      GetPathToTag(Path, SearchString) | as ${tableName};
+      SearchTagsAtPath(Path, SearchString) | as ${tagsTableName};
     `;
 
       const result = await this.client.executeQuery(query, {
         parameters: {
           Path: `dynamic(${JSON.stringify(payload.path)})`,
-          Searchstring: payload.searchString,
+          SearchString: payload.searchString,
         },
       });
 
@@ -156,6 +163,16 @@ export class HierarchyDelegate {
 
         var pointer = fullHierarchy;
 
+        for (const element of payload.path) {
+          if (parsed[0] == element) {
+            parsed.shift();
+          } else {
+            break;
+          }
+        }
+
+        debugger;
+
         parsed.forEach((level) => {
           if (level in pointer.children) {
             pointer.children[level].hits++;
@@ -173,19 +190,51 @@ export class HierarchyDelegate {
       console.log(fullHierarchy);
 
       const out = convertHierarchy(fullHierarchy);
-
+      const instances = result.unfoldTable<any>(result.getTable(tagsTableName));
       return {
         instances: {
-          hits: [],
+          hits: instances.map((tag) => ({
+            timeSeriesId: [tag.TimeSeriesId],
+            typeId: this.typeId, // ⛳️
+            hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
+            highlights: {
+              timeSeriesId: [tag.TimeSeriesId],
+              typeName: "TurbineSensor",
+              name: "",
+              description: "ContosoFarm1W6_GenPower1",
+              hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
+              hierarchyNames: ["Contoso WindFarm Hierarchy"],
+              instanceFieldNames: ["Name", "Plant", "Unit", "System"],
+              instanceFieldValues: [
+                "ActivePower",
+                "Contoso Plant 1",
+                "W6",
+                "Generator System",
+              ],
+            },
+          })),
+          hitCount: instances.length,
         },
         hierarchyNodes: out.hierarchyNodes,
       };
-      console.log(out);
-
-      console.log(result);
+    } else if (payload.searchString && payload.instances.recursive) {
+      console.log("children");
+      result.tags = await this.client.getChildrenTags(payload);
+    } else if (payload.searchString) {
+      console.log("level");
+      result = {
+        children: [],
+        tags: await this.client.searchTagsAtPath(payload),
+      };
+    } else if (payload.searchString) {
+      console.log("level");
+      result = {
+        children: [],
+        tags: await this.client.searchTagsAtPath(payload),
+      };
+    } else {
+      result = await this.client.getHierarchyLevel(payload);
     }
-
-    const result = await this.client.getHierarchyLevel(hierarchy, payload);
 
     const out = {
       hierarchyNodes: {

@@ -13,10 +13,15 @@ export interface HierarchiesSearchPayload {
   };
 }
 
+export interface InstancesSearchPayload {
+  recursive?: boolean;
+}
+
 export interface PathSearchPayload {
   searchString?: string;
   path?: string[];
   hierarchies?: HierarchiesSearchPayload;
+  instances?: InstancesSearchPayload;
 }
 
 interface AvailabilityRange {
@@ -197,20 +202,19 @@ export class ADXTrenderClient extends ADXClient {
     return rows as HierarchyValue[];
   }
 
-  async getHierarchyLevel(hierarchy: string, search: PathSearchPayload) {
+  async getHierarchyLevel(search: PathSearchPayload) {
     const childrenTableName = "HierarchyChildren";
     const tagsTableName = "HierarchyTags";
 
     const query = `
-      declare query_parameters(HierarchyId:string, Path: dynamic);
-      GetTagsForPath(HierarchyId, Path) | as ${tagsTableName};
-      GetChildrenForPath(HierarchyId, Path) | as ${childrenTableName};
+      declare query_parameters(Path: dynamic);
+      GetTagsForPath(Path) | as ${tagsTableName};
+      GetChildrenForPath(Path) | as ${childrenTableName};
     `;
 
     const result = await this.executeQuery(query, {
       parameters: {
         Path: `dynamic(${JSON.stringify(search.path)})`,
-        HierarchyId: hierarchy,
       },
     });
 
@@ -223,6 +227,44 @@ export class ADXTrenderClient extends ADXClient {
       tags,
       children,
     };
+  }
+
+  async searchTagsAtPath(payload: PathSearchPayload) {
+    const tagsTableName = "HierarchyTags";
+
+    const query = `
+      declare query_parameters(Path: dynamic, Search: string);
+      SearchTagsAtPath(Path, Search) | as ${tagsTableName};
+    `;
+
+    const result = await this.executeQuery(query, {
+      parameters: {
+        Path: `dynamic(${JSON.stringify(payload.path)})`,
+        Search: payload.searchString,
+      },
+    });
+
+    return result.unfoldTable<TagValue>(result.getTable(tagsTableName));
+  }
+
+  async getChildrenTags(search: PathSearchPayload) {
+    const tagsTableName = "HierarchyTags";
+
+    const query = `
+      declare query_parameters(Path: dynamic, Search: string);
+      GetTagsForPathRecursive(Path)
+      | where TimeSeriesId == Search
+      | as ${tagsTableName};
+    `;
+
+    const result = await this.executeQuery(query, {
+      parameters: {
+        Path: `dynamic(${JSON.stringify(search.path)})`,
+        Search: search.searchString,
+      },
+    });
+
+    return result.unfoldTable<TagValue>(result.getTable(tagsTableName));
   }
 
   /**
