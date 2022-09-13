@@ -21,10 +21,9 @@
       type="text"
       id="query"
       name="query"
-      value="GetTotalAvailability(1h) | take 10 | as Results"
+      value="GetTotalAvailability() | take 10 | as Results"
       autofocus
     />
-    <input type="button" value="Execute Query" onclick="executeQuery()" />
     <input
       id="button"
       type="button"
@@ -44,8 +43,9 @@
         };
 
         const cluster = new ADX.ADXClient(
+          "https://ruppenmuehleadx.westeurope.kusto.windows.net",
           tokenProvider,
-          "trender"
+          "tsisamples"
         );
 
         window.executeQuery = async function () {

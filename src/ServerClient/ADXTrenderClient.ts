@@ -39,17 +39,17 @@ interface AvailabilityValue {
 }
 
 interface HierarchyValue {
-  HierarchyId: string;
   HierarchyName: string;
 }
 
 interface ChildValue {
-  ChildName: string;
-  TagCount: number;
+  Child: string;
+  Count: number;
 }
 
 interface TagValue {
   TimeSeriesId: string;
+  DisplayName: string;
 }
 
 /**
@@ -65,7 +65,7 @@ export class ADXTrenderClient extends ADXClient {
   async getAvailability() {
     const tableName = "TrenderAvailability";
     const result = await this.executeQuery(
-      `GetTotalAvailability('1h') | as ${tableName}`
+      `GetTotalAvailability() | as ${tableName}`
     );
 
     const rows = result.getTable(tableName).Rows;
@@ -122,7 +122,7 @@ export class ADXTrenderClient extends ADXClient {
     const tableName = "TrenderAggregates";
     const result = await this.executeQuery(
       "declare query_parameters(TimeSeries:dynamic,StartTime:datetime,EndTime:datetime,Interval:timespan);" +
-        `GetAggregates(TimeSeries, StartTime, EndTime, Interval) | order by TimeSeriesId | as ${tableName}`,
+      `GetAggregates_Henning(TimeSeries, StartTime, EndTime, Interval) | order by TimeseriesId | as ${tableName}`,
       {
         parameters: {
           TimeSeries: `dynamic(${JSON.stringify(tags)})`,
@@ -190,7 +190,7 @@ export class ADXTrenderClient extends ADXClient {
   async getHierarchies() {
     const tableName = "HierarchyList";
     const result = await this.executeQuery(
-      `GetHierarchies() | as ${tableName}`
+      `GetHierarchies_Henning() | as ${tableName}`
     );
 
     const rows = result.unfoldTable(result.getTable(tableName));
@@ -208,8 +208,8 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
       declare query_parameters(Path: dynamic);
-      GetTagsForPath(Path) | as ${tagsTableName};
-      GetChildrenForPath(Path) | as ${childrenTableName};
+      GetTagsByPath_Henning(Path) | as ${tagsTableName};
+      GetChildrenByPath_Henning(Path) | as ${childrenTableName};
     `;
 
     const result = await this.executeQuery(query, {
@@ -234,7 +234,7 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
       declare query_parameters(Path: dynamic, Search: string);
-      SearchTagsAtPath(Path, Search) | as ${tagsTableName};
+      SearchTagsAtPath_Henning(Path, Search) | as ${tagsTableName};
     `;
 
     const result = await this.executeQuery(query, {
@@ -252,8 +252,7 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
       declare query_parameters(Path: dynamic, Search: string);
-      GetTagsForPathRecursive(Path)
-      | where TimeSeriesId == Search
+      Search_Henning(Path, Search)
       | as ${tagsTableName};
     `;
 
@@ -275,7 +274,7 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
     declare query_parameters(SearchString:string);
-    Suggest(SearchString) | as ${tableName}
+    Suggest_Henningv2(SearchString) | as ${tableName}
     `;
     const result = await this.executeQuery(query, {
       parameters: { SearchString: searchString },

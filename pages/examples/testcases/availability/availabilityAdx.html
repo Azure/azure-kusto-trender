@@ -17,8 +17,9 @@
         initAuth("Availability with ADX");
 
         const cluster = new ADX.ADXTrenderClient(
+          "https://ruppenmuehleadx.westeurope.kusto.windows.net",
           authContext.getTsiToken,
-          "trender"
+          "tsisamples"
         );
 
         const result = await cluster.getAvailability();
@@ -33,7 +34,7 @@
           { legend: "hidden", theme: "dark", color: "royalblue" },
           {
             range: result.range,
-            intervalSize: "1h",
+            intervalSize: "1d",
           }
         );
       };

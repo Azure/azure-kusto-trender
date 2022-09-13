@@ -35,11 +35,7 @@ class ModelSearch extends Component {
 
   ModelSearch() {}
 
-  public async render(
-    environmentFqdn: string,
-    hierarchyData: any,
-    chartOptions: any
-  ) {
+  public async render(hierarchyData: any, chartOptions: any) {
     this.chartOptions.setOptions(chartOptions);
     let self = this;
     let continuationToken, searchText;
@@ -78,7 +74,7 @@ class ModelSearch extends Component {
       inputWrapper.node(),
       this.delegate
     );
-    modelAutocomplete.render(environmentFqdn, {
+    modelAutocomplete.render({
       onInput: autocompleteOnInput,
       onKeydown: (event, ap) => {
         this.handleKeydown(event, ap);

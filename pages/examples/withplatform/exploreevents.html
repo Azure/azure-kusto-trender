@@ -82,8 +82,9 @@
           lineChart;
 
         const cluster = new ADX.ADXTrenderClient(
+          "https://ruppenmuehleadx.westeurope.kusto.windows.net",
           authContext.getTsiToken,
-          "trender"
+          "tsisamples"
         );
 
         // create aggregate expressions, they are S1/S2 SKU query objects

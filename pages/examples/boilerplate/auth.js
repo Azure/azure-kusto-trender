@@ -59,7 +59,7 @@ function initAuth(title) {
     // Get an access token to the Microsoft TSI API
     var promise = new Promise(function (resolve, reject) {
       authContext.acquireToken(
-        "https://adxingestfusdev10test.eastus.kusto.windows.net",
+        "https://ruppenmuehleadx.westeurope.kusto.windows.net",
         function (error, token) {
           if (error || !token) {
             // TODO: Handle error obtaining access token

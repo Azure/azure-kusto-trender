@@ -13,8 +13,6 @@ import { HierarchyDelegate } from "../../../ServerClient/HierarchyDelegate";
 
 class HierarchyNavigation extends Component {
   private delegate: HierarchyDelegate;
-
-  private environmentFqdn;
   private clickedInstance;
   private isHierarchySelectionActive;
   private hierarchySelectorElem;
@@ -102,17 +100,15 @@ class HierarchyNavigation extends Component {
     });
   }
 
-  HierarchyNavigation() {}
+  HierarchyNavigation() { }
 
   public async render(
-    environmentFqdn: string,
     delegate: HierarchyDelegate,
     hierarchyNavOptions: any = {}
   ) {
     let self = this;
     this.delegate = delegate;
     this.chartOptions.setOptions(hierarchyNavOptions);
-    this.environmentFqdn = environmentFqdn;
     this.resettingVariablesForEnvChange();
 
     let targetElement = d3.select(this.renderTarget);
@@ -151,21 +147,6 @@ class HierarchyNavigation extends Component {
       }
     }
 
-    // .getTimeseriesInstancesPathSearch(token, environmentFqdn, {
-    //         searchString: "",
-    //         path: this.path,
-    //         hierarchies: {
-    //           sort: { by: HierarchiesSort.CumulativeInstanceCount },
-    //           expand: { kind: HierarchiesExpand.OneLevel },
-    //           pageSize: 100,
-    //         },
-    //       })
-
-    const r = await this.pathSearch({
-      searchString: "",
-      path: this.path,
-    });
-
     let autocompleteOnInput = (st, event) => {
       if (st.length === 0) {
         this.searchString = st;
@@ -181,7 +162,6 @@ class HierarchyNavigation extends Component {
         }
       }
     };
-
 
     // hierarchy selection button
     let hierarchySelectionWrapper = hierarchyNavWrapper
@@ -210,8 +190,8 @@ class HierarchyNavigation extends Component {
         this.selectedHierarchyName === HierarchySelectionValues.All
           ? this.getString("All hierarchies")
           : this.selectedHierarchyName === HierarchySelectionValues.Unparented
-          ? this.getString("Unassigned Time Series Instances")
-          : this.selectedHierarchyName
+            ? this.getString("Unassigned Time Series Instances")
+            : this.selectedHierarchyName
       );
     this.hierarchySelectorElem.append("i").classed("tsi-down-caret-icon", true);
     // hierarchy flyout list
@@ -232,7 +212,7 @@ class HierarchyNavigation extends Component {
       this.searchWrapperElem.node() as Element,
       this.delegate
     );
-    modelAutocomplete.render(environmentFqdn, {
+    modelAutocomplete.render({
       onInput: autocompleteOnInput,
       onKeydown: (event, ap) => {
         handleKeydown(event, ap);
@@ -260,7 +240,6 @@ class HierarchyNavigation extends Component {
       .append("i")
       .classed("tsi-tree-icon", true);
 
-    console.log(2);
     this.viewTypesElem
       .append("div")
       .classed("tsi-view-type selected", true)
@@ -298,7 +277,7 @@ class HierarchyNavigation extends Component {
         }
         self.path =
           self.selectedHierarchyName === HierarchySelectionValues.All ||
-          self.selectedHierarchyName === HierarchySelectionValues.Unparented
+            self.selectedHierarchyName === HierarchySelectionValues.Unparented
             ? []
             : [self.selectedHierarchyName];
         self.noResultsElem.style("display", "none");
@@ -429,7 +408,7 @@ class HierarchyNavigation extends Component {
               if (
                 self.lastInstanceContinuationToken === null ||
                 !self.usedInstanceSearchContinuationTokens[
-                  self.lastInstanceContinuationToken
+                self.lastInstanceContinuationToken
                 ]
               ) {
                 self.usedInstanceSearchContinuationTokens[
@@ -505,8 +484,8 @@ class HierarchyNavigation extends Component {
         h === HierarchySelectionValues.All
           ? this.getString("All hierarchies")
           : h === HierarchySelectionValues.Unparented
-          ? this.getString("Unassigned Time Series Instances")
-          : h;
+            ? this.getString("Unassigned Time Series Instances")
+            : h;
       this.hierarchyListElem
         .append("li")
         .classed("selected", h === this.selectedHierarchyName)
@@ -532,9 +511,9 @@ class HierarchyNavigation extends Component {
                 self.hierarchyListElem
                   .selectAll("li")
                   .nodes()
-                  [
-                    self.hierarchyListElem.selectAll("li").nodes().length - 1
-                  ].focus();
+                [
+                  self.hierarchyListElem.selectAll("li").nodes().length - 1
+                ].focus();
               }
             } else if (key === KeyCodes.Enter) {
               self.selectHierarchy(h);
@@ -702,7 +681,6 @@ class HierarchyNavigation extends Component {
           ? this.requestPayload([hName])
           : this.requestPayload(null);
         return this.delegate.getInstancesPathSearch(
-          this.envHierarchies[this.selectedHierarchyName]?.id,
           payload
         );
       })
@@ -730,7 +708,7 @@ class HierarchyNavigation extends Component {
     this.originalPathBeforeReverseLookup = this.path;
     this.path =
       this.selectedHierarchyName !== HierarchySelectionValues.All &&
-      this.selectedHierarchyName !== HierarchySelectionValues.Unparented
+        this.selectedHierarchyName !== HierarchySelectionValues.Unparented
         ? [this.selectedHierarchyName]
         : [];
   };
@@ -791,11 +769,11 @@ class HierarchyNavigation extends Component {
                     .select(".tsi-instanceCount")
                     .text(r.instances.hitCount);
                 })
-                .catch((err) => {});
+                .catch((err) => { });
               hierarchyNode.isExpanded = true;
               hierarchyNode.node.classed("tsi-expanded", true);
             })
-            .catch((err) => {});
+            .catch((err) => { });
         };
 
         // create the dom element for this new hierarchy node
@@ -944,16 +922,16 @@ class HierarchyNavigation extends Component {
       this.selectedHierarchyName !== HierarchySelectionValues.Unparented;
     let hierarchyNamesFromParam = hierarchyIds
       ? hierarchyIds.map((hId) =>
-          Object.keys(this.envHierarchies).find(
-            (n) => this.envHierarchies[n].id === hId
-          )
+        Object.keys(this.envHierarchies).find(
+          (n) => this.envHierarchies[n].id === hId
         )
+      )
       : null;
     let hNames = hierarchyNamesFromParam
       ? hierarchyNamesFromParam
       : isHierarchySelected
-      ? [null, this.selectedHierarchyName]
-      : [null, ...Object.keys(this.envHierarchies)]; // adding null for search with direct instances
+        ? [null, this.selectedHierarchyName]
+        : [null, ...Object.keys(this.envHierarchies)]; // adding null for search with direct instances
     let instance;
     let paths = [];
 
@@ -1084,7 +1062,7 @@ class HierarchyNavigation extends Component {
       let li, newListElem;
       let nodeNameToCheckIfExists =
         data[el] instanceof InstanceNode &&
-        data[el].name !== this.getString("Show More Instances")
+          data[el].name !== this.getString("Show More Instances")
           ? this.instanceNodeString(data[el])
           : el;
       if (locInTarget) {
@@ -1294,7 +1272,6 @@ class HierarchyNavigation extends Component {
     hierarchiesContinuationToken = null
   ) {
     return this.delegate.getInstancesPathSearch(
-      this.envHierarchies[this.selectedHierarchyName]?.id,
       payload
     );
   }
@@ -1320,7 +1297,6 @@ class HierarchyNavigation extends Component {
       hitCountElem.text(r.hierarchyNodes.hitCount);
       hierarchyData = self.fillDataRecursively(
         r.hierarchyNodes,
-        this.environmentFqdn,
         payload,
         payload
       );
@@ -1369,7 +1345,7 @@ class HierarchyNavigation extends Component {
 
       if (
         !self.usedInstanceSearchContinuationTokens[
-          r.instances.continuationToken
+        r.instances.continuationToken
         ]
       ) {
         self.lastInstanceContinuationToken = r.instances.continuationToken;
@@ -1403,7 +1379,6 @@ class HierarchyNavigation extends Component {
   // creates in-depth data object using the server response for hierarchyNodes to show in the tree all expanded, considering UntilChildren
   private fillDataRecursively(
     hierarchyNodes,
-    envFqdn,
     payload,
     payloadForContinuation = null
   ) {
@@ -1430,7 +1405,7 @@ class HierarchyNavigation extends Component {
             render: { target: this.instanceListElem },
           })
             .then((r: any) => expandNode())
-            .catch((err) => {});
+            .catch((err) => { });
         } else {
           return this.pathSearchAndRenderResult({
             search: {
@@ -1440,14 +1415,13 @@ class HierarchyNavigation extends Component {
             render: { target: hierarchy.node },
           })
             .then((r: any) => expandNode())
-            .catch((err) => {});
+            .catch((err) => { });
         }
       };
       data[this.hierarchyNodeIdentifier(h.name)] = hierarchy;
       if (h.hierarchyNodes && h.hierarchyNodes.hits.length) {
         hierarchy.children = this.fillDataRecursively(
           h.hierarchyNodes,
-          envFqdn,
           this.requestPayload(hierarchy.path),
           payloadForContinuation
         );
@@ -1524,9 +1498,8 @@ class HierarchyNavigation extends Component {
       .attr(
         "style",
         () =>
-          `top: ${
-            this.contextMenuProps["wrapperMousePos"] -
-            this.contextMenuProps["eltMousePos"]
+          `top: ${this.contextMenuProps["wrapperMousePos"] -
+          this.contextMenuProps["eltMousePos"]
           }px`
       );
     let renderList = (contextMenuItems) => {
@@ -1676,8 +1649,7 @@ class HierarchyNavigation extends Component {
       .classed("tsi-hierarchyItem", true)
       .attr(
         "style",
-        `padding-left: ${
-          hORi.isLeaf ? hORi.level * 18 + 20 : (hORi.level + 1) * 18 + 20
+        `padding-left: ${hORi.isLeaf ? hORi.level * 18 + 20 : (hORi.level + 1) * 18 + 20
         }px`
       )
       .attr("tabindex", 0)
@@ -1796,9 +1768,9 @@ class HierarchyNavigation extends Component {
                 self.path = self.path.slice(
                   0,
                   i +
-                    (self.selectedHierarchyName === HierarchySelectionValues.All
-                      ? 1
-                      : 2)
+                  (self.selectedHierarchyName === HierarchySelectionValues.All
+                    ? 1
+                    : 2)
                 );
                 d3.selectAll(
                   pathListElem
@@ -1857,13 +1829,15 @@ class HierarchyNavigation extends Component {
             Utils.getHighlightedTimeSeriesIdToDisplay(hORi),
           ]);
         }
-        hORi.highlights.instanceFieldNames.forEach((ifn, idx) => {
-          var val = hORi.highlights.instanceFieldValues[idx];
-          if (this.hasHits(ifn) || this.hasHits(val)) {
-            hitsExist = true;
-            hitTuples.push([ifn, hORi.highlights.instanceFieldValues[idx]]);
-          }
-        });
+        if (hORi.highlights.instanceFieldNames && hORi.highlights.instanceFieldNames) {
+          hORi.highlights.instanceFieldNames.forEach((ifn, idx) => {
+            var val = hORi.highlights.instanceFieldValues[idx];
+            if (this.hasHits(ifn) || this.hasHits(val)) {
+              hitsExist = true;
+              hitTuples.push([ifn, hORi.highlights.instanceFieldValues[idx]]);
+            }
+          });
+        }
         let rows = highlightDetails
           .append("table")
           .selectAll("tr")
@@ -1899,9 +1873,9 @@ class HierarchyNavigation extends Component {
     i.highlights.name
       ? Utils.appendFormattedElementsFromString(firstLine, i.highlights.name)
       : Utils.appendFormattedElementsFromString(
-          firstLine,
-          Utils.getHighlightedTimeSeriesIdToDisplay(i)
-        );
+        firstLine,
+        Utils.getHighlightedTimeSeriesIdToDisplay(i)
+      );
 
     let secondLine = instanceElem
       .append("div")
@@ -1922,16 +1896,19 @@ class HierarchyNavigation extends Component {
         Utils.getHighlightedTimeSeriesIdToDisplay(i),
       ]);
     }
-    i.highlights.instanceFieldNames.forEach((ifn, idx) => {
-      var val = i.highlights.instanceFieldValues[idx];
-      if (this.searchString) {
-        if (this.hasHits(ifn) || this.hasHits(val)) {
+    if (i.highlights.instanceFieldNames) {
+      i.highlights.instanceFieldNames.forEach((ifn, idx) => {
+        var val = i.highlights.instanceFieldValues[idx];
+        if (this.searchString) {
+          if (this.hasHits(ifn) || this.hasHits(val)) {
+            hitTuples.push([ifn, i.highlights.instanceFieldValues[idx]]);
+          }
+        } else if (val.length !== 0) {
           hitTuples.push([ifn, i.highlights.instanceFieldValues[idx]]);
         }
-      } else if (val.length !== 0) {
-        hitTuples.push([ifn, i.highlights.instanceFieldValues[idx]]);
-      }
-    });
+      });
+    }
+
 
     let rows = secondLine
       .append("table")
@@ -1990,13 +1967,13 @@ class HierarchyNavigation extends Component {
   private selectHierarchy = (pathName, applySearch: boolean = true) => {
     this.path =
       pathName === HierarchySelectionValues.All ||
-      pathName === HierarchySelectionValues.Unparented
+        pathName === HierarchySelectionValues.Unparented
         ? []
         : [pathName];
     this.selectedHierarchyName = pathName;
     let selectedhierarchyId =
       pathName === HierarchySelectionValues.All ||
-      pathName === HierarchySelectionValues.Unparented
+        pathName === HierarchySelectionValues.Unparented
         ? pathName
         : this.envHierarchies[this.selectedHierarchyName].id;
     this.chartOptions.onSelect(selectedhierarchyId);
@@ -2004,8 +1981,8 @@ class HierarchyNavigation extends Component {
       pathName === HierarchySelectionValues.All
         ? this.getString("All hierarchies")
         : pathName === HierarchySelectionValues.Unparented
-        ? this.getString("Unassigned Time Series Instances")
-        : pathName;
+          ? this.getString("Unassigned Time Series Instances")
+          : pathName;
     d3.select(".tsi-hierarchy-name").text(pathText).attr("title", pathText);
     this.clearAndGetResults(applySearch);
     this.clearAndHideFilterPath();
@@ -2037,7 +2014,7 @@ function HierarchyNode(
 ) {
   this.name = name;
   this.path = parentPath.concat([name]);
-  this.expand = () => {};
+  this.expand = () => { };
   this.level = level;
   this.cumulativeInstanceCount = cumulativeInstanceCount;
   this.node = null;

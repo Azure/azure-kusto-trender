@@ -27,20 +27,19 @@
         initAuth("Basic Charts");
 
         const cluster = new ADX.ADXTrenderClient(
+          "https://ruppenmuehleadx.westeurope.kusto.windows.net",
           authContext.getTsiToken,
-          "trender"
+          "tsisamples"
         );
 
-        const today = new Date();
-        const aYearAgo = new Date(
-          new Date().setFullYear(today.getFullYear() - 1)
-        );
-        const bucketSize = "1d";
+        const start = new Date("2017-04-01");
+        const end = new Date("2017-05-01");
+        const bucketSize = "1h";
 
         const result = await cluster.getAggregates(
-          ["ROCK/15", "ROCK/110"],
-          aYearAgo,
-          today,
+          ["283eebcb-d267-4a76-8179-a9b33fb87cf2", "0607cdea-9dd3-4c39-b076-96d020442bca"],
+          start,
+          end,
           bucketSize
         );
 

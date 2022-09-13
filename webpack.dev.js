@@ -10,7 +10,7 @@ module.exports = merge(common, {
     static: {
       directory: "pages/examples",
     },
-    port: 3000,
+    port: 3002,
     // host: "insights-local.timeseries.azure.com",
     // https: true,
   },

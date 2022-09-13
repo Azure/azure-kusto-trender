@@ -68,11 +68,12 @@
         </div>
         <script>
             var hierarchy;
-            var environmentFqdn = '6988946f-2b5c-4f84-9921-530501fbab45.env.timeseries.azure.com';
+            var environmentFqdn = '6988946f-2b5c-4f84-9921-530501fbab45.encv.timeseries.azure.com';
             var tsiClient;
             var delegate;
             onInstanceClick = function(instance) {
                 let contextMenuActions = [];
+                console.log(instance)
                 authContext.getTsiToken().then(token => { //TODO: change this to Observable with Observable.from with .takeUntil(Observable.of(true).delay(2000)) to return default type variables, or maybe move this onclick into HierarchyNavigation component using rxjs lib
                     tsiClient.server.getTimeseriesTypes(token, environmentFqdn, [instance.type.id]).then(r => {
                         if (r.get && Array.isArray(r.get)) {
@@ -173,8 +174,9 @@
                 initAuth('Hierarchy Navigation Test');  // initiate auth objects, header, and login modal
                 
                 const cluster = new ADX.ADXTrenderClient(
+                    "https://ruppenmuehleadx.westeurope.kusto.windows.net",
                     authContext.getTsiToken,
-                    "trender"
+                    "tsisamples"
                 );
 
                 var delegate = new ADX.HierarchyDelegate(cluster)
@@ -183,13 +185,13 @@
 
                     
                     hierarchy = new tsiClient.ux.HierarchyNavigation(document.getElementById('hierarchyNav'));
-                    hierarchy.render(environmentFqdn, delegate, Object.assign({}, hierarchyNavOptions, {onInstanceClick: instance => this.onInstanceClick(instance)}));
+                    hierarchy.render(delegate, Object.assign({}, hierarchyNavOptions, {onInstanceClick: instance => this.onInstanceClick(instance)}));
 
                 })
 
                 toggleHierarchyNavigationOption = function(property, value = null) {
                 hierarchyNavOptions[property] = (value === null) ? !hierarchyNavOptions[property] : value; 
-                hierarchy.render(environmentFqdn, delegate, Object.assign({}, hierarchyNavOptions, {onInstanceClick: instance => this.onInstanceClick(instance)}));
+                hierarchy.render(delegate, Object.assign({}, hierarchyNavOptions, {onInstanceClick: instance => this.onInstanceClick(instance)}));
             }
 
                 
