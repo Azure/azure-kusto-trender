@@ -24,6 +24,11 @@ export interface PathSearchPayload {
   instances?: InstancesSearchPayload;
 }
 
+interface TagMetadata {
+  TimeseriesId: string;
+  TimeseriesName: string;
+}
+
 interface AvailabilityRange {
   from: string;
   to: string;
@@ -119,10 +124,12 @@ export class ADXTrenderClient extends ADXClient {
     endDate: Date,
     interval: string
   ) {
-    const tableName = "TrenderAggregates";
+    const aggregatesTableName = "TrenderAggregates";
+    const metadataTableName = "TrenderMetadata";
     const result = await this.executeQuery(
       "declare query_parameters(TimeSeries:dynamic,StartTime:datetime,EndTime:datetime,Interval:timespan);" +
-      `GetAggregates_Henning(TimeSeries, StartTime, EndTime, Interval) | order by TimeseriesId | as ${tableName}`,
+      `GetAggregates_Henning(TimeSeries, StartTime, EndTime, Interval) | order by TimeseriesId | as ${aggregatesTableName};
+      GetDataStreamMetaData_Henning(TimeSeries) | as ${metadataTableName}`,
       {
         parameters: {
           TimeSeries: `dynamic(${JSON.stringify(tags)})`,
@@ -132,11 +139,21 @@ export class ADXTrenderClient extends ADXClient {
         },
       }
     );
-    const table = result.getTable(tableName);
+    const table = result.getTable(aggregatesTableName);
+    const metadataTable = result.getTable(metadataTableName)
 
     if (table.Rows.length == 0) {
       throw new Error("Aggregates array is empty.");
     }
+
+    if (metadataTable.Rows.length == 0) {
+      throw new Error("Aggregates array is empty.");
+    }
+
+    const metadata = result.unfoldTable<TagMetadata>(metadataTable).reduce((col, tag) => {
+      col[tag.TimeseriesId] = tag;
+      return col
+    }, {} as Record<string, TagMetadata>)
 
     const headers = table.Columns.map((c) => c.ColumnName);
     headers.splice(0, 2);
@@ -147,11 +164,13 @@ export class ADXTrenderClient extends ADXClient {
           const id = curr.shift() as string;
           const timestamp = curr.shift();
 
-          if (!prev.hasOwnProperty(id)) {
-            prev[id] = {};
+          const name = metadata[id].TimeseriesName
+
+          if (!prev.hasOwnProperty(name)) {
+            prev[name] = {};
           }
 
-          prev[id][timestamp] = headers.reduce((obj, col, i) => {
+          prev[name][timestamp] = headers.reduce((obj, col, i) => {
             obj[col] = curr[i];
             return obj;
           }, {});

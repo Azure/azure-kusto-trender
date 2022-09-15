@@ -231,7 +231,7 @@
           cachedTo = to || cachedTo;
 
           const result = await cluster.getAggregates(
-            ["ROCK/15", "ROCK/110"],
+            ["283eebcb-d267-4a76-8179-a9b33fb87cf2","0607cdea-9dd3-4c39-b076-96d020442bca"],
             cachedFrom,
             cachedTo,
             bucketSize
@@ -296,7 +296,7 @@
           },
           {
             range: result.range,
-            intervalSize: "1h",
+            intervalSize: "1d",
           }
         );
         var toDate = new Date(result.range.to);

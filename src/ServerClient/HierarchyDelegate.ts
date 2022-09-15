@@ -77,8 +77,9 @@ export class HierarchyDelegate {
       const query = `
       declare query_parameters(SearchString:string, Path: dynamic);
       GetPathToTag_Henningv2(Path, SearchString) | as ${tableName};
-      SearchTagsAtPath(Path, SearchString) | as ${tagsTableName};
     `;
+      // SearchTagsAtPath(Path, SearchString) | as ${tagsTableName};
+
 
       const result = await this.client.executeQuery(query, {
         parameters: {
@@ -86,10 +87,11 @@ export class HierarchyDelegate {
           SearchString: payload.searchString,
         },
       });
+      debugger
 
       const unfolded = result.unfoldTable<{
         TimeSeriesId: string;
-        Path: string;
+        Path: string[];
       }>(result.getTable(tableName));
 
       const fullHierarchy: HierachyLevel = {
@@ -99,20 +101,20 @@ export class HierarchyDelegate {
       };
 
       unfolded.forEach((hit) => {
-        const parsed: string[] = JSON.parse(hit.Path);
 
+        const path = hit.Path;
 
         var pointer = fullHierarchy;
 
         for (const element of payload.path) {
-          if (parsed[0] == element) {
-            parsed.shift();
+          if (path[0] == element) {
+            path.shift();
           } else {
             break;
           }
         }
 
-        parsed.forEach((level) => {
+        path.forEach((level) => {
           if (level in pointer.children) {
             pointer.children[level].hits++;
           } else {
@@ -126,30 +128,17 @@ export class HierarchyDelegate {
         });
       });
 
-      const instances = result.unfoldTable<any>(result.getTable(tagsTableName));
+      console.trace()
+
+      //const instances = result.unfoldTable<any>(result.getTable(tagsTableName));
       return {
         instances: {
-          hits: instances.map((tag) => ({
+          hits: unfolded.map((tag) => ({
             timeSeriesId: [tag.TimeSeriesId],
             typeId: this.typeId, // ⛳️
-            hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
-            highlights: {
-              timeSeriesId: [tag.TimeSeriesId],
-              typeName: "TurbineSensor",
-              name: "",
-              description: "ContosoFarm1W6_GenPower1",
-              hierarchyIds: ["33d72529-dd73-4c31-93d8-ae4e6cb5605d"],
-              hierarchyNames: ["Contoso WindFarm Hierarchy"],
-              instanceFieldNames: ["Name", "Plant", "Unit", "System"],
-              instanceFieldValues: [
-                "ActivePower",
-                "Contoso Plant 1",
-                "W6",
-                "Generator System",
-              ],
-            },
+            hierarchyIds: [tag.Path[0]],
           })),
-          hitCount: instances.length,
+          hitCount: unfolded.length,
         },
         //hierarchyNodes: out.hierarchyNodes,
       };

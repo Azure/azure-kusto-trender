@@ -674,7 +674,6 @@ class HierarchyNavigation extends Component {
     this.setModeAndRequestParamsForFilter();
     let escapedTsidString = Utils.escapedTsidForExactSearch(tsid?.join(" "));
     this.searchString = `"${escapedTsidString}"`; //TODO: null vs string null check for exact search and escape for character : fix from backend will come here!!
-    debugger;
     return Promise.all(
       hNames.map((hName) => {
         let payload = hName
