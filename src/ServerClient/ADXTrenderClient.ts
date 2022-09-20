@@ -27,6 +27,7 @@ export interface PathSearchPayload {
 interface TagMetadata {
   TimeseriesId: string;
   TimeseriesName: string;
+  Path: string;
 }
 
 interface AvailabilityRange {
@@ -159,27 +160,38 @@ export class ADXTrenderClient extends ADXClient {
     const headers = table.Columns.map((c) => c.ColumnName);
     headers.splice(0, 2);
 
-    return [
-      {
-        "": table.Rows.reduce((prev, curr) => {
-          const id = curr.shift() as string;
-          const timestamp = curr.shift();
+    const grouped = table.Rows.reduce((prev, curr) => {
+      const id = curr.shift() as string;
+      const timestamp = curr.shift();
 
-          const name = metadata[id].TimeseriesName
+      const name = metadata[id].TimeseriesName
 
-          if (!prev.hasOwnProperty(name)) {
-            prev[name] = {};
-          }
+      const group = metadata[id].Path.slice(-1)
 
-          prev[name][timestamp] = headers.reduce((obj, col, i) => {
-            obj[col] = curr[i];
-            return obj;
-          }, {});
+      if (!prev.hasOwnProperty(group)) {
+        prev[group] = {};
+      }
 
-          return prev;
-        }, {}),
-      },
-    ];
+      if (!prev[group].hasOwnProperty(name)) {
+        prev[group][name] = {};
+      }
+
+      prev[group][name][timestamp as string] = headers.reduce((obj, col, i) => {
+        obj[col] = curr[i];
+        return obj;
+      }, {});
+
+      return prev;
+    }, {} as Record<string, Record<string, Record<string, unknown>>>);
+
+    console.log(grouped)
+
+    return Object.keys(grouped).map(key => {
+      return {
+        [key]: grouped[key]
+      }
+    })
+      ;
 
     // Groups
 
