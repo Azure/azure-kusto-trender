@@ -52,9 +52,10 @@ interface ChildValue {
   Count: number;
 }
 
-interface TagValue {
-  TimeSeriesId: string;
+export interface TagValue {
+  TimeseriesId: string;
   DisplayName: string;
+  Path?: string[]
 }
 
 /**

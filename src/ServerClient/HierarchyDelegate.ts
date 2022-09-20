@@ -3,6 +3,7 @@ import {
   ADXTrenderClient,
   HierarchiesExpandKind,
   PathSearchPayload,
+  TagValue,
 } from "./ADXTrenderClient";
 
 interface HierachyLevel {
@@ -11,15 +12,53 @@ interface HierachyLevel {
   children: Record<string, HierachyLevel>;
 }
 
-function convertHierarchy(h: HierachyLevel) {
+interface TSIHierarchyLevel {
+  cumulativeInstanceCount: number;
+  name: string;
+  hierarchyNodes?: {
+    hitCount: number
+    hits: TSIHierarchyLevel[]
+  };
+}
+
+
+
+const typeId = "ADX-TYPE-ID";
+
+function highlight(value: string, search: string) {
+  return value.replace(search, `<hit>${search}</hit>`)
+}
+
+function tagToHit(tag: TagValue, search: string) {
+
+  const id = tag.TimeseriesId == search ? `<hit>${tag.TimeseriesId}</hit>` : tag.TimeseriesId
+
   return {
+    timeSeriesId: [tag.TimeseriesId],
+    typeId: typeId, // ⛳️
+    name: tag.DisplayName,
+    highlights: {
+      timeSeriesId: [id],
+      description: tag.Path ? tag.Path[tag.Path.length - 1] : undefined, // Use decription for the last path component
+      name: highlight(tag.DisplayName, search),
+    },
+  }
+}
+
+function convertHierarchy(h: HierachyLevel) {
+  const children = Object.values(h.children)
+  const out: TSIHierarchyLevel = {
     name: h.name,
     cumulativeInstanceCount: h.hits,
-    hierarchyNodes: {
-      hits: Object.values(h.children).map(convertHierarchy),
-      hitCount: h.children.length,
-    },
   };
+
+  if (children.length) {
+    out.hierarchyNodes = {
+      hitCount: children.length,
+      hits: children.map(convertHierarchy)
+    }
+  }
+  return out
 }
 
 /**
@@ -33,13 +72,14 @@ export class HierarchyDelegate {
     this.client = client;
   }
 
-  private typeId = "ADX-TYPE-ID";
+
+
 
   async getTimeSeriesTypes() {
     console.log("getTimeSeriesTypes");
     return [
       {
-        id: this.typeId,
+        id: typeId,
         name: "DefaultType",
         description: "Default type",
         variables: {
@@ -77,9 +117,8 @@ export class HierarchyDelegate {
       const query = `
       declare query_parameters(SearchString:string, Path: dynamic);
       GetPathToTag_Henningv2(Path, SearchString) | as ${tableName};
+      Search_Henning(Path, SearchString) | as ${tagsTableName};
     `;
-      // SearchTagsAtPath(Path, SearchString) | as ${tagsTableName};
-
 
       const result = await this.client.executeQuery(query, {
         parameters: {
@@ -87,12 +126,8 @@ export class HierarchyDelegate {
           SearchString: payload.searchString,
         },
       });
-      debugger
 
-      const unfolded = result.unfoldTable<{
-        TimeSeriesId: string;
-        Path: string[];
-      }>(result.getTable(tableName));
+      const unfoldedHierarchy = result.unfoldTable<TagValue>(result.getTable(tableName));
 
       const fullHierarchy: HierachyLevel = {
         hits: 1,
@@ -100,7 +135,8 @@ export class HierarchyDelegate {
         children: {},
       };
 
-      unfolded.forEach((hit) => {
+
+      unfoldedHierarchy.forEach((hit) => {
 
         const path = hit.Path;
 
@@ -128,20 +164,14 @@ export class HierarchyDelegate {
         });
       });
 
-      console.trace()
-
-      //const instances = result.unfoldTable<any>(result.getTable(tagsTableName));
+      const unfoldedTags = result.unfoldTable<TagValue>(result.getTable(tagsTableName));
       return {
         instances: {
-          hits: unfolded.map((tag) => ({
-            timeSeriesId: [tag.TimeSeriesId],
-            typeId: this.typeId, // ⛳️
-            hierarchyIds: [tag.Path[0]],
-          })),
-          hitCount: unfolded.length,
+          hits: unfoldedTags.map(tag => tagToHit(tag, payload.searchString)),
+          hitCount: unfoldedTags.length,
         },
-        //hierarchyNodes: out.hierarchyNodes,
-      };
+        hierarchyNodes: convertHierarchy(fullHierarchy).hierarchyNodes,
+      }
     } else if (payload.searchString && payload.instances.recursive) {
       result.tags = await this.client.getChildrenTags(payload);
     } else if (payload.searchString) {
@@ -160,7 +190,8 @@ export class HierarchyDelegate {
       result = await this.client.getHierarchyLevel(payload);
     }
 
-    const out = {
+
+    return {
       hierarchyNodes: {
         hits: result.children.map((child) => ({
           name: child.Child,
@@ -170,46 +201,33 @@ export class HierarchyDelegate {
         hitCount: result.children.length,
       },
       instances: {
-        hits: result.tags.map((tag) => {
-          return {
-            timeSeriesId: [tag.TimeseriesId],
-            typeId: this.typeId, // ⛳️
-            name: tag.DisplayName,
-            highlights: {
-              timeSeriesId: [tag.TimeseriesId],
-              description: tag.Path ? tag.Path[tag.Path.length - 1] : undefined, // Use decription for the last path component
-              name: tag.DisplayName,
-            },
-          }
-        }),
+        hits: result.tags.map(tag => tagToHit(tag, payload.searchString)),
         hitCount: result.tags.length,
       },
     };
 
-    return out;
-
     /*
-
+    
     // first call
-
-
+    
+    
     // second call
-
+    
     path	[…]
       0	"Contoso WindFarm Hierarchy"
-
+    
     Traverse("{hierarchyId}", 1) | distinct current_level_value
-
+    
     // third call
-
+    
     path	[…]
       0	"Contoso WindFarm Hierarchy"
       2	"Plant 1"
-
+    
     Traverse("{hierarchyId}", 1) | distinct current_level_value
-
+    
     // later
-
+    
     {
       "searchString": "",
       "path": [
@@ -237,7 +255,7 @@ export class HierarchyDelegate {
         "pageSize": 10
       }
     }
-
+    
     */
     return {
       hierarchyNodes: {
