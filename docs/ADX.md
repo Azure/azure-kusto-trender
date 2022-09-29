@@ -210,6 +210,33 @@ availability.render(
 );
 ```
 
+```ts
+
+
+var tsiClient = new TsiClient();
+var lineChart = new tsiClient.ux.LineChart(
+  document.getElementById("chart1")
+);
+
+const start = new Date("2017-04-01");
+const end = new Date("2017-05-01");
+const bucketSize = "1h";
+const tsIds = [
+    "283eebcb-d267-4a76-8179-a9b33fb87cf2",
+    "0607cdea-9dd3-4c39-b076-96d020442bca"
+];
+
+const result = await cluster.getAggregates(tsIds, start, end, bucketSize);
+
+lineChart.render(result, {
+  theme: "light",
+  grid: true,
+  tooltip: true,
+});
+```
+
+By default, the client will group your TimeSeries by the last element of `Path`.
+
 ## HierarchyDelegate
 
 This class was built to provide a connector between the Hierarchy Navigation UI component and the `ADXTrenderClient`. If you would like to use the Hierarchy component without ADX, simply subclass `HierarchyDelegate` and provide your own implementation of each method.

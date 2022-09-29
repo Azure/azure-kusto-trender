@@ -24,6 +24,10 @@ It includes optional modules that may be used independently of [Azure Time Serie
 
 ## TsiClient.server
 
+
+> **Warning**
+> This class has been deprecated for ADX support. Please see [ADX.md](ADX.md) for more details.
+
 [TsiClient.server](Server.md) is a set of utilities for querying the Azure Time Series Insights APIs directly from a browser or web client.
 
 **TsiClient.server** consists in several [Functions](Server.md#functions) to abstract common operations made to the Azure Time Series Insights Query APIs.
