@@ -27,13 +27,6 @@
     <div id="chart1"
         style="width: calc(100% - 300px); height: calc(100% - 240px);position: absolute; left: 300px; top: 200px; background: #fff; border: 1px solid #ccc;">
     </div>
-    <div id="eventsWrapper"
-        style="position: absolute; top: 0; right: 0; width: 80%; height: calc(100% - 40px); transform: translateX(100%); transition: .4s all ease; background: white; border: 1px solid silver; z-index: 10; box-shadow: -4px 0px 4px 0px rgba(0,0,0,0.2);">
-        <div style="position: absolute; top: 8px; left: 20px;">Events</div>
-        <div id="modalClose" onclick="hideEvents()" style="z-index: 11;">&times;</div>
-        <div id="events"
-            style="width: 100%; height: calc(100% - 40px); margin-top: 40px; position: absolute; padding: 20px;"></div>
-    </div>
     <script>
 
 
@@ -61,27 +54,6 @@
                     action: (from, to) => {
                         getResults(new Date(from), new Date(to));
                         availabilityChart.setBrush(new Date(from), new Date(to));
-                    }
-                },
-                {
-                    name: "Explore Events",
-                    action: (fromTime, toTime) => {
-                        let visibilityState = lineChart.getVisibilityState();
-                        visibleTsqEs = [];
-                        tsqExpressions.forEach((tsqE, idx) => {
-                            let visibilityStateForQuery = visibilityState[idx][Object.keys(visibilityState[idx])[0]];
-                            if (visibilityStateForQuery[0]) {
-                                visibleTsqEs.push(tsqE);
-                            }
-                        });
-                        authContext.getTsiToken().then(function (token) {
-                            document.getElementById('eventsWrapper').style.transform = 'translateX(0)';
-                            tsiClient.server.getTsqResults(token, '10000000-0000-0000-0000-100000000109.env.timeseries.azure.com', getLtsExploreEventsPayload(visibleTsqEs)).then(function (events) {
-                                var transformedEvents = tsiClient.ux.transformTsqResultsToEventsArray(events, {});
-                                var eventsTable = tsiClient.ux.EventsTable(document.getElementById('events'));
-                                eventsTable.render(transformedEvents, { theme: 'light', offset: "Local" }, true);
-                            });
-                        });
                     }
                 }
             ];
@@ -125,20 +97,6 @@
 
 
             var addInstanceAction = (type, vName, instance) => {
-                // let stripHits = s => s.split('<hit>').join('').split('</hit>').join('');
-                // if (instance.highlights !== undefined) {
-                //     if (instance.highlights.instanceFields !== undefined) {
-                //         instance.instanceFields = instance.highlights.instanceFieldNames.reduce((p, c, i) => {
-                //             if (i in instance.highlights.instanceFieldValues) {
-                //                 p[stripHits(c)] = stripHits(instance.highlights.instanceFieldValues[i]);
-                //             }
-                //             return p;
-                //         },
-                //             {});
-                //     }
-                //     instance.description = stripHits(instance.highlights.description);
-                //     instance.name = stripHits(instance.highlights.name);
-                // }
                 addInstanceAsQuery(instance, type, instance.name, vName);
             };
 
@@ -255,44 +213,6 @@
                 let newBucketIndex = Math.max(Math.min(Math.round(prevPercentile * newValidBucketSizes.length), newValidBucketSizes.length - 1), 0);
                 return newValidBucketSizes[newBucketIndex];
             }
-
-            var getTsmTypeFromVariable = (v) => {
-                let type = {
-                    variables: {
-                        avg:
-                        {
-                            kind: 'numeric',
-                            value: v.value,
-                            filter: v.filter ? v.filter : null,
-                            aggregation: {
-                                tsx: 'avg($value)'
-                            }
-                        }
-                        ,
-                        min:
-                        {
-                            kind: 'numeric',
-                            value: v.value,
-                            filter: v.filter ? v.filter : null,
-                            aggregation: {
-                                tsx: 'min($value)'
-                            }
-                        }
-                        ,
-                        max:
-                        {
-                            kind: 'numeric',
-                            value: v.value,
-                            filter: v.filter ? v.filter : null,
-                            aggregation: {
-                                tsx: 'max($value)'
-                            }
-                        }
-                    }
-                };
-                return type;
-            }
-
 
             // interval slider
             var intervalSlider = new tsiClient.ux.Slider(document.getElementById('intervalSlider'));
