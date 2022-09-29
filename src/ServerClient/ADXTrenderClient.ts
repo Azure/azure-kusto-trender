@@ -130,8 +130,8 @@ export class ADXTrenderClient extends ADXClient {
     const metadataTableName = "TrenderMetadata";
     const result = await this.executeQuery(
       "declare query_parameters(TimeSeries:dynamic,StartTime:datetime,EndTime:datetime,Interval:timespan);" +
-      `GetAggregates_Henning(TimeSeries, StartTime, EndTime, Interval) | order by TimeseriesId | as ${aggregatesTableName};
-      GetDataStreamMetaData_Henning(TimeSeries) | as ${metadataTableName}`,
+      `GetAggregates(TimeSeries, StartTime, EndTime, Interval) | order by TimeseriesId | as ${aggregatesTableName};
+      GetMetaData(TimeSeries) | as ${metadataTableName}`,
       {
         parameters: {
           TimeSeries: `dynamic(${JSON.stringify(tags)})`,
@@ -222,7 +222,7 @@ export class ADXTrenderClient extends ADXClient {
   async getHierarchies() {
     const tableName = "HierarchyList";
     const result = await this.executeQuery(
-      `GetHierarchies_Henning() | as ${tableName}`
+      `GetHierarchies() | as ${tableName}`
     );
 
     const rows = result.unfoldTable(result.getTable(tableName));
@@ -240,8 +240,8 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
       declare query_parameters(Path: dynamic);
-      GetTagsByPath_Henning(Path) | as ${tagsTableName};
-      GetChildrenByPath_Henning(Path) | as ${childrenTableName};
+      GetTimeseriesIdByPath(Path) | as ${tagsTableName};
+      GetChildrenByPath(Path) | as ${childrenTableName};
     `;
 
     const result = await this.executeQuery(query, {
@@ -262,7 +262,7 @@ export class ADXTrenderClient extends ADXClient {
   }
 
   async searchTagsAtPath(payload: PathSearchPayload) {
-    const tagsTableName = "HierarchyTags";
+    const tagsTableName = "HierarchyTags"; // ⛳️
 
     const query = `
       declare query_parameters(Path: dynamic, Search: string);
@@ -284,7 +284,7 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
       declare query_parameters(Path: dynamic, Search: string);
-      Search_Henning(Path, Search)
+      Search(Path, Search)
       | as ${tagsTableName};
     `;
 
@@ -306,7 +306,7 @@ export class ADXTrenderClient extends ADXClient {
 
     const query = `
     declare query_parameters(SearchString:string);
-    Suggest_Henningv2(SearchString) | as ${tableName}
+    Suggest(SearchString) | as ${tableName}
     `;
     const result = await this.executeQuery(query, {
       parameters: { SearchString: searchString },

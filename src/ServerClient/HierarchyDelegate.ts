@@ -116,8 +116,8 @@ export class HierarchyDelegate {
       const tagsTableName = "HierarchyTags";
       const query = `
       declare query_parameters(SearchString:string, Path: dynamic);
-      GetPathToTag_Henningv2(Path, SearchString) | as ${tableName};
-      Search_Henning(Path, SearchString) | as ${tagsTableName};
+      GetPathToTimeseriesId(Path, SearchString) | as ${tableName};
+      Search_ExactPath(Path, SearchString) | as ${tagsTableName};
     `;
 
       const result = await this.client.executeQuery(query, {
