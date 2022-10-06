@@ -19,11 +19,9 @@ jobs:
     - run: npm run webpack
     - run: npm run prepare-samples
     - run: npm run post-build
-    - uses: JS-DevTools/npm-publish@v1
-      with:
-         token: ${{ secrets.NPM_TOKEN }}
-         package: ./dist/package.json
-         tag: "latest"
+    - run: npm run publish
+      env:
+       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Azure Static Website Deploy
       uses: feeloor/azure-static-website-deploy@v0.1.2
