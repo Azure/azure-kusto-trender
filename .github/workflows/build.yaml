@@ -10,16 +10,20 @@ jobs:
       matrix:
         node-version: [18.x]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install --legacy-peer-deps
     - run: npm run webpack
     - run: npm run prepare-samples
     - run: npm run post-build
-    - run: npm run publish
+    - uses: JS-DevTools/npm-publish@v1
+      with:
+         token: ${{ secrets.NPM_TOKEN }}
+         package: ./dist/package.json
+         tag: "latest"
 
     - name: Azure Static Website Deploy
       uses: feeloor/azure-static-website-deploy@v0.1.2
