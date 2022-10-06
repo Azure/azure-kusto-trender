@@ -17,9 +17,9 @@
         "copy-package": "shx cp package.json dist/",
         "copy-readme": "shx cp README.MD dist/",
         "prepare-samples": "mkdir pages/examples/dist & shx cp dist/* pages/examples/dist",
-        "pack": "cd dist & npm pack & shx mv *.tgz ../build_artifacts",
-        "post-build": "npm run copy-package & npm run copy-readme & npm run pack",
-        "umd-analyze": "webpack-bundle-analyzer ./build_artifacts/umd_stats.json"
+        "pack": "cd dist && npm pack",
+        "publish": "npm publish dist",
+        "post-build": "npm run copy-package & npm run copy-readme"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^15.0.0",

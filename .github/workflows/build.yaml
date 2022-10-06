@@ -18,6 +18,8 @@ jobs:
     - run: npm install --legacy-peer-deps
     - run: npm run webpack
     - run: npm run prepare-samples
+    - run: npm run post-build
+    - run: npm run publish
 
     - name: Azure Static Website Deploy
       uses: feeloor/azure-static-website-deploy@v0.1.2
