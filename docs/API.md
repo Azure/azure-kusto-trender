@@ -2,7 +2,7 @@
 
 **kustotrender** is a collection of components for data visualization and analytics.
 
-It includes optional modules that may be used independently of [Azure Time Series Insights](https://docs.microsoft.com/azure/time-series-insights/) as well as tools for calling the [Azure Time Series Insights Query APIs](https://docs.microsoft.com/rest/api/time-series-insights/ga-query):
+It includes optional modules that may be used independently of [Azure Data Explorer](https://learn.microsoft.com/en-us/azure/data-explorer/) as well as tools for calling the [Azure Data Explorer APIs](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/api/):
 
 * [KustoTrender.ux](UX.md) that works with generic JSON to render visual analytics using charts and graphs
 
@@ -12,7 +12,7 @@ It includes optional modules that may be used independently of [Azure Time Serie
 
 ## KustoTrender.ux
 
-[KustoTrender.ux](UX.md) is a standalone module for data visualization and analytics. It can be used to build graphs and charts using generic JSON as well as JSON returned from the Azure Time Series Insights APIs directly.
+[KustoTrender.ux](UX.md) is a standalone module for data visualization and analytics. It can be used to build graphs and charts using generic JSON as well as JSON returned from the Azure Data Explorer Client directly.
 
 **KustoTrender.ux** is formally composed of the following items:
 
@@ -22,15 +22,12 @@ It includes optional modules that may be used independently of [Azure Time Serie
 
 * [Functions](UX.md#functions) for transforming data into a suitable chartable shape
 
-## KustoTrender.server
+## KustoTrender.ADXClient
 
 
-> **Warning**
-> This class has been deprecated for ADX support. Please see [ADX.md](ADX.md) for more details.
+[KustoTrender.ADXClient](ADX.md) is a set of utilities for querying the Azure Data Explorer APIs directly from a browser or web client.
 
-[KustoTrender.server](Server.md) is a set of utilities for querying the Azure Time Series Insights APIs directly from a browser or web client.
-
-**KustoTrender.server** consists in several [Functions](Server.md#functions) to abstract common operations made to the Azure Time Series Insights Query APIs.
+**KustoTrender.ADXClient** consists in several functions to abstract common operations made to the Azure Data Explorer Query APIs.
 
 ## See also
 
@@ -38,4 +35,4 @@ It includes optional modules that may be used independently of [Azure Time Serie
 
 * The [Kusto Query Language documentation](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/)
 
-* Hosted **kustoclient** [client samples](https://tsiclientsample.azurewebsites.net)
+* Hosted **kustoclient** [client samples](https://kustotrender.z6.web.core.windows.net)

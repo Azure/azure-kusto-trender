@@ -1,6 +1,6 @@
 # KustoTrender.ux Reference
 
-**KustoTrender.ux** is a standalone module for data visualization and analytics. It can be used to build graphs and charts using generic JSON as well as JSON returned from the Azure Time Series Insights APIs directly.
+**KustoTrender.ux** is a standalone module for data visualization and analytics. It can be used to build graphs and charts using generic JSON as well as JSON returned from the Azure Data Explorer Client directly.
 
 **KustoTrender.ux** is formally composed of the following items:
 
@@ -38,7 +38,7 @@ A line chart can hold three different types of plots:
 1. An event plot
 1. A categorical plot
 
-***Note**: hosted examples of all three are provided at [https://tsiclientsample.azurewebsites.net/noauth/multipleseriestypes.html](https://tsiclientsample.azurewebsites.net/noauth/multipleseriestypes.html)*.
+***Note**: hosted examples of all three are provided at [https://kustotrender.z6.web.core.windows.net/noauth/multipleseriestypes.html](https://kustotrender.z6.web.core.windows.net/noauth/multipleseriestypes.html)*.
 
 The type of plot for each data group is specified with the `dataType` [Chart Data Option](#chart-data-options). Multiple types are concurrently possible within one line chart.
 
@@ -159,7 +159,7 @@ Classes abstract common operations, queries, and common objects.
 
 Additional [Chart Data Options](#chart-data-options) can be specified as the final parameters, with supported properties defined.
 
-***Note**: hosted AggregateExpressions examples are provided at [https://tsiclientsample.azurewebsites.net](https://tsiclientsample.azurewebsites.net/)*.
+***Note**: hosted AggregateExpressions examples are provided at [https://kustotrender.z6.web.core.windows.net](https://kustotrender.z6.web.core.windows.net/)*.
 
 ```JavaScript
 var aggregateExpression = new kustoTrender.ux.AggregateExpression(
@@ -185,7 +185,7 @@ kustoTrender.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.e
 
 **TsqExpressions** include the `toTsq()` method for transforming supplied query objects into a format suitable to query the APIs. Objects so-transformed after an API call become a data group as described in [Chart Data Shape](#chart-data-shape) and  can be used as [Chart Data Options](#chart-data-options).  
 
-***Note**: hosted TsqExpressions examples are provided at [https://tsiclientsample.azurewebsites.net](https://tsiclientsample.azurewebsites.net/)*.
+***Note**: hosted TsqExpressions examples are provided at [https://kustotrender.z6.web.core.windows.net](https://kustotrender.z6.web.core.windows.net/)*.
 
 ```JavaScript
 var tsqExpression = new kustoTrender.ux.TsqExpression(
@@ -242,7 +242,7 @@ kustoTrender.server.getTsqResults(token, '10000000-0000-0000-0000-100000000109.e
 
 ## Additional References
 
-This section documents configuration settings and options used to initialize **tsiclient** charts.
+This section documents configuration settings and options used to initialize **KustoTrender** charts.
 
 ### Chart Data Shape
 
@@ -274,13 +274,13 @@ Chart data is generally represented as a set of **groups** that each contain **t
 ]
 ```
 
-***Note**: hosted configuration examples are provided at [https://tsiclientsample.azurewebsites.net/noauth/chartOptions.html](https://tsiclientsample.azurewebsites.net/noauth/chartOptions.html). Code samples demonstrating correct [configuration settings are also provided](../pages/examples/noauth/basiccharts.html).*
+***Note**: hosted configuration examples are provided at [https://kustotrender.z6.web.core.windows.net/noauth/chartOptions.html](https://kustotrender.z6.web.core.windows.net/noauth/chartOptions.html). Code samples demonstrating correct [configuration settings are also provided](../pages/examples/noauth/basiccharts.html).*
 
 ### Chart Options
 
 **Chart Options** are generally passed as the second parameter to a component's `render()` method. They allow users to change view properties for the chart (theme, legend layout, etc.).
 
-***Note**: hosted chart options examples are provided at [https://tsiclientsample.azurewebsites.net/noauth/chartOptions.html](https://tsiclientsample.azurewebsites.net/noauth/chartOptions.html).*
+***Note**: hosted chart options examples are provided at [https://kustotrender.z6.web.core.windows.net/noauth/chartOptions.html](https://kustotrender.z6.web.core.windows.net/noauth/chartOptions.html).*
 
 ```JavaScript
 lineChart.render(data, {theme: 'light', tooltip: true});
@@ -377,7 +377,7 @@ var brushContextMenuActions = [
 lineChart.render(data, {brushContextMenuActions: brushContextMenuActions});
 ```
 
-***Note**: a hosted Brush Context Menu Actions sample is provided at: [https://tsiclientsample.azurewebsites.net/withplatform/exploreevents.html](https://tsiclientsample.azurewebsites.net/withplatform/exploreevents.html)*
+***Note**: a hosted Brush Context Menu Actions sample is provided at: [https://kustotrender.z6.web.core.windows.net/withplatform/exploreevents.html](https://kustotrender.z6.web.core.windows.net/withplatform/exploreevents.html)*
 
 ### Group Context Menu Actions
 
@@ -400,7 +400,7 @@ var groupContextMenuActions = [{
     }];
 ```
 
-***Note**: a hosted Group Context Menu Actions sample is provided at: [https://tsiclientsample.azurewebsites.net/withplatform/exploreevents.html](https://tsiclientsample.azurewebsites.net/withplatform/exploreevents.html)*
+***Note**: a hosted Group Context Menu Actions sample is provided at: [https://kustotrender.z6.web.core.windows.net/withplatform/exploreevents.html](https://kustotrender.z6.web.core.windows.net/withplatform/exploreevents.html)*
 
 ### Search Span Object
 
@@ -414,7 +414,7 @@ var searchSpanObject = {
 }
 ```
 
-***Note**: a hosted Group Context Menu Actions sample is provided at: [https://tsiclientsample.azurewebsites.net/withplatform/basicCharts.html](https://tsiclientsample.azurewebsites.net/withplatform/basicCharts.html)*
+***Note**: a hosted Group Context Menu Actions sample is provided at: [https://kustotrender.z6.web.core.windows.net/withplatform/basicCharts.html](https://kustotrender.z6.web.core.windows.net/withplatform/basicCharts.html)*
 
 ### Value Mapping
 

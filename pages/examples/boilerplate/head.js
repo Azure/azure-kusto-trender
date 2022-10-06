@@ -1,12 +1,10 @@
 window.addEventListener("DOMContentLoaded", function () {
   var sdkJs = document.createElement("script");
-  // sdkJs.src = 'https://unpkg.com/tsiclient@1.3.0/tsiclient.js';
   sdkJs.src = "../../../dist/kustoTrender.js"; // for local testing
 
   var sdkCss = document.createElement("link");
   sdkCss.rel = "stylesheet";
   sdkCss.type = "text/css";
-  // sdkCss.href = 'https://unpkg.com/tsiclient@1.3.0/tsiclient.css';
   sdkCss.href = "../../../dist/kustoTrender.css"; // for local testing
 
   var metaCharset = document.createElement("meta");
