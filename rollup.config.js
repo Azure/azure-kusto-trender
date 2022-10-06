@@ -14,7 +14,7 @@ const directImports = {
     ServerClient: 'src/ServerClient/index.ts',
     UXClient: 'src/UXClient/index.ts',
     Utils: 'src/UXClient/Utils/index.ts',
-    tsiclient: 'src/TsiClient.ts', // Used to generated correctly referenced tsiclient.d.ts file.  
+    kustotrender: 'src/KustoTrender.ts',
 
     // TsiClient models
     TsqExpression: 'src/UXClient/Models/TsqExpression.ts',
@@ -22,7 +22,7 @@ const directImports = {
 
     // Transformers
     Transformers: 'src/UXClient/Utils/Transformers.ts',
-    
+
     // Component imports 
     LineChart: 'src/UXClient/Components/LineChart/index.ts',
     AvailabilityChart: 'src/UXClient/Components/AvailabilityChart/index.ts',
@@ -40,13 +40,11 @@ const directImports = {
     EllipsisMenu: 'src/UXClient/Components/EllipsisMenu/index.ts',
     ModelAutocomplete: 'src/UXClient/Components/ModelAutocomplete/index.ts',
     HierarchyNavigation: 'src/UXClient/Components/HierarchyNavigation/index.ts',
-    SingleDateTimePicker:'src/UXClient/Components/SingleDateTimePicker/index.ts',
+    SingleDateTimePicker: 'src/UXClient/Components/SingleDateTimePicker/index.ts',
     DateTimeButtonSingle: 'src/UXClient/Components/DateTimeButtonSingle/index.ts',
     DateTimeButtonRange: 'src/UXClient/Components/DateTimeButtonRange/index.ts',
-    ProcessGraphic: 'src/UXClient/Components/ProcessGraphic/index.ts',
     PlaybackControls: 'src/UXClient/Components/PlaybackControls/index.ts',
     ColorPicker: 'src/UXClient/Components/ColorPicker/index.ts',
-    GeoProcessGraphic: 'src/UXClient/Components/GeoProcessGraphic/index.ts' 
 }
 
 const commonPlugins = [
@@ -58,12 +56,12 @@ const commonPlugins = [
             }
         },
         exclude: 'src/packages'
-    }), 
+    }),
     autoExternal(), // Auto mark prod dependencies as external
     commonjs(), // Convert cjs imports to esm
     json(), // Handle json file imports
     postcss({ // Convert scss to css and inline svg's
-        extract:'tsiclient.css',
+        extract: 'kustotrender.css',
         plugins: [
             postcssUrl({
                 url: 'inline',
@@ -89,7 +87,7 @@ export default [
         context: "window",
         plugins: [
             ...commonPlugins,
-            visualizer({filename: 'build_artifacts/esm_stats.html'}) // Generate esm bundle stats
+            visualizer({ filename: 'build_artifacts/esm_stats.html' }) // Generate esm bundle stats
         ]
     },
     // Generate 'rolled-up' .d.ts definition files

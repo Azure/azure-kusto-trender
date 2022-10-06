@@ -1,9 +1,9 @@
 {
-    "name": "tsiclient",
-    "main": "tsiclient.js",
+    "name": "azure-kusto-trender",
+    "main": "kustotrender.js",
     "description": "",
     "version": "1.4.13",
-    "types": "tsiclient.d.ts",
+    "types": "kustotrender.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/Microsoft/tsiclient"
@@ -12,7 +12,7 @@
         "start": "webpack-dev-server --config webpack.dev.js",
         "build": "npm run clean & npm run rollup & npm run webpack & npm run post-build",
         "clean": "shx rm -rf dist & shx rm -rf build_artifacts",
-        "rollup": "rollup --c & shx rm dist/tsiclient.js",
+        "rollup": "rollup --c & shx rm dist/kustotrender.js",
         "webpack": "webpack --config webpack.prod.js",
         "copy-package": "shx cp package.json dist/",
         "copy-readme": "shx cp README.MD dist/",

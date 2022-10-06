@@ -9,26 +9,24 @@ import Hierarchy from "./Components/Hierarchy/Hierarchy";
 import AggregateExpression from "./Models/AggregateExpression";
 import Heatmap from "./Components/Heatmap/Heatmap";
 import EventsTable from "./Components/EventsTable/EventsTable";
-import ModelSearch from "./Components/ModelSearch/ModelSearch"; 
+import ModelSearch from "./Components/ModelSearch/ModelSearch";
 import DateTimePicker from "./Components/DateTimePicker/DateTimePicker";
 import TimezonePicker from "./Components/TimezonePicker/TimezonePicker";
 import Utils from "./Utils";
 import './styles.scss'
-import  EllipsisMenu  from "./Components/EllipsisMenu/EllipsisMenu";
-import  TsqExpression  from "./Models/TsqExpression";
-import  ModelAutocomplete  from "./Components/ModelAutocomplete/ModelAutocomplete";
-import  HierarchyNavigation  from "./Components/HierarchyNavigation/HierarchyNavigation";
-import  SingleDateTimePicker  from "./Components/SingleDateTimePicker/SingleDateTimePicker";
-import  DateTimeButtonSingle  from "./Components/DateTimeButtonSingle/DateTimeButtonSingle";
-import  DateTimeButtonRange  from "./Components/DateTimeButtonRange/DateTimeButtonRange";
-import  ProcessGraphic  from './Components/ProcessGraphic/ProcessGraphic';
-import  PlaybackControls  from './Components/PlaybackControls/PlaybackControls';
-import  ColorPicker  from "./Components/ColorPicker/ColorPicker";
-import  GeoProcessGraphic  from "./Components/GeoProcessGraphic/GeoProcessGraphic";
+import EllipsisMenu from "./Components/EllipsisMenu/EllipsisMenu";
+import TsqExpression from "./Models/TsqExpression";
+import ModelAutocomplete from "./Components/ModelAutocomplete/ModelAutocomplete";
+import HierarchyNavigation from "./Components/HierarchyNavigation/HierarchyNavigation";
+import SingleDateTimePicker from "./Components/SingleDateTimePicker/SingleDateTimePicker";
+import DateTimeButtonSingle from "./Components/DateTimeButtonSingle/DateTimeButtonSingle";
+import DateTimeButtonRange from "./Components/DateTimeButtonRange/DateTimeButtonRange";
+import PlaybackControls from './Components/PlaybackControls/PlaybackControls';
+import ColorPicker from "./Components/ColorPicker/ColorPicker";
 import { transformTsqResultsForVisualization } from "./Utils/Transformers";
 
 class UXClient {
-    UXClient () {
+    UXClient() {
     }
 
     // Public facing components have class constructors exposed as public UXClient members.
@@ -54,14 +52,12 @@ class UXClient {
     public SingleDateTimePicker: typeof SingleDateTimePicker = SingleDateTimePicker;
     public DateTimeButtonSingle: typeof DateTimeButtonSingle = DateTimeButtonSingle;
     public DateTimeButtonRange: typeof DateTimeButtonRange = DateTimeButtonRange;
-    public ProcessGraphic: typeof ProcessGraphic = ProcessGraphic;
     public PlaybackControls: typeof PlaybackControls = PlaybackControls;
     public ColorPicker: typeof ColorPicker = ColorPicker;
-    public GeoProcessGraphic: typeof GeoProcessGraphic = GeoProcessGraphic;
 
     public transformTsqResultsForVisualization: typeof transformTsqResultsForVisualization = transformTsqResultsForVisualization;
 
-    public transformTsxToEventsArray (events, options) {
+    public transformTsxToEventsArray(events, options) {
         var timezoneOffset = options.timezoneOffset ? options.timezoneOffset : 0;
         var rows = [];
         var eventSourceProperties = {};
@@ -71,7 +67,7 @@ class UXClient {
             var eventSourceId;
             if (events[eventIdx].hasOwnProperty('schema')) {
                 eventSourceProperties[events[eventIdx].schema.rid] = {};
-                eventSourceProperties[events[eventIdx].schema.rid].propertyNames = events[eventIdx].schema.properties.reduce(function(prev, curr) {
+                eventSourceProperties[events[eventIdx].schema.rid].propertyNames = events[eventIdx].schema.properties.reduce(function (prev, curr) {
                     prev.push({ name: curr.name, type: curr.type });
                     return prev;
                 }, []);
@@ -81,7 +77,7 @@ class UXClient {
                 eventSourceId = events[eventIdx].schemaRid;
             }
 
-            var timeStamp = (new Date((new Date(events[eventIdx]['$ts'])).valueOf() - timezoneOffset)).toISOString().slice(0,-1).replace('T', ' ');
+            var timeStamp = (new Date((new Date(events[eventIdx]['$ts'])).valueOf() - timezoneOffset)).toISOString().slice(0, -1).replace('T', ' ');
             var event = { 'timestamp ($ts)': timeStamp };
 
             // lts logic
@@ -132,9 +128,9 @@ class UXClient {
         }
         return rows;
     }
-    
-    private toISONoMillis (dateTime) {
-        return dateTime.toISOString().slice(0,-5)+"Z";
+
+    private toISONoMillis(dateTime) {
+        return dateTime.toISOString().slice(0, -5) + "Z";
     }
 
     //specifiedRange gives the subset of availability buckets to be returned. If not included, will return all buckets
@@ -147,15 +143,15 @@ class UXClient {
         var startBucket = Math.round(Math.floor(from.valueOf() / rawBucketSize) * rawBucketSize);
         var firstKey = this.toISONoMillis(new Date(startBucket));
         var firstCount = availabilityTsx.distribution[firstKey] ? availabilityTsx.distribution[firstKey] : 0;
-        
+
         // reset first key if greater than the availability range from
         if (startBucket < (new Date(availabilityTsx.range.from)).valueOf())
             firstKey = this.toISONoMillis(new Date(availabilityTsx.range.from));
-        buckets[firstKey] = {count: firstCount }
+        buckets[firstKey] = { count: firstCount }
 
         Object.keys(availabilityTsx.distribution).forEach(key => {
             var formattedISO = this.toISONoMillis(new Date(key));
-            buckets[formattedISO] = {count: availabilityTsx.distribution[key]};
+            buckets[formattedISO] = { count: availabilityTsx.distribution[key] };
         });
 
         //set end time value
@@ -163,16 +159,16 @@ class UXClient {
 
         // pad out if range is less than one bucket;
         if (startBucket == lastBucket) {
-            for(var i = startBucket; i <= startBucket + rawBucketSize; i += (rawBucketSize / 60)) {
+            for (var i = startBucket; i <= startBucket + rawBucketSize; i += (rawBucketSize / 60)) {
                 if (buckets[this.toISONoMillis(new Date(i))] == undefined)
-                    buckets[this.toISONoMillis(new Date(i))] = {count : 0};
+                    buckets[this.toISONoMillis(new Date(i))] = { count: 0 };
             }
             //reset startBucket to count 0 if not the start time
             if (startBucket != from.valueOf()) {
-                buckets[this.toISONoMillis(new Date(startBucket))] = {count : 0}
+                buckets[this.toISONoMillis(new Date(startBucket))] = { count: 0 }
             }
         }
-        return [{"availabilityCount" : {"" : buckets}}];
+        return [{ "availabilityCount": { "": buckets } }];
     }
 
     public transformAggregatesForVisualization(aggregates: Array<any>, options): Array<any> {
@@ -181,61 +177,61 @@ class UXClient {
             var transformedAggregate = {};
             var aggregatesObject = {};
             transformedAggregate[options[i].alias] = aggregatesObject;
-            
-            if(agg.hasOwnProperty('__tsiError__'))
+
+            if (agg.hasOwnProperty('__tsiError__'))
                 transformedAggregate[''] = {};
-            else if(agg.hasOwnProperty('aggregate')){
+            else if (agg.hasOwnProperty('aggregate')) {
                 agg.dimension.forEach((d, j) => {
                     var dateTimeToValueObject = {};
                     aggregatesObject[d] = dateTimeToValueObject;
                     agg.aggregate.dimension.forEach((dt, k) => {
                         var measuresObject = {};
                         dateTimeToValueObject[dt] = measuresObject;
-                        options[i].measureTypes.forEach((t,l) => {
-                            if (agg.aggregate.measures[j][k] != null && agg.aggregate.measures[j][k] != undefined && 
+                        options[i].measureTypes.forEach((t, l) => {
+                            if (agg.aggregate.measures[j][k] != null && agg.aggregate.measures[j][k] != undefined &&
                                 agg.aggregate.measures[j][k][l] != null && agg.aggregate.measures[j][k][l] != undefined)
                                 measuresObject[t] = agg.aggregate.measures[j][k][l];
                             else
                                 measuresObject[t] = null;
-                        }) 
+                        })
                     })
                 })
             }
-            else{
+            else {
                 var dateTimeToValueObject = {};
                 aggregatesObject[''] = dateTimeToValueObject;
-                agg.dimension.forEach((dt,j) => {
+                agg.dimension.forEach((dt, j) => {
                     var measuresObject = {};
                     dateTimeToValueObject[dt] = measuresObject;
-                    options[i].measureTypes.forEach((t,l) => {
+                    options[i].measureTypes.forEach((t, l) => {
                         measuresObject[t] = agg.measures[j][l];
-                    }) 
-                })     
+                    })
+                })
             }
-            
+
             result.push(transformedAggregate);
         });
         return result;
     }
 
     // exposed publicly to use for highlighting elements in the well on hover/focus
-    public createEntityKey (aggName: string, aggIndex: number = 0) {
+    public createEntityKey(aggName: string, aggIndex: number = 0) {
         return Utils.createEntityKey(aggName, aggIndex);
     }
 
-    public transformTsqResultsToEventsArray (results) {
+    public transformTsqResultsToEventsArray(results) {
         let flattenedResults = [];
         results.forEach(tsqr => {
             tsqr.timestamps.forEach((ts, idx) => {
                 let event = {};
                 event['timestamp ($ts)'] = ts;
                 tsqr.properties.forEach(p => {
-                    event[`${p.name}_${p.type}`] = {name: p.name, type: p.type, value: p.values[idx]};
+                    event[`${p.name}_${p.type}`] = { name: p.name, type: p.type, value: p.values[idx] };
                 });
-                flattenedResults.push(event); 
+                flattenedResults.push(event);
             });
         });
-        return flattenedResults.sort((a,b) => (new Date(a['timestamp ($ts)'])).valueOf() < (new Date(b['timestamp ($ts)'])).valueOf() ? -1 : 1);
+        return flattenedResults.sort((a, b) => (new Date(a['timestamp ($ts)'])).valueOf() < (new Date(b['timestamp ($ts)'])).valueOf() ? -1 : 1);
     }
 }
 
