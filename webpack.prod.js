@@ -10,9 +10,9 @@ module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
   plugins: [
-    new BundleAnalyzerPlugin({generateStatsFile: true, analyzerMode: 'disabled', statsFilename: '../build_artifacts/umd_stats.json'}),
+    new BundleAnalyzerPlugin({ generateStatsFile: true, analyzerMode: 'disabled', statsFilename: '../build_artifacts/umd_stats.json' }),
     new MiniCssExtractPlugin({
-      filename: 'tsiclient.min.css'
+      filename: 'kustoTrender.min.css'
     })
   ],
   optimization: {

@@ -1,8 +1,8 @@
-# TsiClient.ux Reference
+# KustoTrender.ux Reference
 
-**TsiClient.ux** is a standalone module for data visualization and analytics. It can be used to build graphs and charts using generic JSON as well as JSON returned from the Azure Time Series Insights APIs directly.
+**KustoTrender.ux** is a standalone module for data visualization and analytics. It can be used to build graphs and charts using generic JSON as well as JSON returned from the Azure Time Series Insights APIs directly.
 
-**TsiClient.ux** is formally composed of the following items:
+**KustoTrender.ux** is formally composed of the following items:
 
 * [Components](#components) for visualizing data and building a variety of charts
 
@@ -19,8 +19,8 @@ Components are used to build a variety of charts and define visualizations using
 The **Line Chart** is used for rendering groups of time series.  A line chart can be created in the following way:
 
 ```JavaScript
-var tsiClient = new TsiClient();
-var lineChart = new tsiClient.ux.LineChart(document.getElementById('chart'));
+var kustoTrender = new KustoTrender();
+var lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart'));
 lineChart.render(data, chartOptions, chartDataOptionsArray);
 ```
 
@@ -54,8 +54,8 @@ Specific chart options are used when `dataType` is non-numeric:
 
 **Bar Charts** are created in the same way as [line charts](#line-chart), and they take the same options and data shapes.  
 ```JavaScript
-var tsiClient = new TsiClient();
-var barChart = new tsiClient.ux.BarChart(document.getElementById('chart'));
+var kustoTrender = new KustoTrender();
+var barChart = new kustoTrender.ux.BarChart(document.getElementById('chart'));
 barChart.render(data, chartOptions, chartDataOptionsArray);
 ```
 
@@ -66,8 +66,8 @@ Bar charts have a slider to step through the timestamps of the supplied time ser
 **Pie Charts** are created in the same way as [bar charts](#bar-chart), and also have a slider for stepping through time series.
 
 ```JavaScript
-var tsiClient = new TsiClient();
-var pieChart = new tsiClient.ux.PieChart(document.getElementById('chart'));
+var kustoTrender = new KustoTrender();
+var pieChart = new kustoTrender.ux.PieChart(document.getElementById('chart'));
 pieChart.render(data, chartOptions, chartDataOptionsArray);
 ```
 
@@ -76,8 +76,8 @@ pieChart.render(data, chartOptions, chartDataOptionsArray);
 **Heatmaps** are created using the same pattern as [line charts](#line-chart). However, [searchSpan](#search-span-object) *must* be supplied for each element of the `chartDataOptionsArray` configuration array.
 
 ```JavaScript
-var tsiClient = new TsiClient();
-var heatmap = new tsiClient.ux.Heatmap(document.getElementById('chart'));
+var kustoTrender = new KustoTrender();
+var heatmap = new kustoTrender.ux.Heatmap(document.getElementById('chart'));
 heatmap.render(data, chartOptions, chartDataOptionsArray);
 ```
 
@@ -87,8 +87,8 @@ heatmap.render(data, chartOptions, chartDataOptionsArray);
  However, [spMeasures](#chart-options) **must** be specified as an array of strings in the `chartOptions` object for scatter plots to render.
 
  ```JavaScript
-var tsiClient = new TsiClient();
-var scatterPlot = new tsiClient.ux.ScatterPlot(document.getElementById('chart'))
+var kustoTrender = new KustoTrender();
+var scatterPlot = new kustoTrender.ux.ScatterPlot(document.getElementById('chart'))
 scatterPlot.render(data, chartOptions, chartDataOptionsArray);
 ```
 
@@ -127,8 +127,8 @@ Connected scatter plots can be rendered using the following **optional** keys in
 A grid of events (**Events Grid**) can be used to show a generic array of JSON data in a scalable way:
 
 ```JavaScript
-var tsiClient = new TsiClient();
-var eventsTable = tsiClient.ux.EventsTable(document.getElementById('chart'));
+var kustoTrender = new KustoTrender();
+var eventsTable = kustoTrender.ux.EventsTable(document.getElementById('chart'));
 eventsTable.render(events, chartOptions)
 ```
 
@@ -162,7 +162,7 @@ Additional [Chart Data Options](#chart-data-options) can be specified as the fin
 ***Note**: hosted AggregateExpressions examples are provided at [https://tsiclientsample.azurewebsites.net](https://tsiclientsample.azurewebsites.net/)*.
 
 ```JavaScript
-var aggregateExpression = new tsiClient.ux.AggregateExpression(
+var aggregateExpression = new kustoTrender.ux.AggregateExpression(
     {predicateString: "Factory = 'Factory1'"}, // filtering expression for data
     {property: 'Pressure', type: "Double"}, // measure column
     ['avg', 'min', 'max'], // desired measure types
@@ -172,9 +172,9 @@ var aggregateExpression = new tsiClient.ux.AggregateExpression(
 );
 
 // later, to call the API and visualize the result
-tsiClient.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.env.timeseries.azure.com', [aggregateExpression.toTsx())
+kustoTrender.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.env.timeseries.azure.com', [aggregateExpression.toTsx())
     .then(function(result){
-        var transformedResult = tsiClient.ux.transformAggregatesForVisualization(result, [aggregateExpression]);
+        var transformedResult = kustoTrender.ux.transformAggregatesForVisualization(result, [aggregateExpression]);
         lineChart.render(transformedResult, null, [aggregateExpression]);
     });
 ```
@@ -188,7 +188,7 @@ tsiClient.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.env.
 ***Note**: hosted TsqExpressions examples are provided at [https://tsiclientsample.azurewebsites.net](https://tsiclientsample.azurewebsites.net/)*.
 
 ```JavaScript
-var tsqExpression = new tsiClient.ux.TsqExpression(
+var tsqExpression = new kustoTrender.ux.TsqExpression(
     {timeSeriesId: ['df4412c4-dba2-4a52-87af-780e78ff156b']}, // time series instance json
     {AvgTemp: {
         kind: 'numeric',
@@ -201,9 +201,9 @@ var tsqExpression = new tsiClient.ux.TsqExpression(
 );
 
 // later, to call the API and visualize the result
-tsiClient.server.getTsqResults(token, '10000000-0000-0000-0000-100000000109.env.timeseries.azure.com', [tsqExpression.toTsq()])
+kustoTrender.server.getTsqResults(token, '10000000-0000-0000-0000-100000000109.env.timeseries.azure.com', [tsqExpression.toTsq()])
     .then(function(result){
-        var transformedResult = tsiClient.ux.transformTsqResultsForVisualization(result, [tsqExpression]);
+        var transformedResult = kustoTrender.ux.transformTsqResultsForVisualization(result, [tsqExpression]);
         lineChart.render(transformedResult, null, [tsqExpression]);
     });
 ```
@@ -219,9 +219,9 @@ The shape of results returned by the Time Series Insights APIs do not generally 
 The method `transformAggregatesForVisualization()` is used to transform response from **S SKU** environments (specifically, from the [Get Environment Aggregates API](https://docs.microsoft.com/rest/api/time-series-insights/ga-query-api#get-environment-aggregates-api)):
 
 ```JavaScript
-tsiClient.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.env.timeseries.azure.com', [aggregateExpression.toTsx())
+kustoTrender.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.env.timeseries.azure.com', [aggregateExpression.toTsx())
     .then(function(result){
-        var transformedResult = tsiClient.ux.transformAggregatesForVisualization(result, [aggregateExpression]);
+        var transformedResult = kustoTrender.ux.transformAggregatesForVisualization(result, [aggregateExpression]);
         // transformedResult is an array of data groups with time series and is suitable for visualization
         lineChart.render(transformedResult, null, [aggregateExpression]);  
     });
@@ -232,9 +232,9 @@ tsiClient.server.getAggregates(token, '10000000-0000-0000-0000-100000000108.env.
 To transform API results from the Time Series Insights APIs of a **PAYG SKU**, use the `transformTsqResultsForVisualization()` method:
 
 ```JavaScript
-tsiClient.server.getTsqResults(token, '10000000-0000-0000-0000-100000000109.env.timeseries.azure.com', [tsqExpression.toTsq()])
+kustoTrender.server.getTsqResults(token, '10000000-0000-0000-0000-100000000109.env.timeseries.azure.com', [tsqExpression.toTsq()])
     .then(function(result){
-        var transformedResult = tsiClient.ux.transformTsqResultsForVisualization(result, [tsqExpression]);
+        var transformedResult = kustoTrender.ux.transformTsqResultsForVisualization(result, [tsqExpression]);
         // transformedResult is an array of data groups with time series and is suitable for visualization
         lineChart.render(transformedResult, null, [tsqExpression]);
     });

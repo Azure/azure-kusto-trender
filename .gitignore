@@ -5,3 +5,4 @@ dist/
 scripts
 .vs
 build_artifacts/
+.DS_Store

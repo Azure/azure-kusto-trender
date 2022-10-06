@@ -1,34 +1,35 @@
-
-
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Standalone Date Time Range Picker</title>
 
-        <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
-        <script src="../../boilerplate/head.js"></script>
-    </head>
-    <body style="font-family: 'Segoe UI', sans-serif;">
-        <div id="dtp"></div>
-        <div id='sdtp'></div>
-        <script>
-            var toMillis = 1567904097008; // 17:54 Pacific
-            var fromMillis = toMillis - 1000*60*60*24*10;
-            var dtp;
-            var singleDTP;
-            window.onload = function() {
-                var tsiClient = new TsiClient();
-                dtp = new tsiClient.ux.DateTimePicker(dtpElement);
-                dtp.render({theme: 'light', offset: 'Local'}, 0, toMillis, fromMillis, toMillis, onSet, onCancel);
-                singleDTP = new tsiClient.ux.SingleDateTimePicker(document.getElementById('sdtp'));
-                singleDTP.render({offset: 'Local'}, 0, Infinity, toMillis, (d) => {console.log(d)});
-            };
+<head>
+    <title>Standalone Date Time Range Picker</title>
 
-            var dtpElement = document.getElementById('dtp');
-            var onSet = (fromMillisNew, toMillisNew, offset ,isEndRange) => {
-                console.log(fromMillisNew, toMillisNew, offset, isEndRange);
-            }
-            var onCancel = () => {}
-        </script>
-    </body>
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../../boilerplate/head.js"></script>
+</head>
+
+<body style="font-family: 'Segoe UI', sans-serif;">
+    <div id="dtp"></div>
+    <div id='sdtp'></div>
+    <script>
+        var toMillis = 1567904097008; // 17:54 Pacific
+        var fromMillis = toMillis - 1000 * 60 * 60 * 24 * 10;
+        var dtp;
+        var singleDTP;
+        window.onload = function () {
+            var kustoTrender = new KustoTrender();
+            dtp = new kustoTrender.ux.DateTimePicker(dtpElement);
+            dtp.render({ theme: 'light', offset: 'Local' }, 0, toMillis, fromMillis, toMillis, onSet, onCancel);
+            singleDTP = new kustoTrender.ux.SingleDateTimePicker(document.getElementById('sdtp'));
+            singleDTP.render({ offset: 'Local' }, 0, Infinity, toMillis, (d) => { console.log(d) });
+        };
+
+        var dtpElement = document.getElementById('dtp');
+        var onSet = (fromMillisNew, toMillisNew, offset, isEndRange) => {
+            console.log(fromMillisNew, toMillisNew, offset, isEndRange);
+        }
+        var onCancel = () => { }
+    </script>
+</body>
+
 </html>

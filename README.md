@@ -33,11 +33,11 @@ If you use npm, `npm install tsiclient`. You can also load directly from [unpkg]
 To import all of **tsiclient** into an ES2015 application, import everything into a namespace, like so...
 
 ```js
-import TsiClient from "tsiclient";
+import KustoTrender from "tsiclient";
 
 // later, when you want a line chart
-let tsiClient = new TsiClient();
-let lineChart = new tsiClient.ux.LineChart(document.getElementById('chart'));
+let kustoTrender = new KustoTrender();
+let lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart'));
 ```
 
 You can also import components individually.  If you only need the LineChart, you can import it like so...

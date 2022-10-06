@@ -1,30 +1,32 @@
-
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Standalone Date Time Range Picker</title>
 
-        <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
-        <script src="../boilerplate/head.js"></script>
-    </head>
-    <body style="font-family: 'Segoe UI', sans-serif;">
-        <div id="dtp"></div>
-        <script>
-            var now = new Date();
-            var fromMillis = (now).valueOf() - 1000*60*60*24;
-            var minMillis = (now).valueOf() - 1000*60*60*24*7;
-            var toMillis = (now).valueOf();
-            var dtp;
-            var dtpElement = document.getElementById('dtp');
-            var onSet = (fromMillis, toMillis) => {
-                console.log(new Date(fromMillis));
-                console.log(new Date(toMillis));
-            }
-            window.onload = function() {
-                var tsiClient = new TsiClient();
-                dtp = new tsiClient.ux.DateTimeButtonRange(dtpElement);
-                dtp.render({theme: 'light'}, minMillis, toMillis, fromMillis, toMillis, onSet);
-            };
-        </script>
-    </body>
+<head>
+    <title>Standalone Date Time Range Picker</title>
+
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../boilerplate/head.js"></script>
+</head>
+
+<body style="font-family: 'Segoe UI', sans-serif;">
+    <div id="dtp"></div>
+    <script>
+        var now = new Date();
+        var fromMillis = (now).valueOf() - 1000 * 60 * 60 * 24;
+        var minMillis = (now).valueOf() - 1000 * 60 * 60 * 24 * 7;
+        var toMillis = (now).valueOf();
+        var dtp;
+        var dtpElement = document.getElementById('dtp');
+        var onSet = (fromMillis, toMillis) => {
+            console.log(new Date(fromMillis));
+            console.log(new Date(toMillis));
+        }
+        window.onload = function () {
+            var kustoTrender = new KustoTrender();
+            dtp = new kustoTrender.ux.DateTimeButtonRange(dtpElement);
+            dtp.render({ theme: 'light' }, minMillis, toMillis, fromMillis, toMillis, onSet);
+        };
+    </script>
+</body>
+
 </html>

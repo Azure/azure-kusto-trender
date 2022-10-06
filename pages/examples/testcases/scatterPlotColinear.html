@@ -1,22 +1,25 @@
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Scatter Plot</title>
 
-        <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
-        <script src="../boilerplate/head.js"></script>
-    </head>
-    <body style="font-family: 'Segoe UI', sans-serif;">
-        <div id="chart1" style="width: 100%; height: 600px;"></div>
-        <div id="temporalToggle" class = "buttonWrapper" style= "margin-top: 50px; display: none;align-items: center; justify-content: center;"><button onclick="toggleTemporal()">Toggle Temporal</button></div>
+<head>
+  <title>Scatter Plot</title>
 
-        <script>
-            let temporal = false;
-            let toggleTemporal = null;
-            window.onload = function() {
+  <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+  <script src="../boilerplate/head.js"></script>
+</head>
 
-              let testData = JSON.parse(`{
+<body style="font-family: 'Segoe UI', sans-serif;">
+  <div id="chart1" style="width: 100%; height: 600px;"></div>
+  <div id="temporalToggle" class="buttonWrapper"
+    style="margin-top: 50px; display: none;align-items: center; justify-content: center;"><button
+      onclick="toggleTemporal()">Toggle Temporal</button></div>
+
+  <script>
+    let temporal = false;
+    let toggleTemporal = null;
+    window.onload = function () {
+
+      let testData = JSON.parse(`{
                 "Value vs Value vs Value": {
                   "": {
                     "2019-03-12T23:08:00.000Z": {
@@ -357,27 +360,28 @@
                   }
                 }
               }`);
-                // Show toggle
-                document.getElementById("temporalToggle").style.display = "flex";
-                // create fake data in the shape our charts expect
-                let iteration = 0;
+      // Show toggle
+      document.getElementById("temporalToggle").style.display = "flex";
+      // create fake data in the shape our charts expect
+      let iteration = 0;
 
-                let getRandomBoolean = () => Math.random() > 0.5 ? true : false;
+      let getRandomBoolean = () => Math.random() > 0.5 ? true : false;
 
-                // render the data in a chart
-                let tsiClient = new TsiClient();
+      // render the data in a chart
+      let kustoTrender = new KustoTrender();
 
-                let scatterPlot =  new tsiClient.ux.ScatterPlot(document.getElementById('chart1'));
+      let scatterPlot = new kustoTrender.ux.ScatterPlot(document.getElementById('chart1'));
 
-                let renderScatterPlot = () => scatterPlot.render([testData], {legend: 'shown', spAxisLabels: ['Sensor_57 Value', 'Sensor_57 Value (1)'], noAnimate: false, isTemporal: temporal, grid: true, tooltip: true, theme: 'light', spMeasures: ['Sensor_57 Value', 'Sensor_57 Value (1)', 'Sensor_58 Value']});
+      let renderScatterPlot = () => scatterPlot.render([testData], { legend: 'shown', spAxisLabels: ['Sensor_57 Value', 'Sensor_57 Value (1)'], noAnimate: false, isTemporal: temporal, grid: true, tooltip: true, theme: 'light', spMeasures: ['Sensor_57 Value', 'Sensor_57 Value (1)', 'Sensor_58 Value'] });
 
-                renderScatterPlot();
+      renderScatterPlot();
 
-                toggleTemporal = () => {
-                    temporal = !temporal;
-                    renderScatterPlot();
-                }
-            };
-        </script>
-    </body>
+      toggleTemporal = () => {
+        temporal = !temporal;
+        renderScatterPlot();
+      }
+    };
+  </script>
+</body>
+
 </html>

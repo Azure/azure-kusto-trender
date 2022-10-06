@@ -1,21 +1,23 @@
-
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
-    <head>
-        <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
-        <script src="../boilerplate/head.js"></script>
-    </head>
-    <body style="font-family: 'Segoe UI', sans-serif;">
-        <div id="availability" style="width: 100%; height: 160px; z-index:1;"></div>
-        <script>
-            window.onload = function() {
-                var tsiClient = new TsiClient();
-                var availability = new tsiClient.ux.AvailabilityChart(document.getElementById('availability'));
-                // no interval size or from or to
-                availability.render([{availabilityCount: {"": {}}}], 
-                                    {legend: 'hidden', theme: 'light', color: 'purple'} 
-                                    );
-            };
-        </script>
-    </body>
+
+<head>
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../boilerplate/head.js"></script>
+</head>
+
+<body style="font-family: 'Segoe UI', sans-serif;">
+    <div id="availability" style="width: 100%; height: 160px; z-index:1;"></div>
+    <script>
+        window.onload = function () {
+            var kustoTrender = new KustoTrender();
+            var availability = new kustoTrender.ux.AvailabilityChart(document.getElementById('availability'));
+            // no interval size or from or to
+            availability.render([{ availabilityCount: { "": {} } }],
+                { legend: 'hidden', theme: 'light', color: 'purple' }
+            );
+        };
+    </script>
+</body>
+
 </html>
