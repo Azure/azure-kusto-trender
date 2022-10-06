@@ -2,7 +2,7 @@
     "name": "azure-kusto-trender",
     "main": "kustotrender.js",
     "description": "",
-    "version": "1.4.13",
+    "version": "0.0.1",
     "types": "kustotrender.d.ts",
     "repository": {
         "type": "git",
@@ -15,7 +15,7 @@
         "rollup": "rollup --c & shx rm dist/kustotrender.js",
         "webpack": "webpack --config webpack.prod.js",
         "copy-package": "shx cp package.json dist/",
-        "copy-readme": "shx cp README.MD dist/",
+        "copy-readme": "shx cp README.md dist/",
         "prepare-samples": "mkdir pages/examples/dist & shx cp dist/* pages/examples/dist",
         "pack": "cd dist && npm pack",
         "publish": "npm publish dist",
