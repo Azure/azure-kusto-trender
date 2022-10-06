@@ -6,7 +6,7 @@
     "types": "kustotrender.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Microsoft/tsiclient"
+        "url": "https://github.com/Azure/azure-kusto-trender"
     },
     "scripts": {
         "start": "webpack-dev-server --config webpack.dev.js",
@@ -16,6 +16,7 @@
         "webpack": "webpack --config webpack.prod.js",
         "copy-package": "shx cp package.json dist/",
         "copy-readme": "shx cp README.MD dist/",
+        "prepare-samples": "mkdir pages/examples/dist & shx cp dist/* pages/examples/dist",
         "pack": "cd dist & npm pack & shx mv *.tgz ../build_artifacts",
         "post-build": "npm run copy-package & npm run copy-readme & npm run pack",
         "umd-analyze": "webpack-bundle-analyzer ./build_artifacts/umd_stats.json"
