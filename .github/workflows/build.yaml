@@ -20,7 +20,7 @@ jobs:
     - run: npm run prepare-samples
 
     - name: Azure Static Website Deploy
-      uses: feeloor/azure-static-website-deploy@v0.1.0
+      uses: feeloor/azure-static-website-deploy@v0.1.2
       env:
         # The name of the directory you want to upload
         SOURCE_DIR: "./pages/examples"
