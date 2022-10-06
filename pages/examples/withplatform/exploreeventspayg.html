@@ -32,7 +32,7 @@
 
         window.onload = async function () {
             initAuth('Line chart with events exploration.  Drag a region and select "Explore Events"');  // initiate auth objects, header, and login modal
-            var tsiClient = new TsiClient(), lineChart;
+            var kustoTrender = new KustoTrender(), lineChart;
             var startDate = new Date('2017-04-14T13:00:00Z');
             var endDate = new Date(startDate.valueOf() + 1000 * 60 * 60 * 24);
             var tsqExpressions = [];
@@ -58,8 +58,8 @@
                 }
             ];
 
-            var availabilityChart = new tsiClient.ux.AvailabilityChart(document.getElementById('availability'));
-            var lineChart = new tsiClient.ux.LineChart(document.getElementById('chart1'));
+            var availabilityChart = new kustoTrender.ux.AvailabilityChart(document.getElementById('availability'));
+            var lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart1'));
 
             // get results from server and render them in a line chart
             var getResults = async (from, to, bs = null) => {
@@ -92,7 +92,7 @@
 
 
             var delegate = new ADX.HierarchyDelegate(cluster)
-            var hierarchy = new tsiClient.ux.HierarchyNavigation(document.getElementById('hierarchy'));
+            var hierarchy = new kustoTrender.ux.HierarchyNavigation(document.getElementById('hierarchy'));
             hierarchy.render(delegate, { theme: 'light', onInstanceClick: instance => onInstanceClick(instance) })
 
 
@@ -113,7 +113,7 @@
                 chartDataOptions['color'] = colors[currentTsqECount];
                 chartDataOptions['includeEnvelope'] = true;
                 currentTsqECount++;
-                var tsqExp = new tsiClient.ux.TsqExpression(instance, variableObject, {}, chartDataOptions);
+                var tsqExp = new kustoTrender.ux.TsqExpression(instance, variableObject, {}, chartDataOptions);
                 tsqExpressions.push(tsqExp);
                 getResults();
             }
@@ -215,7 +215,7 @@
             }
 
             // interval slider
-            var intervalSlider = new tsiClient.ux.Slider(document.getElementById('intervalSlider'));
+            var intervalSlider = new kustoTrender.ux.Slider(document.getElementById('intervalSlider'));
             var renderIntervalSlider = (from, to, newValidBucketSizes, newBucketSize) => {
                 validBucketSizes = newValidBucketSizes;
                 bucketSize = newBucketSize;

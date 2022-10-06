@@ -11,8 +11,6 @@ module.exports = merge(common, {
       directory: "pages/examples",
     },
     port: 3002,
-    // host: "insights-local.timeseries.azure.com",
-    // https: true,
   },
   plugins: [
     new MiniCssExtractPlugin({

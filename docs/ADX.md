@@ -193,8 +193,8 @@ To function properly, `ADXTrenderClient` requires the ADX Trender KQL Functions 
 Then, call any function to get data in a format that is ready to be used with the UI components:
 
 ```ts
-var tsiClient = new TsiClient();
-var availability = new tsiClient.ux.AvailabilityChart(
+var kustoTrender = new KustoTrender();
+var availability = new kustoTrender.ux.AvailabilityChart(
   document.getElementById("availability")
 );
 
@@ -213,8 +213,8 @@ availability.render(
 ```ts
 
 
-var tsiClient = new TsiClient();
-var lineChart = new tsiClient.ux.LineChart(
+var kustoTrender = new KustoTrender();
+var lineChart = new kustoTrender.ux.LineChart(
   document.getElementById("chart1")
 );
 
@@ -246,7 +246,7 @@ This class was built to provide a connector between the Hierarchy Navigation UI 
 ```ts
 var delegate = new ADX.HierarchyDelegate(cluster)
 
-const hierarchy = new tsiClient.ux.HierarchyNavigation(document.getElementById('hierarchyNav'));
+const hierarchy = new kustoTrender.ux.HierarchyNavigation(document.getElementById('hierarchyNav'));
 
 hierarchy.render(delegate, {}, {}));
 ```

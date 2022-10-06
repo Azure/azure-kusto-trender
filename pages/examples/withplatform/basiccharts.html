@@ -21,7 +21,7 @@
   <div id="chart4" style="width: 100%; height: 600px; margin-top: 40px; float: left"></div>
   <script>
     window.onload = async function () {
-      var tsiClient = new TsiClient();
+      var kustoTrender = new KustoTrender();
 
       initAuth("Basic Charts");
 
@@ -42,7 +42,7 @@
         bucketSize
       );
 
-      var lineChart = new tsiClient.ux.LineChart(
+      var lineChart = new kustoTrender.ux.LineChart(
         document.getElementById("chart1")
       );
 
@@ -52,7 +52,7 @@
         tooltip: true,
       });
 
-      var barChart = new tsiClient.ux.BarChart(
+      var barChart = new kustoTrender.ux.BarChart(
         document.getElementById("chart2")
       );
       barChart.render(result, {
@@ -62,7 +62,7 @@
         legend: "compact",
       });
 
-      var pieChart = new tsiClient.ux.PieChart(
+      var pieChart = new kustoTrender.ux.PieChart(
         document.getElementById("chart3")
       );
       pieChart.render(result, {
@@ -72,7 +72,7 @@
         legend: "compact",
       });
 
-      var heatmap = new tsiClient.ux.Heatmap(
+      var heatmap = new kustoTrender.ux.Heatmap(
         document.getElementById("chart4")
       );
       heatmap.render(result, {}, [

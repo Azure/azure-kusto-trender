@@ -10,13 +10,13 @@ import visualizer from 'rollup-plugin-visualizer';
 import dts from "rollup-plugin-dts";
 
 const directImports = {
-    // TsiClient core
+    // KustoTrender core
     ServerClient: 'src/ServerClient/index.ts',
     UXClient: 'src/UXClient/index.ts',
     Utils: 'src/UXClient/Utils/index.ts',
     kustotrender: 'src/KustoTrender.ts',
 
-    // TsiClient models
+    // KustoTrender models
     TsqExpression: 'src/UXClient/Models/TsqExpression.ts',
     AggregateExpression: 'src/UXClient/Models/AggregateExpression.ts',
 

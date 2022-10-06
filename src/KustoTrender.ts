@@ -2,11 +2,11 @@ import UXClient from "./UXClient/UXClient";
 import Utils from "./UXClient/Utils";
 import * as ADXClasses from "./ServerClient";
 
-class TsiClient {
+class KustoTrender {
     public ux = new UXClient();
     public utils = Utils;
 }
-export default TsiClient;
+export default KustoTrender;
 
-(<any>window).TsiClient = TsiClient;
+(<any>window).KustoTrender = KustoTrender;
 (<any>window).ADX = ADXClasses;

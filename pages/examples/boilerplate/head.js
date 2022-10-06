@@ -1,13 +1,13 @@
 window.addEventListener("DOMContentLoaded", function () {
   var sdkJs = document.createElement("script");
   // sdkJs.src = 'https://unpkg.com/tsiclient@1.3.0/tsiclient.js';
-  sdkJs.src = "../../../dist/tsiclient.js"; // for local testing
+  sdkJs.src = "../../../dist/kustoTrender.js"; // for local testing
 
   var sdkCss = document.createElement("link");
   sdkCss.rel = "stylesheet";
   sdkCss.type = "text/css";
   // sdkCss.href = 'https://unpkg.com/tsiclient@1.3.0/tsiclient.css';
-  sdkCss.href = "../../../dist/tsiclient.css"; // for local testing
+  sdkCss.href = "../../../dist/kustoTrender.css"; // for local testing
 
   var metaCharset = document.createElement("meta");
   metaCharset.charSet = "utf-8";
@@ -24,7 +24,7 @@ window.addEventListener("DOMContentLoaded", function () {
   // github link html
   var isDotCom = window.location.href.indexOf(".com") !== -1;
   var githubUrl =
-    "https://github.com/Microsoft/tsiclient/tree/master/pages/examples/" +
+    "https://github.com/Microsoft/azure-kusto-trender/tree/main/pages/examples/" +
     window.location.href.split(isDotCom ? ".com/" : ".net/")[1];
   var githubButton = document.createElement("button");
   githubButton.setAttribute(

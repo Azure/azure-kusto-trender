@@ -26,8 +26,8 @@
 
       const result = await cluster.getAvailability();
 
-      var tsiClient = new TsiClient();
-      var availability = new tsiClient.ux.AvailabilityChart(
+      var kustoTrender = new KustoTrender();
+      var availability = new kustoTrender.ux.AvailabilityChart(
         document.getElementById("availability")
       );
 
