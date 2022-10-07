@@ -61,7 +61,7 @@
         "d3-interpolate-path": "^1.1.1",
         "moment": "^2.27.0",
         "moment-timezone": "^0.5.31",
-        "npm": "^6.13.7",
+        "npm": "^8.19.2",
         "split.js": "^1.5.11"
     },
     "publishConfig": {
