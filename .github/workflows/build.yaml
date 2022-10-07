@@ -2,7 +2,7 @@ name:  Build and deploy on prod
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,9 +19,9 @@ jobs:
     - run: npm run webpack
     - run: npm run prepare-samples
     - run: npm run post-build
-    - run: npm run publish
-      env:
-       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    #- run: npm run publish
+    #  env:
+    #   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Azure Static Website Deploy
       uses: feeloor/azure-static-website-deploy@v0.1.2
