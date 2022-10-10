@@ -22,7 +22,11 @@ jobs:
     - run: npm version patch 
     - run: npm run webpack
     - run: npm run prepare-samples
-
+    - run: npm run publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - run: git push
+    
     - name: Azure Static Website Deploy
       uses: feeloor/azure-static-website-deploy@v0.1.2
       env:
