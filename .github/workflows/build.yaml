@@ -23,10 +23,10 @@ jobs:
     - run: npm run webpack
     - run: npm run prepare-samples
     - run: npm run post-build
-    - name: "Create .npmrc"
-      run:
-        echo "registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ./dist/.npmrc
-    - run: npm run publish
+    - uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        package: "./dist/package.json"
     - run: git push
     
     - name: Azure Static Website Deploy
