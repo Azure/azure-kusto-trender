@@ -1,11 +1,15 @@
 window.addEventListener("DOMContentLoaded", function () {
   var sdkJs = document.createElement("script");
-  sdkJs.src = "../../../dist/kustoTrender.js"; // for local testing
+  sdkJs.src = "../../../dist/kustoTrender.js";
 
   var sdkCss = document.createElement("link");
   sdkCss.rel = "stylesheet";
   sdkCss.type = "text/css";
-  sdkCss.href = "../../../dist/kustoTrender.css"; // for local testing
+  if (this.window.location.host.startsWith("localhost:")) {
+    sdkCss.href = "../../../dist/kustoTrender.css";
+  } else {
+    sdkCss.href = "../../../dist/kustoTrender.min.css";
+  }
 
   var metaCharset = document.createElement("meta");
   metaCharset.charSet = "utf-8";

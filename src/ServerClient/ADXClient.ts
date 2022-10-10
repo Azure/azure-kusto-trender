@@ -1,6 +1,12 @@
 import { ADXResponse, RawADXResponse } from "./ADXResponse";
 type ADXTokenProvider = () => Promise<string>;
 
+declare global {
+  interface Crypto {
+    randomUUID: () => string;
+  }
+}
+
 interface ADXQueryProperties {
   parameters: Record<string, unknown>;
 }
@@ -51,7 +57,10 @@ export class ADXClient {
     const body = {
       db: this.database,
       csl: query,
-      properties,
+      properties: {
+        ...properties,
+        "x-ms-client-request-id": `KT;${self.crypto.randomUUID()}`
+      },
     };
 
     response = await fetch(this.queryUrl, {
