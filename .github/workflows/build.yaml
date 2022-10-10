@@ -16,6 +16,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install --legacy-peer-deps
+    - run: npm version patch 
     - run: npm run webpack
     - run: npm run prepare-samples
 
