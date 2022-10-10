@@ -18,7 +18,6 @@
         "copy-readme": "shx cp README.md dist/",
         "prepare-samples": "mkdir pages/examples/dist & shx cp dist/* pages/examples/dist",
         "pack": "cd dist && npm pack",
-        "publish": "cd dist && npm publish",
         "post-build": "npm run copy-package & npm run copy-readme"
     },
     "devDependencies": {
