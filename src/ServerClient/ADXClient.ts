@@ -58,8 +58,7 @@ export class ADXClient {
       db: this.database,
       csl: query,
       properties: {
-        ...properties,
-        "x-ms-client-request-id": `KT;${self.crypto.randomUUID()}`
+        ...properties
       },
     };
 
@@ -69,6 +68,8 @@ export class ADXClient {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "x-ms-client-request-id": `KTrender;${self.crypto.randomUUID()}`,
+        "x-ms-app": "KustoTrender"
       },
       body: JSON.stringify(body),
     });
