@@ -54,9 +54,9 @@ function initAuth(title) {
 
   authContext.getTsiToken = function () {
     document.getElementById("api_response2").textContent =
-      "Getting tsi token...";
+      "Getting ADX token...";
 
-    // Get an access token to the Microsoft TSI API
+    // Get an access token to the Microsoft ADX API
     var promise = new Promise(function (resolve, reject) {
       authContext.acquireToken(
         "https://help.kusto.windows.net/",
