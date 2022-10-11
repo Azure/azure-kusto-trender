@@ -1,0 +1,127 @@
+.execute database script <|
+//
+// create tables
+//
+.create-merge table Timeseries (TimeseriesId:string, Timestamp:datetime, Value:real) with (docstring = "The raw timeseries data")
+//
+.create-merge table TimeseriesMetadata (TimeseriesId:string, TimeseriesName:string, Description:string, EngUnits:string, DataStreamTags:string) with (docstring = "The timeseries metadata")
+//
+.create-merge table TimeseriesHierarchy (TimeseriesId:string, DisplayName:string, Path:dynamic) with (docstring = "The timeseries hierarchy")
+//
+//
+// ingest data
+//
+.ingest async into table Timeseries (
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_1_10fe6ab36af04132af3d6d4a5e306144.csv.gz',
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_1_d1ca391123df4599879267d7f4c959d2.csv.gz',
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_2_221db6e218bf4b08939db9fce258b594.csv.gz',
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_2_23a8b7c600ca4a62b213b061d45ece3b.csv.gz'
+)
+//
+.ingest async into table TimeseriesMetadata (
+    h'https://trendersampledata.blob.core.windows.net/data/TimeseriesIdMapping_1_28aa6aeabe7c4451b66d9d30cb02c3af.csv.gz'
+)
+//
+.ingest async into table TimeseriesHierarchy (
+    h'https://trendersampledata.blob.core.windows.net/data/Hierarchy_1_5d3a48a40bd744d790497ac2e86fba70.csv.gz'
+)
+//
+.alter tables (Timeseries, TimeseriesHierarchy, TimeseriesMetadata) policy caching hot = 3650d
+//
+.alter-merge table Timeseries policy retention softdelete = 3650d recoverability = enabled
+//
+.alter-merge table TimeseriesMetadata policy retention softdelete = 3650d recoverability = enabled
+//
+.alter-merge table TimeseriesHierarchy policy retention softdelete = 3650d recoverability = enabled
+//
+//
+// creating functions
+//
+.create-or-alter function with (docstring = "Get Timeseries By Path", skipvalidation = "true") GetTimeseriesIdByPath(InputPath:dynamic) {
+let plant = tostring(InputPath[0]);
+let factory = tostring(InputPath[1]);
+let production= tostring(InputPath[2]);
+let station = tostring(InputPath[3]);
+TimeseriesHierarchy
+| where tostring(Path[0]) == plant and tostring(Path[1]) == factory and tostring(Path[2]) == production and tostring(Path[3]) == station
+| project TimeseriesId, DisplayName
+} 
+//
+//
+.create-or-alter function with (docstring = "Get Children By Path", skipvalidation = "true") GetChildrenByPath(InputPath:dynamic) {
+let InputPathLength = array_length(InputPath);
+TimeseriesHierarchy
+| extend SlicedArray = iff(InputPathLength > 0, array_slice(Path, 0, InputPathLength-1), dynamic([]))
+| where array_length( SlicedArray) < array_length(Path)
+| where strcat_array(SlicedArray,",") == strcat_array(InputPath,",")
+| summarize Count = count() by Child = tostring(Path[InputPathLength])
+} 
+//
+//
+.create-or-alter function with (docstring = "Search timeseries IDs in a specific hierarchy", skipvalidation = "true") Search(InputPath:dynamic, searchString:string) {
+let InputPathLength = array_length(InputPath);
+TimeseriesHierarchy
+| extend SlicedArray = iff(InputPathLength > 0, array_slice(Path, 0, InputPathLength-1), dynamic([]))
+| where array_length( SlicedArray) <= array_length(Path)
+| where strcat_array(SlicedArray,",") == strcat_array(InputPath,",")
+| where TimeseriesId contains searchString or DisplayName contains searchString
+| project TimeseriesId, DisplayName, Path
+} 
+//
+.create-or-alter function with (docstring = "Suggest timeseries IDs", skipvalidation = "true") Suggest(searchString:string) {
+TimeseriesHierarchy
+| extend Match = case(
+        TimeseriesId contains searchString, TimeseriesId,
+        DisplayName contains searchString, DisplayName,
+        ""
+)
+| where isnotempty( Match)
+| project Match, TimeseriesId, DisplayName, Path
+} 
+//
+//
+.create-or-alter function with (docstring = "Get path by timeseries id", skipvalidation = "true") GetPathToTimeseriesId(InputPath:dynamic, SearchString:string) {
+let InputPathLength = array_length(InputPath);
+TimeseriesHierarchy
+| where TimeseriesId contains SearchString or DisplayName contains SearchString
+| extend SlicedArray = iff(InputPathLength > 0, array_slice(Path, 0, InputPathLength-1), dynamic([]))
+| where array_length( SlicedArray) < array_length(Path)
+| where strcat_array(SlicedArray,",") == strcat_array(InputPath,",")
+| project TimeseriesId, DisplayName, Path
+} 
+//
+//
+.create-or-alter function with (docstring = "Search for timeseries IDs based on an exact path", skipvalidation = "true") Search_ExactPath(InputPath:dynamic, searchString:string) {
+TimeseriesHierarchy
+| where TimeseriesId contains searchString or DisplayName contains searchString
+| where tostring(InputPath) == tostring(Path)
+| project TimeseriesId, DisplayName, Path
+} 
+//
+.create-or-alter function with (docstring = "Get Total Availability", skipvalidation = "true") GetTotalAvailability() {
+    Timeseries
+    | where isnotempty( Timestamp)
+    | summarize Availability = count() by bin(Timestamp,1d)
+} 
+//
+//
+.create-or-alter function with (docstring = "Get timeseries aggregates", skipvalidation = "true") GetAggregates(timeseriesIds:dynamic, startDate:datetime, endDate:datetime, timebucket:timespan) {
+Timeseries
+| where TimeseriesId in (timeseriesIds) and Timestamp between (startDate..endDate)
+| summarize Average = avg(Value), Count = count(), Min = min(Value), Max = max(Value) by TimeseriesId, bin(Timestamp, timebucket)
+} 
+//
+//
+.create-or-alter function with (docstring = "Get Meta Data", skipvalidation = "true") GetMetaData(TimeSeriesIds:dynamic) {
+TimeseriesMetadata
+| where TimeseriesId  in (TimeSeriesIds)
+| lookup TimeseriesHierarchy on TimeseriesId
+| project-away DisplayName
+} 
+//
+//
+.create-or-alter function with (docstring = "Get all hierarchies", skipvalidation = "true") GetHierarchies() {
+TimeseriesHierarchy
+| extend HierarchyName = tostring(Path[0])
+| distinct HierarchyName
+} 

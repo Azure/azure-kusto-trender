@@ -45,6 +45,53 @@ import 'kustotrender/kustoTrender.css' // Standard styles
 import 'kustotrender/kustoTrender.min.css' // Minified styles
 ```
 
+## How to run Trender on your Kusto
+
+The example in the sample gallery rely on four fundamental items:
+
+* An Azure Active Directory App
+* A Kusto cluster
+* Stored functions deployed on the cluster
+* Sample data
+
+This section covers the steps you need to take in order to run the Kusto-Trender on your Kusto environment.
+
+1. [Create an Azure Application](#create-an-azure-application)
+1. [Create a Kusto environment](#create-a-kusto-environment)
+1. [Create the schema](#create-the-schema)
+1. [Deploy helper functions](#deploy-helper-functions)
+1. [Deploy sample data](#deploy-sample-data)
+
+### Create an Azure Application
+
+If your Trender needs to access Kusto using the credentials of the calling user, configure delegated permissions for your application registration. Please follow the following documentation:
+
+1. [Create an Azure Active Directory application](https://learn.microsoft.com/azure/data-explorer/provision-azure-ad-app). It's not needed to create any certificate or secret.
+1. [Configure delegated permissions for the application registration](https://learn.microsoft.com/azure/data-explorer/provision-azure-ad-app).
+1. Optional: [grant admin consent](https://learn.microsoft.com/azure/active-directory/develop/v2-permissions-and-consent?WT.mc_id=Portal-Microsoft_AAD_RegisteredApps#admin-consent) for the permissions of the app you created.
+
+### Create a Kusto environment
+
+Kusto is available in many incarnations nowadays:
+
+* [Azure Data Explorer](https://learn.microsoft.com/azure/data-explorer/data-explorer-overview)
+* [Azure Synapse Data Explorer](https://learn.microsoft.com/azure/synapse-analytics/data-explorer/data-explorer-overview)
+* [MyFreeCluster](https://aka.ms/kustofree)
+
+All of them are compatible with Kusto Trender. The one that does not come with any cost is [MyFreeCluster](https://aka.ms/kustofree). You'll be able to create a new cluster for you in seconds.
+
+### Create the schema
+
+The functions in the sam
+
+### Deploy helper functions
+
+foo
+
+### Deploy sample data
+
+foo
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
