@@ -47,20 +47,20 @@ import 'kustotrender/kustoTrender.min.css' // Minified styles
 
 ## How to run Trender on your Kusto
 
-The example in the sample gallery rely on four fundamental items:
+A Kusto-Trender experience ([Example 1](/pages/examples/withplatform/exploreeventspayg.html), [Example 2](/pages/examples/withplatform/basiccharts.html)) relies on the following fundamental items:
 
 * An Azure Active Directory App
 * A Kusto cluster
-* Stored functions deployed on the cluster
-* Sample data
+* Schema & stored functions deployed on the cluster
+* Optional: Sample data / data pipeline
 
 This section covers the steps you need to take in order to run the Kusto-Trender on your Kusto environment.
 
 1. [Create an Azure Application](#create-an-azure-application)
 1. [Create a Kusto environment](#create-a-kusto-environment)
 1. [Create the schema](#create-the-schema)
-1. [Deploy helper functions](#deploy-helper-functions)
-1. [Deploy sample data](#deploy-sample-data)
+1. Optional: [Deploy sample data](#deploy-sample-data)
+1. Optional: Create a data pipeline
 
 ### Create an Azure Application
 
@@ -82,11 +82,40 @@ All of them are compatible with Kusto Trender. The one that does not come with a
 
 ### Create the schema
 
-The functions in the sam
+Once you have a working Kusto, you want to deploy the schema. You can find the schema that fuels the examples [here](kusto/trender-schema.kql). It's a small script which creates a couple of tables and functions. Just execute it in the scope of the database you like to use.
 
-### Deploy helper functions
+The following tables are created by the script.
 
-foo
+#### Timeseries
+
+"The raw timeseries data"
+
+<!-- csl: https://help.kusto.windows.net/Trender -->
+```kusto
+Timeseries
+| take 10
+```
+
+| TimeseriesId | Timestamp | Value |
+|---|---| ---|
+| 939d52f1-cba7-48bb-87cb-d8e5d9050a73 | 2017-05-01 00:00:00.0000000 | 0,321766886722178 |
+| 011523e8-5ab6-46ec-9a50-4ac3a6488f8c | 2017-05-01 00:00:00.0000000 | 0,00480370965876755 |
+| bddbab16-fab5-4d59-8353-f35b58866e53 | 2017-05-01 00:00:00.0000000 | 0,84581159990962 |
+| 98ee0da5-662c-44c7-b0d0-d5bf8719d570 | 2017-05-01 00:00:00.0000000 | 28,0770391031749 |
+| c98fa24b-8353-46f0-b32a-135d9e04a2f0 | 2017-05-01 00:00:00.0000000 | 0,809812494485808 |
+| 6052949f-d73c-4b60-a7bf-80a18053b7fc | 2017-05-01 00:00:00.0000000 | 0,00357295958308354 |
+| b19aa5c4-5d4f-4a05-8e1c-8aacc5c8336d | 2017-05-01 00:00:00.0000000 | 0,823791382518091 |
+| 97fe6858-1f53-4bc8-8cfd-824887a0de54 | 2017-05-01 00:00:00.0000000 | 28,9829603183781 |
+| a125897d-b7ef-4992-97ab-4bfa5838d78a | 2017-05-01 00:00:00.0000000 | 0,159779034867988 |
+| 687f97ef-268e-4daf-932c-181f793d0e59 | 2017-05-01 00:00:00.0000000 | 0,00468126565053374 |
+
+#### TimeseriesMetadata
+
+"The timeseries metadata"
+
+#### TimeseriesHierarchy
+
+"The timeseries hierarchy")
 
 ### Deploy sample data
 
