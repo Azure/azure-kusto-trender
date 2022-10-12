@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", function () {
   // github link html
   var isDotCom = window.location.href.indexOf(".com") !== -1;
   var githubUrl =
-    "https://github.com/Microsoft/azure-kusto-trender/tree/main/pages/examples/" +
+    "https://github.com/Azure/azure-kusto-trender/tree/master/pages/examples/" +
     window.location.href.split(isDotCom ? ".com/" : ".net/")[1];
   var githubButton = document.createElement("button");
   githubButton.setAttribute(
