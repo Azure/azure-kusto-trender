@@ -2,17 +2,22 @@
 //
 // ingest data
 //
+.create table ['Timeseries'] ingestion csv mapping 'Timeseries_mapping' '[{"column":"TimeseriesId", "Properties":{"Ordinal":"0"}},{"column":"Timestamp", "Properties":{"Ordinal":"1"}},{"column":"Value", "Properties":{"Ordinal":"2"}}]'
+//
 .ingest async into table Timeseries (
-    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_1_10fe6ab36af04132af3d6d4a5e306144.csv.gz',
-    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_1_d1ca391123df4599879267d7f4c959d2.csv.gz',
-    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_2_221db6e218bf4b08939db9fce258b594.csv.gz',
-    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_2_23a8b7c600ca4a62b213b061d45ece3b.csv.gz'
-)
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_1.csv.gz',
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_2.csv.gz',
+    h'https://trendersampledata.blob.core.windows.net/data/Timeseries_3.csv.gz'
+) with (format='csv',ingestionMappingReference='Timeseries_mapping',ingestionMappingType='csv')
+//
+.create table ['TimeseriesMetadata'] ingestion csv mapping 'TimeseriesMetadata_mapping' '[{"column":"TimeseriesId", "Properties":{"Ordinal":"0"}},{"column":"TimeseriesName", "Properties":{"Ordinal":"1"}},{"column":"Description", "Properties":{"Ordinal":"2"}},{"column":"EngUnits", "Properties":{"Ordinal":"3"}},{"column":"DataStreamTags", "Properties":{"Ordinal":"4"}}]'
 //
 .ingest async into table TimeseriesMetadata (
-    h'https://trendersampledata.blob.core.windows.net/data/TimeseriesIdMapping_1_28aa6aeabe7c4451b66d9d30cb02c3af.csv.gz'
-)
+    h'https://trendersampledata.blob.core.windows.net/data/TimeseriesMetadata_1_2cb9453c338f44a6b9263f254f89cec3.csv.gz'
+) with (format='csv',ingestionMappingReference='TimeseriesMetadata_mapping',ingestionMappingType='csv')
+//
+.create table ['TimeseriesHierarchy'] ingestion csv mapping 'TimeseriesHierarchy_mapping' '[{"column":"TimeseriesId", "Properties":{"Ordinal":"0"}},{"column":"DisplayName", "Properties":{"Ordinal":"1"}},{"column":"Path", "Properties":{"Ordinal":"2"}}]'
 //
 .ingest async into table TimeseriesHierarchy (
-    h'https://trendersampledata.blob.core.windows.net/data/Hierarchy_1_8c8a328f528949688e0b524deaf1332b.csv.gz'
-)
+    h'https://trendersampledata.blob.core.windows.net/data/TimeseriesHierarchy_1_814905e48a164222926254296d280149.csv.gz'
+) with (format='csv',ingestionMappingReference='TimeseriesHierarchy_mapping',ingestionMappingType='csv')
