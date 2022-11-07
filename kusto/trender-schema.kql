@@ -8,8 +8,6 @@
 //
 .create-merge table TimeseriesHierarchy (TimeseriesId:string, DisplayName:string, Path:dynamic) with (docstring = "The timeseries hierarchy")
 //
-.alter tables (Timeseries, TimeseriesHierarchy, TimeseriesMetadata) policy caching hot = 3650d
-//
 .alter-merge table Timeseries policy retention softdelete = 3650d recoverability = enabled
 //
 .alter-merge table TimeseriesMetadata policy retention softdelete = 3650d recoverability = enabled
@@ -106,4 +104,8 @@ TimeseriesMetadata
 TimeseriesHierarchy
 | extend HierarchyName = tostring(Path[0])
 | distinct HierarchyName
-} 
+}
+//
+// CachingPolicyAlter, if Deployment Mode is not free adx clusters.
+// 
+.alter tables (Timeseries, TimeseriesHierarchy, TimeseriesMetadata) policy caching hot = 3650d
