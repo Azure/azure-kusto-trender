@@ -18,7 +18,7 @@ jobs:
     - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-    - run: npm install
+    - run: npm update
     - run: npm ci --legacy-peer-deps
     - run: npm version patch 
     - run: npm run webpack
