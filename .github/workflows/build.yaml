@@ -23,6 +23,8 @@ jobs:
     - run: ncu -u
     - run: npm install
     - run: npm ci --legacy-peer-deps
+    - run: git add .
+    - run: git commit -m "Fix Git Not Clean Error"
     - run: npm version patch 
     - run: npm run webpack
     - run: npm run prepare-samples
