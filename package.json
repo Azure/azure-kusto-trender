@@ -10,7 +10,7 @@
     },
     "scripts": {
         "start": "webpack-dev-server --config webpack.dev.js",
-        "build": "npm run clean & npm run rollup & npm run webpack & npm run post-build",
+        "build": "npm run clean  & npm update & npm run rollup & npm run webpack & npm run post-build",
         "clean": "shx rm -rf dist & shx rm -rf build_artifacts",
         "rollup": "rollup --c & shx rm dist/kustotrender.js",
         "webpack": "webpack --config webpack.prod.js",

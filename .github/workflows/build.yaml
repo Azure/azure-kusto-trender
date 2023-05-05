@@ -18,7 +18,13 @@ jobs:
     - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git clean -f -n -i
+    - run: npm install -g npm-check-updates
+    - run: ncu -u
+    - run: npm install
     - run: npm ci --legacy-peer-deps
+    - run: git add .
+    - run: git commit -m "Fix Git Not Clean Error"
     - run: npm version patch 
     - run: npm run webpack
     - run: npm run prepare-samples
