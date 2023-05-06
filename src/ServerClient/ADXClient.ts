@@ -3,7 +3,7 @@ type ADXTokenProvider = () => Promise<string>;
 
 declare global {
   interface Crypto {
-    randomUUID: () => string;
+    randomUUID: () => `${string}-${string}-${string}-${string}-${string}`;
   }
 }
 
