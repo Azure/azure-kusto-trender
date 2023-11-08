@@ -1,15 +1,15 @@
 import * as d3 from "d3";
-import "./HierarchyNavigation.scss";
-import Utils from "../../Utils";
-import { Component } from "./../../Interfaces/Component";
-import ModelAutocomplete from "../ModelAutocomplete";
+import { HierarchyDelegate } from "../../../ServerClient/HierarchyDelegate";
 import {
-  KeyCodes,
-  InstancesSort,
   HierarchiesExpand,
   HierarchiesSort,
+  InstancesSort,
+  KeyCodes,
 } from "../../Constants/Enums";
-import { HierarchyDelegate } from "../../../ServerClient/HierarchyDelegate";
+import Utils from "../../Utils";
+import ModelAutocomplete from "../ModelAutocomplete";
+import { Component } from "./../../Interfaces/Component";
+import "./HierarchyNavigation.scss";
 
 class HierarchyNavigation extends Component {
   private delegate: HierarchyDelegate;
@@ -1691,11 +1691,11 @@ class HierarchyNavigation extends Component {
         if (isHierarchyNode) {
           if (
             d3.event.relatedTarget !=
-            d3.select(this.parentNode).select(".tsi-filter-icon").node()
+            d3.select(this.parentNode as Element).select(".tsi-filter-icon").node()
           ) {
             (
               d3
-                .select(this.parentNode)
+                .select(this.parentNode  as Element)
                 .select(".tsi-filter-icon")
                 .node() as any
             ).style.visibility = "visible";
@@ -1706,11 +1706,11 @@ class HierarchyNavigation extends Component {
         if (isHierarchyNode) {
           if (
             d3.event.relatedTarget !=
-            d3.select(this.parentNode).select(".tsi-filter-icon").node()
+            d3.select(this.parentNode  as Element).select(".tsi-filter-icon").node()
           ) {
             (
               d3
-                .select(this.parentNode)
+                .select(this.parentNode as Element)
                 .select(".tsi-filter-icon")
                 .node() as any
             ).style.visibility = "hidden";
@@ -1790,7 +1790,7 @@ class HierarchyNavigation extends Component {
         .on("mouseleave blur", function () {
           if (
             d3.event.relatedTarget !=
-            d3.select((this as HTMLElement).parentNode)
+            d3.select((this as HTMLElement).parentNode  as Element)
           ) {
             (this as any).style.visibility = "hidden";
           }
