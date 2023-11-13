@@ -128,7 +128,7 @@ class CategoricalPlot extends Plot {
                 categoricalBuckets.enter()
                     .append("rect")
                     .attr("class", "tsi-valueElement tsi-categoricalBucket")
-                    .merge(categoricalBuckets)
+                    .merge(categoricalBuckets as d3.Selection<SVGRectElement,unknown,any,unknown>)
                     .style("visibility", (d: any) => { 
                         return (self.chartComponentData.isSplitByVisible(aggKey, splitBy) && self.hasData(d)) ? "visible" : "hidden";
                     })

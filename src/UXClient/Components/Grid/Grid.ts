@@ -172,11 +172,11 @@ class Grid extends Component {
                 let aggKey = d[0];
                 let splitBy = d[1];
                 let seriesData = self.convertSeriesToGridData(allTimeStampMap, self.chartComponentData.timeArrays[aggKey][splitBy]);
-                let cells = d3.select(this).selectAll('.tsi-valueCell').data(seriesData);
+                let cells = d3.select(this).selectAll<HTMLTableCellElement, any>('.tsi-valueCell').data(seriesData);
                 let measuresData = self.chartOptions.spMeasures ? self.chartOptions.spMeasures : self.chartComponentData.displayState[aggKey].splitBys[splitBy].types;
 
                 //Row header with the name of the series
-                let headerCell = d3.select(this).selectAll('tsi-rowHeaderCell').data([d]);
+                let headerCell = d3.select(this).selectAll<HTMLTableCellElement, any>('tsi-rowHeaderCell').data([d]);
                 
                 let getRowHeaderText = (d) => {
                     return `${self.chartComponentData.displayState[aggKey].name}${(splitBy !== '' ? (': ' + splitBy) : '')}`;
@@ -185,7 +185,7 @@ class Grid extends Component {
                 headerCell.enter()  
                     .append('td')
                     .attr("tabindex", 1)
-                    .merge(headerCell)
+                    .merge(headerCell as d3.Selection<HTMLTableCellElement, any, any, unknown>)
                     .attr('class', (d, col) => `tsi-rowHeaderCell ${self.cellClass(i + 1, 0)}`)
                     .on("keydown", (d, col) => {self.arrowNavigate(d3.event, i + 1, 0)})
                     .attr('aria-label', d => {
@@ -210,7 +210,7 @@ class Grid extends Component {
 
                 cells.enter()
                     .append('td')
-                    .merge(cells)
+                    .merge(cells as d3.Selection<HTMLTableCellElement, any, any, unknown>)
                     .attr('class', (d, col) => `tsi-valueCell ${self.cellClass(i + 1, col + 1)}`)
                     .on("keydown", (d, col) => {self.arrowNavigate(d3.event, i + 1, col + 1)})
                     .attr("tabindex", 1)

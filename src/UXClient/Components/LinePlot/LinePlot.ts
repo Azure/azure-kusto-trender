@@ -5,6 +5,7 @@ import { Plot } from '../../Interfaces/Plot';
 import Utils from '../../Utils';
 import { DataTypes, YAxisStates } from "../../Constants/Enums";
 import { AxisState } from '../../Models/AxisState';
+import {BaseType} from "d3";
 
 class LinePlot extends Plot {
     private defs;
@@ -203,7 +204,7 @@ class LinePlot extends Plot {
                 gapPath.enter()
                     .append("path")
                     .attr("class", "tsi-valueElement tsi-gapLine")
-                    .merge(gapPath)
+                    .merge(gapPath as d3.Selection<SVGPathElement,any,any,unknown>)
                     .style("visibility", (d: any) => { 
                         return (self.chartComponentData.isSplitByVisible(aggKey, splitBy)) ? "visible" : "hidden";
                     })   
@@ -230,7 +231,7 @@ class LinePlot extends Plot {
                 path.enter()
                     .append("path")
                     .attr("class", "tsi-valueElement tsi-valueLine")
-                    .merge(path)
+                    .merge(path as d3.Selection<SVGPathElement,any,any,unknown>)
                     .style("visibility", (d: any) => { 
                         return (self.chartComponentData.isSplitByVisible(aggKey, splitBy)) ? "visible" : "hidden";
                     })                                            
@@ -260,7 +261,7 @@ class LinePlot extends Plot {
                         .append('circle')
                         .attr('class', 'tsi-valueElement tsi-valueDot')
                         .attr('r', 3)
-                        .merge(dots)
+                        .merge(dots as d3.Selection<SVGCircleElement,unknown,any,unknown>)
                         .style("visibility", (d: any) => { 
                             return (self.chartComponentData.isSplitByVisible(aggKey, splitBy) && d.measures) ? "visible" : "hidden";
                         }) 
@@ -293,7 +294,7 @@ class LinePlot extends Plot {
                 envelope.enter()
                     .append("path")
                     .attr("class", "tsi-valueElement tsi-valueEnvelope")
-                    .merge(envelope)
+                    .merge(envelope as d3.Selection<SVGPathElement,{},any,unknown>)
                     .style("visibility", (d: any) => {
                         return (self.chartComponentData.isSplitByVisible(aggKey, splitBy)) ? "visible" : "hidden";
                     })
@@ -324,7 +325,7 @@ class LinePlot extends Plot {
                     area.enter()
                         .append("path")
                         .attr("class", "tsi-valueArea")
-                        .merge(area)
+                        .merge(area as d3.Selection<SVGPathElement,any,any,unknown>)
                         .style("fill", 'url(#' + (svgId) + ')')
                         .style("visibility", (d: any) => { 
                             return (self.chartComponentData.isSplitByVisible(aggKey, splitBy)) ? "visible" : "hidden";

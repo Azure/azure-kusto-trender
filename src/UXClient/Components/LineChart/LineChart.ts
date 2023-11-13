@@ -1381,7 +1381,7 @@ class LineChart extends TemporalXAxisComponent {
                 valueText
                     .enter() 
                     .append('text')
-                    .merge(valueText)
+                    .merge(valueText as d3.Selection<SVGTextElement, any, any, unknown>)
                     .attr('class', 'tsi-horizontalMarkerText')
                     .attr('x', self.chartWidth)
                     .attr('y', -4)
@@ -1394,7 +1394,7 @@ class LineChart extends TemporalXAxisComponent {
                 valueLine
                     .enter()
                     .append('line')
-                    .merge(valueLine)
+                    .merge(valueLine as d3.Selection<SVGLineElement, any, any, unknown>)
                     .attr('class', 'tsi-horizontalMarkerLine')
                     .attr('stroke', marker => marker.color)
                     .attr('x1', 0)

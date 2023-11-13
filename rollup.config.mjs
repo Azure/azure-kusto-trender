@@ -6,7 +6,7 @@ import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss'
 import postcssUrl from "postcss-url";
 import autoExternal from 'rollup-plugin-auto-external';
-import visualizer from 'rollup-plugin-visualizer';
+import { visualizer } from 'rollup-plugin-visualizer';
 import dts from "rollup-plugin-dts";
 
 const directImports = {

@@ -4,6 +4,7 @@ import Utils from "../../Utils";
 import { DataTypes, EventElementTypes } from "./../../Constants/Enums";
 import {Component} from "./../../Interfaces/Component";
 import { ChartComponentData } from '../../Models/ChartComponentData';
+import {BaseType} from "d3";
 
 const NUMERICSPLITBYHEIGHT = 44;
 const NONNUMERICSPLITBYHEIGHT = 24; 
@@ -251,7 +252,7 @@ class Legend extends Component {
                 let colorKeyEntered = colorKey.enter()
                     .append("div")
                     .attr("class", 'tsi-colorKey')
-                    .merge(colorKey);
+                    .merge(colorKey as d3.Selection<HTMLDivElement, unknown, null, undefined>);
                 if (dataType === DataTypes.Numeric) {
                     colorKeyEntered.style('background-color', (d) => {
                         return d;
@@ -321,7 +322,7 @@ class Legend extends Component {
                             .enter()
                             .append("option")
                             .attr("class", "seriesTypeLabel")
-                            .merge(typeLabels)
+                            .merge(typeLabels as d3.Selection<HTMLOptionElement,unknown,BaseType,unknown>)
                             .property("selected", (data: any) => {
                                 return ((data.type == Utils.getAgVisibleMeasure(self.chartComponentData.displayState, data.aggKey, data.splitBy)) ? 
                                         " selected" : "");
@@ -423,7 +424,7 @@ class Legend extends Component {
             var seriesNameLabel = d3.select(this).selectAll(".tsi-seriesNameLabel").data([aggKey]);
             d3.select(this).classed('tsi-nsb', noSplitBys);
             var enteredSeriesNameLabel = seriesNameLabel.enter().append("button")
-                .merge(seriesNameLabel)
+                .merge(seriesNameLabel as d3.Selection<HTMLButtonElement, string, any, unknown>)
                 .attr("class", (agg: string, i) => {
                     return "tsi-seriesNameLabel" + (self.chartComponentData.displayState[agg].visible ? " shown" : "");
                 }) 
@@ -455,7 +456,7 @@ class Legend extends Component {
                 let colorKeyEntered = colorKey.enter()
                     .append("div")
                     .attr("class", 'tsi-colorKey')
-                    .merge(colorKey);
+                    .merge(colorKey as d3.Selection<HTMLDivElement,string,HTMLButtonElement,string>);
                 self.createNonNumericColorKey(dataType, colorKeyEntered, aggKey);
                 colorKey.exit().remove();
             }
@@ -463,7 +464,7 @@ class Legend extends Component {
             var seriesNameLabelText = enteredSeriesNameLabel.selectAll("h4").data([aggKey]);
             seriesNameLabelText.enter()
                 .append("h4")
-                .merge(seriesNameLabelText)
+                .merge(seriesNameLabelText as d3.Selection<HTMLHeadingElement,string,HTMLButtonElement,string>)
                 .attr("title", (d: string) => Utils.stripNullGuid(self.chartComponentData.displayState[d].name))
                 .each(function() {
                     Utils.appendFormattedElementsFromString(d3.select(this), self.chartComponentData.displayState[aggKey].name);
@@ -492,7 +493,7 @@ class Legend extends Component {
 
             var splitByContainer = d3.select(this).selectAll(".tsi-splitByContainer").data([aggKey]);
             var splitByContainerEntered = splitByContainer.enter().append("div")
-                .merge(splitByContainer)
+                .merge(splitByContainer as d3.Selection<HTMLDivElement,string,any,unknown>)
                 .classed("tsi-splitByContainer", true);
 
             let aggSelection = d3.select(this);

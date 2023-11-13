@@ -8,6 +8,7 @@ import { GroupedBarChartData } from '../../Models/GroupedBarChartData';
 import ContextMenu from './../ContextMenu';
 import Tooltip from '../Tooltip';
 import { ChartVisualizationComponent } from '../../Interfaces/ChartVisualizationComponent';
+import {BaseType} from "d3";
 
 class GroupedBarChart extends ChartVisualizationComponent {
     private contextMenu: ContextMenu;
@@ -283,7 +284,7 @@ class GroupedBarChart extends ChartVisualizationComponent {
                 barGroups = barGroups.enter()
                     .append("g")
                     .attr("class", "barGroup")
-                    .merge(barGroups)
+                    .merge(barGroups as d3.Selection<SVGGElement, string, SVGGElement, unknown>)
                     .attr("display", (d, i) => {return (this.chartComponentData.displayState[d].visible ? "inherit" : "none");})
                     .attr("visibility", "visible")
                     .attr("transform",(d, i) => {
@@ -342,7 +343,7 @@ class GroupedBarChart extends ChartVisualizationComponent {
                         .attr("dy", ".71em");
                     Utils.appendFormattedElementsFromString(labelGroupText, self.chartComponentData.displayState[aggKey].name, {inSvg: true, additionalClassName: "tsi-aggregateLabelGroupText"});
 
-                    var labelGroupBox: any = labelGroupEntered.merge(labelGroup)
+                    var labelGroupBox: any = labelGroupEntered.merge(labelGroup as d3.Selection<SVGGElement, string, BaseType, unknown>)
                         .select("rect")
                         .attr("class", 'aggregateLabelBox')
                         .attr("x", 0)
@@ -436,7 +437,7 @@ class GroupedBarChart extends ChartVisualizationComponent {
                     }
 
                     var splitByColors = Utils.createSplitByColors(self.chartComponentData.displayState, aggKey, self.chartOptions.keepSplitByColor);
-                    valueElementsEntered.merge(valueElements)
+                    valueElementsEntered.merge(valueElements as d3.Selection<SVGGElement, any, BaseType, unknown>)
                         .select("rect") 
                         .attr("fill", (d, j) => {
                             return splitByColors[j];
@@ -532,7 +533,7 @@ class GroupedBarChart extends ChartVisualizationComponent {
                             return 0;
                         });
 
-                        valueElementsEntered.merge(valueElements)
+                        valueElementsEntered.merge(valueElements as d3.Selection<SVGGElement, any, BaseType, unknown>)
                         .select("line")
                         .classed("tsi-baseLine", true)
                         .attr("stroke-width", 2)

@@ -442,7 +442,7 @@ class ScatterPlot extends ChartVisualizationComponent {
             .attr("class", 'tsi-lineSeries')
             .merge(connectedGroups)
             .each(function(seriesName){
-                let series = d3.select(this).selectAll(`.tsi-line`).data([connectedSeriesMap[seriesName].data], d => d[0].aggregateKeyI+d[0].splitBy);
+                let series = d3.select(this).selectAll<SVGPathElement, any>(`.tsi-line`).data([connectedSeriesMap[seriesName].data], d => d[0].aggregateKeyI+d[0].splitBy);
 
                 series.exit().remove();
 
@@ -450,7 +450,7 @@ class ScatterPlot extends ChartVisualizationComponent {
                     .enter()
                     .append("path")
                     .attr("class", `tsi-line`)
-                    .merge(series)
+                    .merge(series as d3.Selection<SVGPathElement, any, any, unknown>)
                     .attr("fill", "none")
                     .transition()
                     .duration(self.chartOptions.noAnimate ? 0 : self.TRANSDURATION)

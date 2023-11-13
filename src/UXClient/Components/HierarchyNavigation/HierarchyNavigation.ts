@@ -1852,7 +1852,7 @@ class HierarchyNavigation extends Component {
           .each(function (d) {
             Utils.appendFormattedElementsFromString(d3.select(this), d);
           })
-          .merge(cells);
+          .merge(cells as d3.Selection<HTMLTableCellElement,unknown, HTMLTableRowElement,any>);
         cells.exit().remove();
         rows.exit().remove();
 
@@ -1924,7 +1924,7 @@ class HierarchyNavigation extends Component {
       .each(function (d) {
         Utils.appendFormattedElementsFromString(d3.select(this), d);
       })
-      .merge(cells);
+      .merge(cells as d3.Selection<HTMLTableCellElement,unknown,HTMLTableRowElement,any>);
     cells.exit().remove();
     rows.exit().remove();
 
