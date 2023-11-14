@@ -16,12 +16,12 @@ The KustoTrender JavaScript SDK is a JavaScript library for Microsoft Azure Data
 
 ## Installing
 
-If you use npm, `npm install kustotrender`.
+If you use npm, `npm install azure-kusto-trender`.
 
 To import all of **KustoTrender** into an ES2015 application, import everything into a namespace, like so:
 
 ```js
-import KustoTrender from "kustotrender";
+import KustoTrender from "azure-kusto-trender";
 
 // later, when you want a line chart
 let kustoTrender = new KustoTrender();
@@ -31,7 +31,7 @@ let lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart'));
 You can also import components individually.  If you only need the LineChart, you can import it like so...
 
 ```js
-import LineChart from 'kustotrender/LineChart'
+import LineChart from 'azure-kusto-trender/LineChart'
 
 // later when you want a line chart
 let lineChart = new LineChart(document.getElementById('chart'));
