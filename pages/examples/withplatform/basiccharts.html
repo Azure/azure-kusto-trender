@@ -36,7 +36,7 @@
       const bucketSize = "1h";
 
       const result = await cluster.getAggregates(
-        ["283eebcb-d267-4a76-8179-a9b33fb87cf2", "0607cdea-9dd3-4c39-b076-96d020442bca"],
+        ["41804674-3ca7-47fd-9b09-501af4a14a78", "98fc75d3-864e-48d2-a160-f094a684b11b"],
         start,
         end,
         bucketSize
@@ -75,12 +75,13 @@
       var heatmap = new kustoTrender.ux.Heatmap(
         document.getElementById("chart4")
       );
-      heatmap.render(result, {}, [
+      heatmap.render(result, { theme: 'dark' }, [
         {
           searchSpan: {
             from: start,
             to: end,
-            bucketSize,
+            bucketSize : bucketSize,
+            measureTypes: ['avg']
           },
         },
       ]);
