@@ -36,7 +36,7 @@
       const bucketSize = "1h";
 
       const result = await cluster.getAggregates(
-        ["41804674-3ca7-47fd-9b09-501af4a14a78", "98fc75d3-864e-48d2-a160-f094a684b11b"],
+        ["41804674-3ca7-47fd-9b09-501af4a14a78","bea27065-87f7-471a-a0a2-1d60ab3fdb17","0607cdea-9dd3-4c39-b076-96d020442bca","3b7715ef-3da1-47f8-ac1c-874bcefccbaf","d9b365ae-49ac-4a4e-9cb5-e9675c0f59b0"],
         start,
         end,
         bucketSize
@@ -78,8 +78,8 @@
       heatmap.render(result, { theme: 'dark' }, [
         {
           searchSpan: {
-            from: start,
-            to: end,
+            from: start.toISOString(),
+            to: end.toISOString(),
             bucketSize : bucketSize,
             measureTypes: ['avg']
           },
