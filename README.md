@@ -38,11 +38,11 @@ let lineChart = new LineChart(document.getElementById('chart'));
 ```
 Importing individual components can help significantly reduce your bundle size as they work better with tree shaking. This is the recommended approach if your app only consumes specific components.
 
-To import the kustotrender stylesheet into an ES2015 application, import either `kustoTrender.css` or `kustoTrender.min.css`, like so...
+To import the kustotrender stylesheet into an ES2015 application, import either `kustotrender.css` or `kustotrender.min.css`, like so...
 
 ```js
-import 'kustotrender/kustoTrender.css' // Standard styles
-import 'kustotrender/kustoTrender.min.css' // Minified styles
+import 'azure-kusto-trender/kustotrender.css' // Standard styles
+import 'azure-kusto-trender/kustotrender.min.css' // Minified styles
 ```
 
 ## How to run Trender on your Kusto
