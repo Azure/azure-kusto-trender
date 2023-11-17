@@ -14,7 +14,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "kustoTrender.css",
+      filename: "kustotrender.css",
     }),
   ],
 });

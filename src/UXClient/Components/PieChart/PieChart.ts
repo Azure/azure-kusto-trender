@@ -175,7 +175,7 @@ class PieChart extends ChartVisualizationComponent {
                 }
 
                 arcEntered.each(function () {
-                    var pathElem = d3.select(this).selectAll(".tsi-pie-path").data(d => [d]);
+                    var pathElem = d3.select(this).selectAll<SVGPathElement, unknown>(".tsi-pie-path").data(d => [d]);
                     var pathEntered = pathElem.enter()
                         .append("path")
                         .attr("class", "tsi-pie-path")
@@ -194,7 +194,7 @@ class PieChart extends ChartVisualizationComponent {
                             }
                         })
                         .each(function(d) { (<any>this)._current = d; })
-                        .merge(pathElem)
+                        .merge(pathElem as d3.Selection<SVGPathElement, unknown, any, unknown>)
                         .transition()
                         .duration(self.TRANSDURATION)
                         .ease(d3.easeExp)

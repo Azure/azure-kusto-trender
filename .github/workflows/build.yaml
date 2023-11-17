@@ -19,8 +19,10 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
     - run: npm ci --legacy-peer-deps
-    - run: npm version patch 
-    - run: npm run webpack
+    - run: |
+          npm version patch -m "Bump release version"
+          git push --follow-tags
+    - run: npm run build
     - run: npm run prepare-samples
     - run: npm run post-build
     - uses: JS-DevTools/npm-publish@v1

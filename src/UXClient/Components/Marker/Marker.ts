@@ -158,7 +158,7 @@ class Marker extends Component {
             .append('div')
             .attr('class', 'tsi-markerContainer')
             .classed('tsi-isSeriesLabels', this.isSeriesLabels)
-            .merge(marker)
+            .merge(marker as d3.Selection<HTMLDivElement,{guid: string, timestamp: number},any,unknown>)
             .style('top', `${this.chartMargins.top + this.chartOptions.aggTopMargin}px`)
             .style('height', `${this.chartHeight - (this.chartMargins.top + this.chartMargins.bottom + this.chartOptions.aggTopMargin)}px`)
             .style('left', (d: any) => {
@@ -450,7 +450,7 @@ class Marker extends Component {
                     .data([d]);
                 markerValueCaret.enter().append('div')
                     .attr('class', 'tsi-markerValueCaret')
-                    .merge(markerValueCaret)
+                    .merge(markerValueCaret as d3.Selection<HTMLDivElement,any,any,unknown>)
                     .style("border-right-color", () => self.colorMap[d.aggregateKey + "_" + d.splitBy]);
                 markerValueCaret.exit().remove();
             });

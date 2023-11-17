@@ -5,7 +5,7 @@ import { ChartComponentData } from '../../Models/ChartComponentData';
 
 class Tooltip extends Component {
 
-    public renderTarget;
+    //public renderTarget;
     private tooltipDiv;
     private tooltipDivInner;
     private tooltipText;

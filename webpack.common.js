@@ -43,7 +43,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: 'kustoTrender.js',
+    filename: 'kustotrender.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',
     libraryTarget: 'umd'

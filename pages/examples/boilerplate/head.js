@@ -1,14 +1,14 @@
 window.addEventListener("DOMContentLoaded", function () {
   var sdkJs = document.createElement("script");
-  sdkJs.src = "../../../dist/kustoTrender.js";
+  sdkJs.src = "../../../dist/kustotrender.js";
 
   var sdkCss = document.createElement("link");
   sdkCss.rel = "stylesheet";
   sdkCss.type = "text/css";
   if (this.window.location.host.startsWith("localhost:")) {
-    sdkCss.href = "../../../dist/kustoTrender.css";
+    sdkCss.href = "../../../dist/kustotrender.css";
   } else {
-    sdkCss.href = "../../../dist/kustoTrender.min.css";
+    sdkCss.href = "../../../dist/kustotrender.min.css";
   }
 
   var metaCharset = document.createElement("meta");

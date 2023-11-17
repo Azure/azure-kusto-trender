@@ -12,7 +12,7 @@ module.exports = merge(common, {
   plugins: [
     new BundleAnalyzerPlugin({ generateStatsFile: true, analyzerMode: 'disabled', statsFilename: '../build_artifacts/umd_stats.json' }),
     new MiniCssExtractPlugin({
-      filename: 'kustoTrender.min.css'
+      filename: 'kustotrender.min.css'
     })
   ],
   optimization: {
