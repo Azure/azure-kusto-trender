@@ -2,7 +2,6 @@ import { ADXResponse, RawADXResponse } from "./ADXResponse";
 const packageJson = require('../../package.json');
 
 type ADXTokenProvider = () => Promise<string>;
-const version = packageJson.version;
 
 declare global {
   interface Crypto {
@@ -73,7 +72,7 @@ export class ADXClient {
         Authorization: `Bearer ${token}`,
         "x-ms-client-request-id": `KTrender;${self.crypto.randomUUID()}`,
         "x-ms-app": "KustoTrender",
-        "x-ms-client-version": version,
+        "x-ms-client-version": packageJson.version,
         "x-ms-user" : "KustoTrender"
       },
       body: JSON.stringify(body),
