@@ -1,5 +1,4 @@
 import { ADXResponse, RawADXResponse } from "./ADXResponse";
-const packageJson = require('../../package.json');
 
 type ADXTokenProvider = () => Promise<string>;
 
@@ -72,8 +71,9 @@ export class ADXClient {
         Authorization: `Bearer ${token}`,
         "x-ms-client-request-id": `KTrender;${self.crypto.randomUUID()}`,
         "x-ms-app": "KustoTrender",
-        "x-ms-client-version": packageJson.version,
-        "x-ms-user" : "KustoTrender"
+        "x-ms-client-version": process.env.PACKAGE_VERSION,
+        "x-ms-user" : "KustoTrender",
+        "User-Agent" : navigator.userAgent
       },
       body: JSON.stringify(body),
     });
