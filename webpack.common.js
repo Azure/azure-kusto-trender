@@ -1,5 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const packageJson = require('./package.json');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/KustoTrender.ts',
@@ -48,4 +50,9 @@ module.exports = {
     publicPath: '/dist/',
     libraryTarget: 'umd'
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.PACKAGE_VERSION': JSON.stringify(packageJson.version)
+    })
+  ]
 };

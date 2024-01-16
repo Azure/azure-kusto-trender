@@ -1,4 +1,5 @@
 import { ADXResponse, RawADXResponse } from "./ADXResponse";
+
 type ADXTokenProvider = () => Promise<string>;
 
 declare global {
@@ -69,7 +70,10 @@ export class ADXClient {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
         "x-ms-client-request-id": `KTrender;${self.crypto.randomUUID()}`,
-        "x-ms-app": "KustoTrender"
+        "x-ms-app": "KustoTrender",
+        "x-ms-client-version": process.env.PACKAGE_VERSION,
+        "x-ms-user" : "KustoTrender",
+        "User-Agent" : navigator.userAgent
       },
       body: JSON.stringify(body),
     });
