@@ -9,10 +9,11 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-      actions: read
+      actions: write
       contents: read
-      deployments: read
+      deployments: write
       security-events: write
+      packages: write
     strategy:
       matrix:
         node-version: [18.x]
