@@ -10,7 +10,7 @@ jobs:
       checks: write
       pull-requests: write
       actions: write
-      contents: read
+      contents: write
       deployments: write
       security-events: write
       packages: write
