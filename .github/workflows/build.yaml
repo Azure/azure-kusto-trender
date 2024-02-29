@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: read-all
     strategy:
       matrix:
         node-version: [18.x]
