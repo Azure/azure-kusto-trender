@@ -29,7 +29,7 @@ function initAuth(title) {
     </div>`;
 
   var authContextProperties = {
-    clientId: "b5f3b2a2-0ec3-4c9d-adfd-447e528f24ac",
+    clientId: "cc59318f-d764-4db0-bf8e-52e42d3c9c2e",
     cacheLocation: "localStorage",
   };
   authContext = new AuthenticationContext(authContextProperties);
