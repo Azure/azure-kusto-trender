@@ -6,6 +6,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      actions: read
+      contents: read
+      deployments: read
+      security-events: write
     strategy:
       matrix:
         node-version: [18.x]
