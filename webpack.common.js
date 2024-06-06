@@ -1,5 +1,4 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const packageJson = require('./package.json');
 const webpack = require('webpack');
 
@@ -22,15 +21,28 @@ module.exports = {
       {
         test: /\.(scss|css)$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader
-          },
+          'style-loader',
           'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('postcss-url')({
+                    url: 'inline',
+                    maxSize: 10,
+                    fallback: 'copy',
+                    assetsPath: 'dist/assets',
+                  }),
+                ],
+              },
+            },
+          },
           'sass-loader'
         ]
       },
       {
-        test: /\.(png|jp(e*)g|svg)$/,
+        test: /\.(png|jpe?g)$/,
         use: [{
           loader: 'url-loader',
           options: {
@@ -38,7 +50,18 @@ module.exports = {
             name: 'images/[hash]-[name].[ext]'
           }
         }]
-      }
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/[name].[hash:8].[ext]',
+            },
+          },
+        ],
+      },
     ]
   },
   resolve: {
@@ -53,6 +76,6 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.PACKAGE_VERSION': JSON.stringify(packageJson.version)
-    })
+    }),
   ]
 };
