@@ -37,7 +37,7 @@ module.exports = {
         
         test: /\.(jp(e*)g|png|gif)$/,
         type: 'asset/resource',
-      },
+      }, 
     ]
   },
   resolve: {
