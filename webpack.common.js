@@ -30,8 +30,12 @@ module.exports = {
         ]
       },
       {
+        test: /\.svg/,
+        type: 'asset/inline'
+      },      
+      {
         
-        test: /\.(jp(e*)g|png|svg|gif)$/,
+        test: /\.(jp(e*)g|png|gif)$/,
         type: 'asset/resource',
       },
     ]
