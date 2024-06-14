@@ -1868,8 +1868,10 @@ class LineChart extends TemporalXAxisComponent {
 
                 // Reset public facing yExtents
                 this.chartComponentData.resetYExtents(); 
+                this.svgSelection.select(".svgGroup").selectAll(".tsi-aggGroup").remove()
 
                 let aggregateGroups = this.svgSelection.select('.svgGroup').selectAll('.tsi-aggGroup')
+                    .filter((agg) => !isNaN(agg.aggKey))
                     .data(visibleCDOs, (agg) => agg.aggKey);
                     var self = this;
 

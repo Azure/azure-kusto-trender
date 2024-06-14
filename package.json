@@ -56,11 +56,11 @@
     },
     "dependencies": {
         "@types/awesomplete": "^1.1.8",
-        "@types/d3": "^4.13.0",
+        "@types/d3": "^5.16.0",
         "@types/d3-shape": "^3.1.5",
         "awesomplete": "^1.1.2",
         "azure-maps-control": "^2.0.26",
-        "d3": "^4.13.0",
+        "d3": "^5.16.0",
         "d3-interpolate-path": "^2.3.0",
         "moment": "^2.27.0",
         "moment-timezone": "^0.5.31",
