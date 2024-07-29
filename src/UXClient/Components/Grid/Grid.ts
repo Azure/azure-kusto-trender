@@ -146,7 +146,7 @@ class Grid extends Component {
             .attr("tabindex", 1)
             .merge(headerCells)
             .attr("class", (d, i) => this.cellClass(0, i+1) + ' tsi-headerCell')
-            .on("keydown", (d, i) => {this.arrowNavigate(d3.event, 0, i+1)})
+            .on("keydown", (event,d, i) => {this.arrowNavigate(event, 0, i+1)})
             .text(this.getFormattedDate)
             .attr('aria-label', (h) => {
                 return `${this.getString('column header for date')} ${this.getFormattedDate(h)}`
@@ -187,7 +187,7 @@ class Grid extends Component {
                     .attr("tabindex", 1)
                     .merge(headerCell as d3.Selection<HTMLTableCellElement, any, any, unknown>)
                     .attr('class', (d, col) => `tsi-rowHeaderCell ${self.cellClass(i + 1, 0)}`)
-                    .on("keydown", (d, col) => {self.arrowNavigate(d3.event, i + 1, 0)})
+                    .on("keydown", (event,d) => {self.arrowNavigate(event, i + 1, 0)})
                     .attr('aria-label', d => {
                         return `${self.getString('row header for')} ${Utils.stripNullGuid(getRowHeaderText(d))}`;
                     })
@@ -207,12 +207,12 @@ class Grid extends Component {
                             .text((d: any) => d);
                     })
                 headerCell.exit().remove();
-
+                var colIdx = 0
                 cells.enter()
                     .append('td')
                     .merge(cells as d3.Selection<HTMLTableCellElement, any, any, unknown>)
                     .attr('class', (d, col) => `tsi-valueCell ${self.cellClass(i + 1, col + 1)}`)
-                    .on("keydown", (d, col) => {self.arrowNavigate(d3.event, i + 1, col + 1)})
+                    .on("keydown", (event,d) => {self.arrowNavigate(event, i + 1, colIdx++)})
                     .attr("tabindex", 1)
                     .attr('aria-label', (d: any, i) => {
                         if (!d.measures || Object.keys(d.measures).length === 0) {
@@ -278,7 +278,7 @@ class Grid extends Component {
             this.tableHeaderRow.append('th')
                 .attr("tabindex", 0)
                 .attr("class", "tsi-topLeft " + this.cellClass(0,0))
-                .on("keydown", () => {this.arrowNavigate(d3.event, 0, 0)})
+                .on("keydown", (event,d) => {this.arrowNavigate(event, 0, 0)})
                 .attr("aria-label", `${this.getString('A grid of values')} - ${this.getString('Use the arrow keys to navigate the values of each cell')}`)
         }
 
@@ -291,10 +291,10 @@ class Grid extends Component {
                 .attr("class", "tsi-closeButton")
                 .attr('aria-label', this.getString('close grid'))
                 .html('&times')
-                .on('keydown', () => {
-                    if (d3.event.keyCode === 9) {
+                .on('keydown', (event,d) => {
+                    if (event.keyCode === 9) {
                         this.focus(0, 0);
-                        d3.event.preventDefault();
+                        event.preventDefault();
                     }
                 })
                 .on("click", () => {

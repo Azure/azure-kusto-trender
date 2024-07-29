@@ -418,14 +418,14 @@ class GroupedBarChart extends ChartVisualizationComponent {
                     valueElementsEntered.append("line");
 
 
-                    var valueElementMouseout = (d, j) => {
+                    var valueElementMouseout = (event,d) => {
                         if (self.contextMenu && self.contextMenu.contextMenuVisible)
                             return;
                         focus.style("display", "none");                        
                         (<any>legendObject.legendElement.selectAll('.tsi-splitByLabel').filter(function (filteredSplitBy: string) {
                             return (d3.select(this.parentNode).datum() == d.aggKey) && (filteredSplitBy == d.splitBy);
                         })).classed("inFocus", false);
-                        d3.event.stopPropagation();
+                        event.stopPropagation();
                         svgSelection.selectAll(".tsi-valueElement")
                                     .attr("stroke-opacity", 1)
                                     .attr("fill-opacity", 1);
@@ -478,9 +478,9 @@ class GroupedBarChart extends ChartVisualizationComponent {
                             
                             (<any>focus.node()).parentNode.appendChild(focus.node());
                         })
-                        .on("mousemove", function (d, i) {
+                        .on("mousemove", function (event,d) {
                             if (self.chartOptions.tooltip) {
-                                var mousePos = d3.mouse(<any>g.node());
+                                var mousePos = d3.pointer(event,<any>g.node());
                                 tooltip.render(self.chartOptions.theme)
                                 tooltip.draw(d, self.chartComponentData, mousePos[0], mousePos[1], self.chartMargins,(text) => {
                                     self.tooltipFormat(self.convertToTimeValueFormat(d), text, TooltipMeasureFormat.SingleValue);
@@ -489,12 +489,12 @@ class GroupedBarChart extends ChartVisualizationComponent {
                                 tooltip.hide();
                             }
                         })
-                        .on("mouseout", valueElementMouseout)
-                        .on("contextmenu", (d: any, i) => {
+                        .on("mouseout", (event,d) => valueElementMouseout(event,d))
+                        .on("contextmenu", (event,d) => {
                             if (self.chartComponentData.displayState[d.aggKey].contextMenuActions && 
                                     self.chartComponentData.displayState[d.aggKey].contextMenuActions.length) {
-                                var mousePosition = d3.mouse(<any>targetElement.node());
-                                d3.event.preventDefault();
+                                var mousePosition = d3.pointer(event,<any>targetElement.node());
+                                event.preventDefault();
                                 self.contextMenu.draw(self.chartComponentData, self.renderTarget, self.chartOptions, 
                                                       mousePosition, d.aggKey, d.splitBy, mouseOutValueElementOnContextMenuClick,
                                                       new Date(self.chartComponentData.timestamp));
@@ -631,8 +631,8 @@ class GroupedBarChart extends ChartVisualizationComponent {
             });
         }
 
-        d3.select("html").on("click." + Utils.guid(), () => {
-            if (this.ellipsisContainer && d3.event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
+        d3.select("html").on("click." + Utils.guid(), (event,d) => {
+            if (this.ellipsisContainer && event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
                 this.ellipsisMenu.setMenuVisibility(false);
             }
         });
