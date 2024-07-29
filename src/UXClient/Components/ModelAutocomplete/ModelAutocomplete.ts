@@ -45,8 +45,8 @@ class ModelAutocomplete extends Component {
       .attr("tabindex", "0")
       .attr("role", "button")
       .attr("aria-label", "Clear Search")
-      .on("click keydown", function () {
-        if (Utils.isKeyDownAndNotEnter(d3.event)) {
+      .on("click keydown", function (event,d) {
+        if (Utils.isKeyDownAndNotEnter(event)) {
           return;
         }
         (input.node() as any).value = "";
@@ -78,8 +78,8 @@ class ModelAutocomplete extends Component {
         justAwesompleted = true;
       }
     );
-    input.on("keydown", () => {
-      this.chartOptions.onKeydown(d3.event, this.ap);
+    input.on("keydown", (event,d) => {
+      this.chartOptions.onKeydown(event, this.ap);
     });
 
     (input.node() as any).addEventListener("keyup", function (event) {
@@ -97,7 +97,7 @@ class ModelAutocomplete extends Component {
     var searchText;
     var self = this;
 
-    input.on("input", async function () {
+    input.on("input", async function (evt) {
       searchText = (<any>this).value;
       if (searchText.replace(/ /g, "") && !noSuggest) {
         const suggestions = await self.delegate.getInstancesSuggestions(
@@ -124,12 +124,12 @@ class ModelAutocomplete extends Component {
           liveAria.innerText = "";
         }, 1000);
       } else {
-        self.ap.close();
+        self.ap.close();  
       }
-      const event = d3.event;
+      const event = evt;
       self.chartOptions.onInput(
         searchText,
-        noSuggest || !event ? { which: 13 } : d3.event
+        noSuggest || !event ? { which: 13 } : evt
       );
       noSuggest = false;
       clear.classed("tsi-shown", searchText.length);

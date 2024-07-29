@@ -151,7 +151,7 @@ class PieChart extends ChartVisualizationComponent {
                   }
 
                 var self = this;
-                function pathMouseout (d: any) {
+                function pathMouseout (event,d: any) {
                     if (self.contextMenu && self.contextMenu.contextMenuVisible)
                         return;
                     tooltip.hide();
@@ -159,15 +159,15 @@ class PieChart extends ChartVisualizationComponent {
                     (<any>self.legendObject.legendElement.selectAll('.tsi-splitByLabel')).classed("inFocus", false);
                 } 
 
-                function pathMouseInteraction (d: any)  {
+                function pathMouseInteraction (event,d: any)  {
                     if (this.contextMenu && this.contextMenu.contextMenuVisible)
                         return;
-                    pathMouseout(d); 
+                    pathMouseout(event,d); 
                     labelMouseover(d.data.aggKey, d.data.splitBy);
                     (<any>self.legendObject.legendElement.selectAll('.tsi-splitByLabel').filter(function (filteredSplitBy: string) {
                         return (d3.select(this.parentNode).datum() == d.data.aggKey) && (filteredSplitBy == d.data.splitBy);
                     })).classed("inFocus", true);
-                    drawTooltip(d, d3.mouse(self.svgSelection.node()));
+                    drawTooltip(d, d3.pointer(event,self.svgSelection.node()));
                 }
 
                 var mouseOutArcOnContextMenuClick = () => {
@@ -180,14 +180,14 @@ class PieChart extends ChartVisualizationComponent {
                         .append("path")
                         .attr("class", "tsi-pie-path")
                         .attr("d", drawArc)
-                        .on("mouseover", pathMouseInteraction)
-                        .on("mousemove" , pathMouseInteraction)
-                        .on("mouseout", pathMouseout)
-                        .on("contextmenu", (d: any, i) => {
+                        .on("mouseover", (event,d)=>pathMouseInteraction(event,d))
+                        .on("mousemove" ,(event,d)=>pathMouseInteraction(event,d))
+                        .on("mouseout", (event,d)=>pathMouseout(event,d))
+                        .on("contextmenu", (event,d: any) => {
                             if (self.chartComponentData.displayState[d.data.aggKey].contextMenuActions && 
                                 self.chartComponentData.displayState[d.data.aggKey].contextMenuActions.length) {
-                                var mousePosition = d3.mouse(<any>targetElement.node());
-                                d3.event.preventDefault();
+                                var mousePosition = d3.pointer(event,<any>targetElement.node());
+                                event.preventDefault();
                                 self.contextMenu.draw(self.chartComponentData, self.renderTarget, self.chartOptions, 
                                                     mousePosition, d.data.aggKey, d.data.splitBy, mouseOutArcOnContextMenuClick,
                                                     new Date(self.chartComponentData.timestamp));
@@ -239,8 +239,8 @@ class PieChart extends ChartVisualizationComponent {
         this.draw();
         this.gatedShowGrid();
 
-        d3.select("html").on("click." + Utils.guid(), () => {
-            if (this.ellipsisContainer && d3.event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
+        d3.select("html").on("click." + Utils.guid(), (event,d) => {
+            if (this.ellipsisContainer && event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
                 this.ellipsisMenu.setMenuVisibility(false);
             }
         });

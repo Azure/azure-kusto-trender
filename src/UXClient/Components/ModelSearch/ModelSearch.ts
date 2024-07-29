@@ -21,10 +21,10 @@ class ModelSearch extends Component {
   constructor(renderTarget: Element, delegate: HierarchyDelegate) {
     super(renderTarget);
     this.delegate = delegate;
-    d3.select("html").on("click." + Utils.guid(), () => {
+    d3.select("html").on("click." + Utils.guid(), (event,d) => {
       if (
         this.clickedInstance &&
-        d3.event.target != this.clickedInstance &&
+        event.target != this.clickedInstance &&
         this.contextMenu
       ) {
         this.closeContextMenu();
@@ -180,8 +180,8 @@ class ModelSearch extends Component {
                     .append("div")
                     .text(k)
                     .on("click", cma[k])
-                    .on("keydown", function () {
-                      let evt = d3.event;
+                    .on("keydown", function (event,d) {
+                      let evt = event;
                       if (evt.keyCode === 13) {
                         this.click();
                       }
@@ -239,13 +239,13 @@ class ModelSearch extends Component {
           this.instanceResults
             .append("div")
             .html(self.getInstanceHtml(i)) // known unsafe usage of .html
-            .on("click", function () {
-              let mouseWrapper = d3.mouse(self.wrapper.node());
-              let mouseElt = d3.mouse(this as any);
+            .on("click", function (event,d) {
+              let mouseWrapper = d3.pointer(event,self.wrapper.node());
+              let mouseElt = d3.pointer(event,this as any);
               handleClick(this, mouseWrapper[1], mouseElt[1]);
             })
-            .on("keydown", () => {
-              let evt = d3.event;
+            .on("keydown", (event,d) => {
+              let evt = event;
               if (evt.keyCode === 13) {
                 let resultsNodes = this.instanceResults
                   .selectAll(".tsi-modelResultWrapper")
