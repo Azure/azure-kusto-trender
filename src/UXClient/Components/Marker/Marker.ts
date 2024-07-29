@@ -193,9 +193,9 @@ class Marker extends Component {
                         .attr('class', 'tsi-markerLabelText')
                         .attr('contenteditable', 'true')
                         .text(self.labelText)
-                        .on('keydown', () =>{
-                            if (d3.event.keyCode === KeyCodes.Enter && !d3.event.shiftKey) {
-                                d3.event.preventDefault();
+                        .on('keydown', (event,data) =>{
+                            if (event.keyCode === KeyCodes.Enter && !event.shiftKey) {
+                                event.preventDefault();
                                 self.closeButton.node().focus();
                             }
                         })
@@ -212,8 +212,8 @@ class Marker extends Component {
                             d3.select(this.parentNode).classed('tsi-markerLabelTextFocused', false);
                             self.onChange(false, false, false);
                         })
-                        .on('mousedown', () => {
-                            d3.event.stopPropagation();
+                        .on('mousedown', (event,data) => {
+                            event.stopPropagation();
                         })
                         .on('mouseover', function () {
                             if (!self.isMarkerDragOccuring()) {
@@ -240,19 +240,19 @@ class Marker extends Component {
                             self.markerIsDragging = true;
                             self.bumpMarker();
                         })
-                        .on('drag', function (d) {
-                            if (d3.select(d3.event.sourceEvent.target).classed('tsi-closeButton')) {
+                        .on('drag', function (event,d) {
+                            if (d3.select(event.sourceEvent.target).classed('tsi-closeButton')) {
                                 return;
                             }
                             let marker = d3.select(<any>d3.select(this).node().parentNode);
                             let startPosition = self.x(new Date(self.timestampMillis));
-                            let newPosition = startPosition + d3.event.x;
+                            let newPosition = startPosition + event.x;
 
                             self.timestampMillis = Utils.findClosestTime(self.x.invert(newPosition).valueOf(), self.chartComponentData.timeMap);
                             self.setPositionsAndLabels(self.timestampMillis);
                         })
-                        .on('end', function (d: any) {
-                            if (!d3.select(d3.event.sourceEvent.target).classed('tsi-closeButton')) {
+                        .on('end', function (event,d: any) {
+                            if (!d3.select(event.sourceEvent.target).classed('tsi-closeButton')) {
                                 self.onChange(false, false);
                             }
                             d.isDragging = false;
