@@ -41,6 +41,26 @@
                 }
             }
 
+            var mycustomExport = (marker) => {alert("Alert! Custom export function called with marker: " + JSON.stringify(marker))};
+           
+            var defaultMarkers = [[to - 500*1000 , "MarkerTP"],[to - 200*1000 , "MarkerAS"]];
+
+            var chartOptionsSwimLane1 = {
+                theme: 'light',
+                markers: defaultMarkers,
+                yExtent: [0.2, 0.8],
+                yAxisType: 'shared', label: 'Lane 1', 
+                onClick: () => alert("'Lane 1' label/axis clicked"),
+                onMarkersChange: (marker) => {
+                    if(marker){
+                        mycustomExport(marker);
+                        console.log(JSON.stringify(marker));
+                    } else {
+                        console.log('No markers');
+                    }
+                }
+            };
+
             var swimLaneOptions = {
                 1: { yExtent: [0.2, 0.8], yAxisType: 'shared', label: 'Lane 1', onClick: () => alert("'Lane 1' label/axis clicked") },
                 2: { yAxisType: 'shared', label: 'Lane 2', onClick: () => alert("'Lane 2' label/axis clicked") },
@@ -50,7 +70,7 @@
             // render the data in a chart
             var kustoTrender = new KustoTrender();
             var lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart1'));
-            lineChart.render(data, { theme: 'light', swimLaneOptions });
+            lineChart.render(data, chartOptionsSwimLane1);
 
             var barChart = new kustoTrender.ux.BarChart(document.getElementById('chart2'));
             barChart.render(data, { theme: 'dark', grid: true, tooltip: true, legend: 'compact' });
