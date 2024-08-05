@@ -652,15 +652,16 @@ class LineChart extends TemporalXAxisComponent {
     }
 
     private importMarkers () {
+        // delete all the old markers
+        if (Object.keys(this.markerGuidMap).length) {
+            Object.keys(this.markerGuidMap).forEach((guid) => {
+                this.markerGuidMap[guid].destroyMarker();
+                delete this.markerGuidMap[guid];
+            });
+        }
+        this.markerGuidMap = {};
         if (this.chartOptions.markers && this.chartOptions.markers.length > 0) {
-            // delete all the old markers
-            if (Object.keys(this.markerGuidMap).length) {
-                Object.keys(this.markerGuidMap).forEach((guid) => {
-                    this.markerGuidMap[guid].destroyMarker();
-                    delete this.markerGuidMap[guid];
-                });
-            }
-            this.markerGuidMap = {};            
+            
             this.chartOptions.markers.forEach((markerValueTuples, markerIndex) => {
                 if (markerValueTuples === null || markerValueTuples === undefined) {
                     return;
@@ -2040,9 +2041,8 @@ class LineChart extends TemporalXAxisComponent {
 
         this.renderSeriesLabelsMarker();
 
-        if (this.chartOptions.markers && this.chartOptions.markers.length > 0) {
-            this.importMarkers();
-        }
+        this.importMarkers();
+        
 
         d3.select("html").on("click." + Utils.guid(), () => {
             if (this.ellipsisContainer && d3.event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
