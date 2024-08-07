@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Basic Charts</title>
+
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../boilerplate/head.js"></script>
+</head>
+
+<body style="font-family: 'Segoe UI', sans-serif;">
+    <div id="chart1" style="width: 100%; height: 600px;"></div>
+
+    <script>
+        // create fake data in the shape our charts expect
+        var data = [];
+        window.onload = function () {
+            var button = document.createElement("button");
+            button.onclick = function () {
+                renderChart1();
+            };
+            button.innerHTML = "Chart 1";
+            button.style.width = "200px";
+            button.style.height = "50px";
+            button.style.backgroundColor = 'rgb(' + 97 + ',' + 97 + ',' + 99 + ')';;
+            button.style.color = "white";
+            document.body.appendChild(button);
+
+            var button2 = document.createElement("button");
+            button2.onclick = function () {
+                renderChart2();
+            };
+            button2.innerHTML = "Chart 2";
+            button2.style.width = "200px";
+            button2.style.height = "50px";
+            button2.style.backgroundColor = 'rgb(' + 18 + ',' + 69 + ',' + 89 + ')';
+            button2.style.color = "white";
+            document.body.appendChild(button2);
+
+            var button3 = document.createElement("button");
+            button3.onclick = function () {
+                renderChart3();
+            };
+            button3.innerHTML = "No Marker";
+            button3.style.width = "200px";
+            button3.style.height = "50px";
+            button3.style.backgroundColor = 'blue';
+            button3.style.color = "white";
+            document.body.appendChild(button3);
+
+
+
+            var from = new Date(Math.floor((new Date()).valueOf() / (1000 * 60 * 60)) * (1000 * 60 * 60));
+            var to;
+            for (var i = 0; i < 3; i++) {
+                var lines = {};
+                data.push({ [`Factory${i}`]: lines });
+                for (var j = 0; j < 2; j++) {
+                    var values = {};
+                    lines[`Station${j}`] = values;
+                    for (var k = 0; k < 60; k++) {
+                        if (!(k % 2 && k % 3)) {  // if check is to create some sparseness in the data
+                            var to = new Date(from.valueOf() + 1000 * 60 * k);
+                            var val = Math.random();
+                            var val2 = Math.random();
+                            var val3 = Math.random();
+                            var val4 = Math.random();
+                            values[to.toISOString()] = { avg: val, x: val2, y: val3, r: val4 };
+                        }
+                    }
+                }
+            }
+
+            var markersdata = {
+                "chart1": [[new Date(from.valueOf() + 1000 * 60 * 20), "FIRSTMarker1"], [new Date(from.valueOf() + 1000 * 60 * 50), "FIRSTMarker2"]],
+                "chart2": [[new Date(from.valueOf() + 1000 * 60 * 35), "SECONDMarker2"], [new Date(from.valueOf() + 1000 * 60 * 5), "SECONDMarker1"]],
+                "chart3": []
+            }
+            // render the data in a chart
+            var kustoTrender = new KustoTrender();
+            var lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart1'));
+
+            var renderChart1 = function () {
+                var chartOptionsSwimLane = {
+                    theme: 'light',
+                    markers: markersdata["chart1"],
+                    yExtent: [0.2, 0.8],
+                    yAxisType: 'shared', label: 'Lane 1',
+                    onClick: () => alert("'Lane 1' label/axis clicked"),
+                    onMarkersChange: (marker) => {
+                        if (marker) {
+                            console.log(JSON.stringify(marker));
+                            markersdata["chart1"] = marker;
+                        } else {
+                            console.log('No markers');
+                        }
+                    }
+                };
+                lineChart.render(data, chartOptionsSwimLane);
+            };
+
+            var renderChart2 = function () {
+                var chartOptions = {
+                    theme: 'dark',
+                    markers: markersdata["chart2"],
+                    yExtent: [0.2, 0.8],
+                    yAxisType: 'shared', label: 'Lane 1',
+                    onClick: () => alert("'Lane 1' label/axis clicked"),
+                    onMarkersChange: (marker) => {
+                        if (marker) {
+                            console.log(JSON.stringify(marker));
+                            markersdata["chart2"] = marker;
+
+                        } else {
+                            console.log('No markers');
+                        }
+                    }
+                };
+                lineChart.render(data, chartOptions);
+            };
+
+            var renderChart3 = function () {
+                var chartOptionsSwimLane = {
+                    theme: 'dark',
+                    markers: markersdata["chart3"],
+                    yExtent: [0.2, 0.8],
+                    yAxisType: 'shared', label: 'Lane 1',
+                    onClick: () => alert("'Lane 1' label/axis clicked"),
+                    onMarkersChange: (marker) => {
+                        if (marker) {
+                            console.log(JSON.stringify(marker));
+                            markersdata["chart3"] = marker;
+                        } else {
+                            console.log('No markers');
+                        }
+                    }
+                };
+                lineChart.render(data, chartOptionsSwimLane);
+            };
+
+        };
+    </script>
+</body>
+
+</html>
