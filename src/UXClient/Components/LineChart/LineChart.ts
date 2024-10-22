@@ -643,8 +643,6 @@ class LineChart extends TemporalXAxisComponent {
                             checkAllLines(numberOfAttempts + 1);
                         }
                     }, Math.max(this.TRANSDURATION, 250));
-                } else {
-                    reject();
                 }
             }
             checkAllLines(0);
