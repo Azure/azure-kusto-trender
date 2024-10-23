@@ -1529,9 +1529,7 @@ class LineChart extends TemporalXAxisComponent {
             self.overwriteSwimLanes();
             self.render(self.data, { ...self.chartOptions, yAxisState: self.nextStackedState() }, self.aggregateExpressionOptions);
             d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
-            console.log('toggleAxis-'+ JSON.stringify(this));
             setTimeout(() => (d3.select(self.renderTarget).node() as any).focus(), 200);
-            console.log('toggleAxis- LineChart Done');
         };
     }
 
@@ -1594,6 +1592,7 @@ class LineChart extends TemporalXAxisComponent {
             var self = this;
             this.hasStackedButton = true;
             this.stackedButton = this.chartControlsPanel.append("button")
+                .style("left", "60px")
                 .attr("class", "tsi-stackedButton")
                 .attr("aria-label", () => this.getString("set axis state to") + ' ' + this.nextStackedState())
                 .attr("title", () => this.getString("Change y-axis type"))
