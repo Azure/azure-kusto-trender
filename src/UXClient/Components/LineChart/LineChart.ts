@@ -643,8 +643,6 @@ class LineChart extends TemporalXAxisComponent {
                             checkAllLines(numberOfAttempts + 1);
                         }
                     }, Math.max(this.TRANSDURATION, 250));
-                } else {
-                    reject();
                 }
             }
             checkAllLines(0);
@@ -1524,6 +1522,17 @@ class LineChart extends TemporalXAxisComponent {
         })
     }
 
+    public toggleAxis(): any {
+        console.log('toggleAxis- LineChart');
+        var self = this;
+        return function () {
+            self.overwriteSwimLanes();
+            self.render(self.data, { ...self.chartOptions, yAxisState: self.nextStackedState() }, self.aggregateExpressionOptions);
+            d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
+            setTimeout(() => (d3.select(self.renderTarget).node() as any).focus(), 200);
+        };
+    }
+
     public render (data: any, options: any, aggregateExpressionOptions: any) {
         super.render(data, options, aggregateExpressionOptions);
 
@@ -1588,12 +1597,7 @@ class LineChart extends TemporalXAxisComponent {
                 .attr("aria-label", () => this.getString("set axis state to") + ' ' + this.nextStackedState())
                 .attr("title", () => this.getString("Change y-axis type"))
                 .attr("type", "button")
-                .on("click", function () {
-                    self.overwriteSwimLanes();
-                    self.render(self.data, {...self.chartOptions, yAxisState: self.nextStackedState()}, self.aggregateExpressionOptions);
-                    d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
-                    setTimeout (() => (d3.select(this).node() as any).focus(), 200);
-                });
+                .on("click", this.toggleAxis());
         } else if (this.chartOptions.hideChartControlPanel && this.chartControlsPanel !== null){
             this.hasStackedButton = false;
             this.removeControlPanel();

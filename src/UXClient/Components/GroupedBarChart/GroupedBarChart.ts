@@ -231,10 +231,7 @@ class GroupedBarChart extends ChartVisualizationComponent {
 
                     this.stackedButton = this.chartControlsPanel.append("button")
                         .style("left", "60px")
-                        .attr("class", "tsi-stackedButton").on("click", function () {
-                            self.chartOptions.stacked = !self.chartOptions.stacked;
-                            self.draw();
-                        })
+                        .attr("class", "tsi-stackedButton").on("click", this.toggleAxis())
                         .attr("type", "button")
                         .attr('title', this.getString('Stack/Unstack Bars'));
                 } else  if (this.chartOptions.hideChartControlPanel && this.chartControlsPanel !== null){
@@ -642,6 +639,14 @@ class GroupedBarChart extends ChartVisualizationComponent {
         this.gatedShowGrid();
 
         this.legendPostRenderProcess(this.chartOptions.legend, this.svgSelection, true);
+    }
+
+    private toggleAxis(): any {
+        var self = this;
+        return function () {
+            self.chartOptions.stacked = !self.chartOptions.stacked;
+            self.draw();
+        };
     }
 }
 export default GroupedBarChart
