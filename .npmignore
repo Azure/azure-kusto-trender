@@ -1,0 +1,7 @@
+node_modules/
+.gitignore
+.vscode/settings.json
+scripts
+.vs
+build_artifacts/
+.DS_Store

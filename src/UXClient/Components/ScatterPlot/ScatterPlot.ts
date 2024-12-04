@@ -58,7 +58,7 @@ class ScatterPlot extends ChartVisualizationComponent {
     }
 
     ScatterPlot(){}
-    public render(data: any, options: any, aggregateExpressionOptions: any, fromSlider: boolean = false) {
+    public render(data: any, options: any, aggregateExpressionOptions?: any, fromSlider: boolean = false) {
         super.render(data, options, aggregateExpressionOptions);
         // If measure options not set, or less than 2, return
         if(this.chartOptions["spMeasures"] == null || (this.chartOptions["spMeasures"] != null && this.chartOptions["spMeasures"].length < 2)){
