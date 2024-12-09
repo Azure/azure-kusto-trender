@@ -29,7 +29,7 @@ class GroupedBarChart extends ChartVisualizationComponent {
     }
 
     GroupedBarChart() { }
-    public render(data: any, options: any, aggregateExpressionOptions: any) {
+    public render(data: any, options: any, aggregateExpressionOptions?: any) {
         super.render(data, options, aggregateExpressionOptions);
         if (options && options.stacked || this.isStacked == null) {
             this.isStacked = this.chartOptions.stacked;

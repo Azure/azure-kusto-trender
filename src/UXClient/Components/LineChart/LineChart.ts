@@ -1533,13 +1533,13 @@ class LineChart extends TemporalXAxisComponent {
         };
     }
 
-    public render (data: any, options: any, aggregateExpressionOptions: any) {
+    public render (data: any, options: any, aggregateExpressionOptions?: any) {
         super.render(data, options, aggregateExpressionOptions);
 
         this.originalSwimLanes = this.aggregateExpressionOptions.map((aEO) => {
             return aEO.swimLane;
         });
-        this.originalSwimLaneOptions = options.swimLaneOptions;
+        this.originalSwimLaneOptions = options && options.swimLaneOptions;
 
         this.hasBrush = options && (options.brushMoveAction || options.brushMoveEndAction || options.brushContextMenuActions);
         this.chartOptions.setOptions(options);
