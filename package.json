@@ -36,7 +36,8 @@
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-typescript2": "^0.34.1",
         "rollup-plugin-visualizer": "^5.9.2",
-        "sass-loader": "^13.2.2",
+        "sass": "^1.82.0",
+        "sass-loader": "^13.3.3",
         "shx": "^0.3.4",
         "style-loader": "^3.3.2",
         "terser-webpack-plugin": "^5.3.7",
@@ -61,7 +62,6 @@
         "moment": "^2.27.0",
         "moment-timezone": "^0.5.31",
         "npm": "^8.19.2",
-        "sass": "^1.82.0",
         "split.js": "^1.5.11"
     },
     "publishConfig": {
