@@ -1,0 +1,25 @@
+name:  Build and deploy on prod
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to remove'
+        required: true
+        default: '0.0.0'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      actions: write
+      contents: write
+      deployments: write
+      security-events: write
+      packages: write
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+    - run: npm set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
+    - run: npm unpublish azure-kusto-trender@$version
