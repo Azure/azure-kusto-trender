@@ -24,4 +24,4 @@ jobs:
       - name: Authenticate with private NPM package
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Deprecate version
-        run: npm deprecate azure-kusto-trender@0.0.19 "Superceded by version 0.0.20"
+        run: npm deprecate azure-kusto-trender@0.0.18 "Superceded by version 0.0.20"
