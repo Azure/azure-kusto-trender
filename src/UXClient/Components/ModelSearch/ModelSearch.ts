@@ -35,7 +35,7 @@ class ModelSearch extends Component {
 
   ModelSearch() {}
 
-  public async render(hierarchyData: any, chartOptions: any) {
+  public async render(hierarchyData: any, chartOptions?: any) {
     this.chartOptions.setOptions(chartOptions);
     let self = this;
     let continuationToken, searchText;

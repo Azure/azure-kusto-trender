@@ -16,7 +16,7 @@ class ModelAutocomplete extends Component {
     this.delegate = delegate;
   }
 
-  public render(chartOptions: any) {
+  public render(chartOptions?: any) {
     this.chartOptions.setOptions(chartOptions);
     let targetElement = d3.select(this.renderTarget);
     targetElement.html("");

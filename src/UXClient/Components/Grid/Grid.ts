@@ -75,7 +75,7 @@ class Grid extends Component {
 		}
 	}
 	
-	public renderFromAggregates(data: any, options: any, aggregateExpressionOptions: any, chartComponentData) {
+	public renderFromAggregates(data: any, options?: any, aggregateExpressionOptions?: any, chartComponentData? : any) {
 		this.chartOptions.setOptions(options);
 		var dataAsJson = data.reduce((p,c,i) => {
 			var aeName = Object.keys(c)[0]; 
@@ -237,7 +237,7 @@ class Grid extends Component {
         rowsEntered.exit().remove();
     }
 	
-	public render(data: any, options: any, aggregateExpressionOptions: any, chartComponentData: ChartComponentData = null) {
+	public render(data: any, options?: any, aggregateExpressionOptions?: any, chartComponentData: ChartComponentData = null) {
         data = Utils.standardizeTSStrings(data);
         this.chartOptions.setOptions(options);
         this.gridComponent = d3.select(this.renderTarget);
