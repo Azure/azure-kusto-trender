@@ -2,7 +2,7 @@ name:  Build and deploy on prod
 on:
   push:
     branches:
-      - bugfix/importFix
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,7 +34,6 @@ jobs:
       with:
         token: ${{ secrets.NPM_TOKEN }}
         package: "./package.json"
-        dry-run: true
     - run: git push
     
     # - name: Azure Static Website Deploy
