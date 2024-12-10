@@ -1,4 +1,4 @@
-name:  Build and deploy on prod
+name:  Unnpublish version
 on:
   workflow_dispatch:
     inputs:
@@ -21,5 +21,7 @@ jobs:
       matrix:
         node-version: [18.x]
     steps:
-    - run: npm set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
-    - run: npm unpublish azure-kusto-trender@0.0.19
+      - name: Authenticate with private NPM package
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      - name: Unpublish version
+        run: npm unpublish azure-kusto-trender@0.0.19
