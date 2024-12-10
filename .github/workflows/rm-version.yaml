@@ -22,4 +22,4 @@ jobs:
         node-version: [18.x]
     steps:
     - run: npm set "//registry.npmjs.org/:_authToken" ${{ secrets.NPM_TOKEN }}
-    - run: npm unpublish azure-kusto-trender@$version
+    - run: npm unpublish azure-kusto-trender@0.0.19
