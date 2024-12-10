@@ -33,7 +33,7 @@ jobs:
     - uses: JS-DevTools/npm-publish@v1
       with:
         token: ${{ secrets.NPM_TOKEN }}
-        package: "./dist/package.json"
+        package: "./package.json"
     - run: git push
     
     # - name: Azure Static Website Deploy
