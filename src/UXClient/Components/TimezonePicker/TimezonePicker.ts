@@ -46,7 +46,7 @@ class TimezonePicker extends ChartComponent{
             .append("option")
             .attr('value', d => d)
             .text((tz) => Utils.convertTimezoneToLabel(tz, this.getString('Local')));
-        timezoneSelection.on("change", function (d) {
+        timezoneSelection.on("change", function (e,d) {
             var timezone = (<any>d3.select(this).node()).value.replace(/\s/g, "_");
             onTimezoneSelect(timezone);
         });

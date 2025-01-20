@@ -68,33 +68,33 @@ class ColorPicker extends Component{
                 .attr("aria-label", c)
                 .attr("aria-selected", c === this.selectedColor)
                 .style("background-color", c)
-                .on('click', (event,d) => {
-                    event.preventDefault();
-                    event.stopPropagation();
+                .on('click', (e,d) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     this.chartOptions.onSelect(c); this.hideColorGrid(true); this.setSelectedColor(c, gridItem);
                 })
-                .on('keydown', (event,d) => {
-                    if (event.keyCode === KeyCodes.Tab && !event.shiftKey && idx === this.chartOptions.colors.length - 1) { // tab
-                        event.preventDefault();
+                .on('keydown', (e,d) => {
+                    if (e.keyCode === KeyCodes.Tab && !e.shiftKey && idx === this.chartOptions.colors.length - 1) { // tab
+                        e.preventDefault();
                         this.colorPickerElem.selectAll(".tsi-colorItem").nodes()[0].focus();
-                    } else if (event.keyCode === KeyCodes.Enter) {
-                        event.preventDefault();
-                        event.stopPropagation();
+                    } else if (e.keyCode === KeyCodes.Enter) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         this.chartOptions.onSelect(c); 
                         this.hideColorGrid(true); 
                         this.setSelectedColor(c, gridItem);
-                    } else if (event.keyCode === KeyCodes.Esc) {
-                        event.preventDefault();
-                        event.stopPropagation();
+                    } else if (e.keyCode === KeyCodes.Esc) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         this.hideColorGrid(true);
                     }
                 });
         });
 
-        d3.select("html").on("click." + this.componentId, (event) => {
-            if (this.colorPickerElem.select(".tsi-colorPickerButton").filter(Utils.equalToEventTarget(event)).empty() && 
-                this.colorPickerElem.select(".tsi-colorPickerButton").selectAll("*").filter(Utils.equalToEventTarget(event)).empty() &&
-                this.colorPickerElem.selectAll(".tsi-colorGrid").filter(Utils.equalToEventTarget(event)).empty()) {
+        d3.select("html").on("click." + this.componentId, (e,d) => {
+            if (this.colorPickerElem.select(".tsi-colorPickerButton").filter(Utils.equalToEventTarget(e)).empty() && 
+                this.colorPickerElem.select(".tsi-colorPickerButton").selectAll("*").filter(Utils.equalToEventTarget(e)).empty() &&
+                this.colorPickerElem.selectAll(".tsi-colorGrid").filter(Utils.equalToEventTarget(e)).empty()) {
                     this.hideColorGrid();
             }
         });

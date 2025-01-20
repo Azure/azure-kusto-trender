@@ -65,7 +65,7 @@ class SingleDateTimePicker extends ChartComponent{
         var saveButtonContainer = this.targetElement.append("div").classed("tsi-saveButtonContainer", true);
         var self = this;
         this.saveButton = saveButtonContainer.append("button").classed("tsi-saveButton", true).text(this.getString("Save"))
-            .on("click", () =>  {
+            .on("click", (e,d) =>  {
                 if (this.isValid) {
                     self.onSet(this.millis);
                 }
