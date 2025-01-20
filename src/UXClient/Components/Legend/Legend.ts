@@ -277,8 +277,8 @@ class Legend extends Component {
 
                     })
                     .attr('title', () => self.getString('Show/Hide values'))
-                    .on("click",  (event,data: any) => {
-                        event.stopPropagation();
+                    .on("click",  (e,data: any) => {
+                        e.stopPropagation();
                         self.toggleSplitByVisible(aggKey, splitBy);
                         d3.select(this)
                             .classed("shown", Utils.getAgVisible(self.chartComponentData.displayState, aggKey, splitBy));
@@ -298,13 +298,13 @@ class Legend extends Component {
                     d3.select(this).append("select")
                         .attr('aria-label', `${self.getString("Series type selection for")} ${splitBy} ${self.getString('in group')} ${self.chartComponentData.displayState[aggKey].name}`)
                         .attr('class', 'tsi-seriesTypeSelection')
-                        .on("change", function (data: any) {
+                        .on("change", function (e,data: any) {
                             var seriesType: any = d3.select(this).property("value");
                             self.chartComponentData.displayState[aggKey].splitBys[splitBy].visibleType = seriesType; 
                             self.drawChart();
                         })
-                        .on("click", (event,d) => {
-                            event.stopPropagation();
+                        .on("click", (e,d) => {
+                            e.stopPropagation();
                         });
                 }
                 d3.select(this).select('.tsi-seriesTypeSelection')
@@ -347,7 +347,7 @@ class Legend extends Component {
                 .on('click', showMoreSplitBys);
         }
 
-        splitByContainerEntered.on("scroll", function () {
+        splitByContainerEntered.on("scroll", function (e,d) {
             if (self.chartOptions.legend === 'shown') {
                 if ((<any>this).scrollTop + (<any>this).clientHeight + 40 > (<any>this).scrollHeight) {
                     showMoreSplitBys();
@@ -433,7 +433,7 @@ class Legend extends Component {
                     let showOrHide = self.chartComponentData.displayState[agg].visible ? self.getString('hide group') : self.getString('show group');
                     return `${showOrHide} ${self.getString('group')} ${Utils.stripNullGuid(self.chartComponentData.displayState[agg].name)}`;
                 })   
-                .on("click", (event,d: string) => {
+                .on("click", (e,d: string) => {
                     var newState = !self.chartComponentData.displayState[d].visible;
                     self.chartComponentData.displayState[d].visible = newState;
 
@@ -444,10 +444,10 @@ class Legend extends Component {
                     }
                     self.drawChart();
                 })
-                .on("mouseover", (d) => {
+                .on("mouseover", (e,d) => {
                     labelMouseover(d);
                 })
-                .on("mouseout", (d) => {
+                .on("mouseout", (e,d) => {
                     self.labelMouseout(svgSelection, d);
                 });
             let dataType = self.chartComponentData.displayState[aggKey].dataType;
@@ -500,7 +500,7 @@ class Legend extends Component {
             let aggSelection = d3.select(this);
             
             var sBs = self.renderSplitBys(aggKey, aggSelection, dataType, noSplitBys);
-            splitByContainerEntered.on("scroll", function () {
+            splitByContainerEntered.on("scroll", function (e,d) {
                 if (self.chartOptions.legend == "shown") {
                     if ((<any>this).scrollTop + (<any>this).clientHeight + 40 > (<any>this).scrollHeight) {
                         const oldShownSplitBys = self.chartComponentData.displayState[aggKey].shownSplitBys; 

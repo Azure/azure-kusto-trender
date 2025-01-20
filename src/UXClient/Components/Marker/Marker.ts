@@ -193,29 +193,29 @@ class Marker extends Component {
                         .attr('class', 'tsi-markerLabelText')
                         .attr('contenteditable', 'true')
                         .text(self.labelText)
-                        .on('keydown', (event,data) =>{
-                            if (event.keyCode === KeyCodes.Enter && !event.shiftKey) {
-                                event.preventDefault();
+                        .on('keydown', (e,d) =>{
+                            if (e.keyCode === KeyCodes.Enter && !e.shiftKey) {
+                                e.preventDefault();
                                 self.closeButton.node().focus();
                             }
                         })
-                        .on('input', function () {
+                        .on('input', function (e,d) {
                             let didTrim = self.setLabelText(d3.select(this).text());
                             if (didTrim) {
                                 d3.select(this).text(self.labelText);
                             }
                         })
-                        .on('focus', function () {
+                        .on('focus', function (e,d) {
                             d3.select(this.parentNode).classed('tsi-markerLabelTextFocused', true);
                         })
-                        .on('blur', function () {
+                        .on('blur', function (e,d) {
                             d3.select(this.parentNode).classed('tsi-markerLabelTextFocused', false);
                             self.onChange(false, false, false);
                         })
-                        .on('mousedown', (event,data) => {
-                            event.stopPropagation();
+                        .on('mousedown', (e,d) => {
+                            e.stopPropagation();
                         })
-                        .on('mouseover', function () {
+                        .on('mouseover', function (e,d) {
                             if (!self.isMarkerDragOccuring()) {
                                 d3.select(d3.select(this).node().parentNode).classed('tsi-markerLabelHovered', true);
                                 self.bumpMarker();    
@@ -225,7 +225,7 @@ class Marker extends Component {
                     self.closeButton = self.markerLabel.append("button")
                         .attr("aria-label", self.getString('Delete marker')) 
                         .classed("tsi-closeButton", true)
-                        .on("click", function () {
+                        .on("click", function (e,d) {
                             self.onChange(true, false);
                             d3.select((d3.select(this).node() as any).parentNode.parentNode).remove();
                         });

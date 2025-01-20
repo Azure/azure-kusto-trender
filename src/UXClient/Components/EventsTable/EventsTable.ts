@@ -67,7 +67,7 @@ class EventsTable extends ChartComponent{
         var downloadButton = tableLeftPanel.append("button")
             .attr("class", "tsi-eventsDownload tsi-primaryButton")
             .attr("aria-label", this.getString("Download as CSV"))
-            .on("click", function() {
+            .on("click", function(e,d) {
                 this.classList.add('tsi-downloading');
                 setTimeout(() => {
                     Utils.downloadCSV(self.eventsTableData.generateCSVString(true, 0), "Events")
@@ -112,7 +112,7 @@ class EventsTable extends ChartComponent{
                     var selectAllState = this.getSelectAllState();
                     return selectAllState !== "all" ? this.getString("Toggle all columns") : this.getString("Toggle all columns");
                 })
-                .on("click", () => {
+                .on("click", (e,d) => {
                     var setAllVisible: boolean = false;
                     var selectAllState = this.getSelectAllState();
                     if (selectAllState != "all") {
@@ -146,7 +146,7 @@ class EventsTable extends ChartComponent{
         toggleableColumnLisEntered.each(function (d) {
             d3.select(this).append("button").attr("class", "tsi-columnToggleButton")
                 .attr("aria-label", (d: any) => "toggle column " + d.key)
-                .on("click", (d: any) => {
+                .on("click", (e,d: any) => {
                     d.visible = !d.visible;
                     self.setLegendColumnStates();
                     self.buildTable();
@@ -165,8 +165,8 @@ class EventsTable extends ChartComponent{
             d3.select(this).select("button").append("div").attr("class", "tsi-onlyLabel").text(self.getString("only"))
                 .attr('tabindex', "0")
                 .attr('role', 'button')
-                .on("click", (event,d: any) => {
-                    event.stopPropagation();
+                .on("click", (e,d: any) => {
+                    e.stopPropagation();
                     columns.forEach((column: any) => {
                         if (column.key == d.key)
                             column.visible = true;
@@ -262,7 +262,7 @@ class EventsTable extends ChartComponent{
                 var id = JSON.parse(JSON.stringify(d));
                 d3.select(this).append("button").attr("class", "tsi-sortColumnButton")
                     .attr("aria-label", title => "Sort by column " + title)
-                    .on("click", function (f, i) {
+                    .on("click", function (e, i) {
                         //set sort column and direction
                         if (self.sortColumn == d) {
                             self.isAscending = !self.isAscending;
@@ -272,7 +272,7 @@ class EventsTable extends ChartComponent{
                         self.sortColumn = d;
 
                         self.eventsTableData.sortEvents(d, self.isAscending);
-                        self.buildTable(f);
+                        self.buildTable(e);
                         self.eventsTable.select('.tsi-columnHeaders').node().scrollLeft = 
                             self.eventsTable.select('.tsi-eventRowsContainer').node().scrollLeft;
                         
