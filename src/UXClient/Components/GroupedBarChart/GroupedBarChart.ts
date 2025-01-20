@@ -418,14 +418,14 @@ class GroupedBarChart extends ChartVisualizationComponent {
                     valueElementsEntered.append("line");
 
 
-                    var valueElementMouseout = (event,d) => {
+                    var valueElementMouseout = (e,d) => {
                         if (self.contextMenu && self.contextMenu.contextMenuVisible)
                             return;
                         focus.style("display", "none");                        
                         (<any>legendObject.legendElement.selectAll('.tsi-splitByLabel').filter(function (filteredSplitBy: string) {
                             return (d3.select(this.parentNode).datum() == d.aggKey) && (filteredSplitBy == d.splitBy);
                         })).classed("inFocus", false);
-                        event.stopPropagation();
+                        e.stopPropagation();
                         svgSelection.selectAll(".tsi-valueElement")
                                     .attr("stroke-opacity", 1)
                                     .attr("fill-opacity", 1);
@@ -442,7 +442,9 @@ class GroupedBarChart extends ChartVisualizationComponent {
                         .attr("fill", (d, j) => {
                             return splitByColors[j];
                         })
-                        .on("mouseover", function (d, j) {
+                        .on("mouseover", function (e, d) {
+                            const eNodes = valueElements.nodes();
+                            const j = eNodes.indexOf(this);
                             if (self.contextMenu && self.contextMenu.contextMenuVisible)
                                 return;
                             
