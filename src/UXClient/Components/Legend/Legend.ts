@@ -207,14 +207,14 @@ class Legend extends Component {
             .merge(splitByLabels)
             .attr('role', this.legendState === 'compact' ? 'button' : 'presentation')
             .attr('tabindex', this.legendState === 'compact' ? '0' : '-1')
-            .on('keypress', (event,splitBy: string) => {
-                if (this.legendState === 'compact' && (event.keyCode === 13 || event.keyCode === 32)) { //space or enter
+            .on('keypress', (e,splitBy: string) => {
+                if (this.legendState === 'compact' && (e.keyCode === 13 || e.keyCode === 32)) { //space or enter
                     this.toggleSplitByVisible(aggKey, splitBy);
                     this.drawChart();
-                    event.preventDefault();
+                    e.preventDefault();
                 }
             })
-            .on("click", function (splitBy: string, i: number) {
+            .on("click", function (e,splitBy: string) {
                 if (self.legendState == "compact") {
                     self.toggleSplitByVisible(aggKey, splitBy);
                 } else {
@@ -222,12 +222,12 @@ class Legend extends Component {
                 }
                 self.drawChart();
             })
-            .on("mouseover", function(event,splitBy: string, i: number) {
-                event.stopPropagation();
+            .on("mouseover", function(e,splitBy: string) {
+                e.stopPropagation();
                 self.labelMouseover(aggKey, splitBy);
             })
-            .on("mouseout", function(event,splitBy: string, i: number) {
-                event.stopPropagation();
+            .on("mouseout", function(e,d) {
+                e.stopPropagation();
                 self.svgSelection.selectAll(".tsi-valueElement")
                             .attr("stroke-opacity", 1)
                             .attr("fill-opacity", 1);

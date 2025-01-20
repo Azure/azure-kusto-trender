@@ -141,8 +141,8 @@ class ContextMenu extends Component {
                     self.removeSubMenusAboveLevel(d.subLevel);
                 }
             })
-            .on("click", function (d, i) {
-                if (d.isNested) {
+            .on("click", (e,d) => {
+                if (e.isNested) {
                     return;
                 }
                 if (self.endTime) { // if endTime is present, this is a brush action
@@ -151,7 +151,7 @@ class ContextMenu extends Component {
                     d.action(startTime, endTime);
                 } else {
                     var timestamp = self.startTime ?  self.startTime.toISOString().slice(0,-5)+"Z" : null;
-                    d.action(self.ae, self.splitBy, timestamp, event);
+                    d.action(self.ae, self.splitBy, timestamp, e);
                 }
                 self.hide();
                 if (self.onClick)
