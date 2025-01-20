@@ -690,8 +690,8 @@ export default class Utils {
         }
     }
 
-    static equalToEventTarget = (function ()  {
-        return (this == d3.event.target);
+    static equalToEventTarget = (function (ctx, event)  {
+        return (ctx == event.target);
     });
 
     static getAggKeys (data) {
