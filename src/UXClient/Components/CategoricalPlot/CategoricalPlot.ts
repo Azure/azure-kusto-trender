@@ -132,7 +132,10 @@ class CategoricalPlot extends Plot {
                     .style("visibility", (d: any) => { 
                         return (self.chartComponentData.isSplitByVisible(aggKey, splitBy) && self.hasData(d)) ? "visible" : "hidden";
                     })
-                    .on('mouseover', (d: any, i) => {
+                    .on('mouseover', (e,d:any) => {
+                        const nodes = categoricalBuckets.nodes();
+                        const i = nodes.indexOf(this);
+
                         let y = self.yTop + (j * (self.chartDataOptions.height / series.length));
                         let x = self.x(new Date(d.dateTime)) + (getWidth(d, i));
 
@@ -141,11 +144,11 @@ class CategoricalPlot extends Plot {
                             self.onMouseover(d, getWidth(d, i));
                         }
                     })
-                    .on('mouseout', () => {
+                    .on('mouseout', (e,d) => {
                         self.onMouseout();
                     })
                     .attr('cursor', (self.chartDataOptions.onElementClick ? 'pointer' : 'inherit'))
-                    .on('click', (d: any) => {
+                    .on('click', (e,d: any) => {
                         if (self.chartDataOptions.onElementClick) {
                             self.chartDataOptions.onElementClick(d.aggregateKey, d.splitBy, d.dateTime.toISOString(), d.measures);
                         }
