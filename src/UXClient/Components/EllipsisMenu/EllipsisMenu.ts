@@ -70,7 +70,7 @@ class EllipsisMenu extends Component {
             .attr("role", "menu")
             .attr("title", this.getString("Show ellipsis menu"))
             .attr("type", "button")
-            .on("click", function () {
+            .on("click", function (e,d) {
                 d3.select(this).attr("aria-label", !self.menuIsVisible ? self.getString("Show ellipsis menu") : self.getString("Hide ellipsis menu"))
                                .attr("title", !self.menuIsVisible ? self.getString("Show ellipsis menu") : self.getString("Hide ellipsis menu"));
                 self.setMenuVisibility(!self.menuIsVisible);
@@ -89,8 +89,12 @@ class EllipsisMenu extends Component {
             .attr("aria-label", d => d.label)
             .attr("type", "button")
             .attr("role", "menuitem")
-            .on('keydown', (event,d, i) => {this.menuItemKeyHandler(event,d, i)})
-            .on("click", (d: any) => {
+            .on('keydown', (e,d) => {
+                const enode = this.menuElement.nodes();
+                const i = enode.indexOf(this);
+                this.menuItemKeyHandler(e,d,i)
+            })
+            .on("click", (e,d: any) => {
                 d.action();
             })
             .each(function () {

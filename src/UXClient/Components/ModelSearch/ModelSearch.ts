@@ -21,10 +21,10 @@ class ModelSearch extends Component {
   constructor(renderTarget: Element, delegate: HierarchyDelegate) {
     super(renderTarget);
     this.delegate = delegate;
-    d3.select("html").on("click." + Utils.guid(), (event,d) => {
+    d3.select("html").on("click." + Utils.guid(), (e,d) => {
       if (
         this.clickedInstance &&
-        event.target != this.clickedInstance &&
+        e.target != this.clickedInstance &&
         this.contextMenu
       ) {
         this.closeContextMenu();
@@ -86,7 +86,7 @@ class ModelSearch extends Component {
     let results = this.wrapper
       .append("div")
       .attr("class", "tsi-modelSearchResults")
-      .on("scroll", function () {
+      .on("scroll", function (e,d) {
         self.closeContextMenu();
         let that = this as any;
         if (
@@ -112,7 +112,7 @@ class ModelSearch extends Component {
       .append("div")
       .attr("class", "tsi-showMore")
       .text(this.getString("Show more") + "...")
-      .on("click", () => searchInstances(searchText, continuationToken))
+      .on("click", (e,d) => searchInstances(searchText, continuationToken))
       .style("display", "none");
 
     let hierarchyElement = this.wrapper
@@ -180,8 +180,8 @@ class ModelSearch extends Component {
                     .append("div")
                     .text(k)
                     .on("click", cma[k])
-                    .on("keydown", function (event,d) {
-                      let evt = event;
+                    .on("keydown", function (e,d) {
+                      let evt = e;
                       if (evt.keyCode === 13) {
                         this.click();
                       }

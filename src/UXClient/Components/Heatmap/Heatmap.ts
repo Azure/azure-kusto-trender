@@ -176,7 +176,7 @@ class Heatmap extends TemporalXAxisComponent {
                             heatmapCanvas.render(self.chartComponentData, self.chartOptions, aggKey, null, null, onCellFocus, aggI, self.visibleAggs.length === 1);
                         }
                         renderHeatmapCanvas();         
-                    }).on("mouseleave", () => {
+                    }).on("mouseleave", (e,d) => {
                         self.timeLabels.selectAll(".tsi-heatmapTimeLabels").remove();
                         self.legendObject.legendElement.selectAll('.tsi-splitByLabel').classed("inFocus", false);
                         self.chartOptions.onMouseout();

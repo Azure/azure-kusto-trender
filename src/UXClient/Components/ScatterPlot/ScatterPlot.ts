@@ -187,8 +187,8 @@ class ScatterPlot extends ChartVisualizationComponent {
         this.draw();
         this.gatedShowGrid();
         
-        d3.select("html").on("click." + Utils.guid(), (event,d) => {
-            if (this.ellipsisContainer && event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
+        d3.select("html").on("click." + Utils.guid(), (e,d) => {
+            if (this.ellipsisContainer && e.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
                 this.ellipsisMenu.setMenuVisibility(false);
             }
         });
@@ -509,22 +509,22 @@ class ScatterPlot extends ChartVisualizationComponent {
         this.voronoiDiagram = this.voronoi(voronoiData);
 
         this.voronoiGroup
-            .on("mousemove", function(event,d){
-                let mouseEvent = d3.pointer(event,this);
+            .on("mousemove", function(e,d){
+                let mouseEvent = d3.pointer(e,this);
                 self.voronoiMouseMove(mouseEvent);
             })
-            .on("mouseover", function(event,d){
-                let mouseEvent = d3.pointer(event,this);
+            .on("mouseover", function(e,d){
+                let mouseEvent = d3.pointer(e,this);
                 self.voronoiMouseMove(mouseEvent);
                 let site = self.voronoiDiagram.find(mouseEvent[0],  mouseEvent[1]);
                 if(site != null)
                     self.labelMouseOver(site.data.aggregateKey, site.data.splitBy);
             })
-            .on("mouseout", function(){
+            .on("mouseout", function(e,d){
                 self.voronoiMouseOut();
             }) 
-            .on("click", function(event,d){
-                let mouseEvent = d3.pointer(event,this);
+            .on("click", function(e,d){
+                let mouseEvent = d3.pointer(e,this);
                 self.voronoiClick(mouseEvent);
             });
     }

@@ -26,8 +26,8 @@ class Hierarchy extends Component {
         this.root = this.buildTree(data);
         this.root.isExpanded = true;
         
-        d3.select("html").on("click." + Utils.guid(), (event,d) => {
-            if (this.clickedNode && event.target != this.clickedNode && this.contextMenu) {
+        d3.select("html").on("click." + Utils.guid(), (e,d) => {
+            if (this.clickedNode && e.target != this.clickedNode && this.contextMenu) {
                 this.closeContextMenu();
                 this.clickedNode = null;
             }

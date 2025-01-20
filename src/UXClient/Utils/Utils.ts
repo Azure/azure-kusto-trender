@@ -690,8 +690,9 @@ export default class Utils {
         }
     }
 
-    static equalToEventTarget = (function (event)  {
-        return (this == event.target);
+    static equalToEventTarget = (function (e)  {
+        console.log(this);
+        return (this == e.target);
     });
 
     static getAggKeys (data) {

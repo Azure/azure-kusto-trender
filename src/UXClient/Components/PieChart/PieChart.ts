@@ -241,8 +241,8 @@ class PieChart extends ChartVisualizationComponent {
         this.draw();
         this.gatedShowGrid();
 
-        d3.select("html").on("click." + Utils.guid(), (event,d) => {
-            if (this.ellipsisContainer && event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
+        d3.select("html").on("click." + Utils.guid(), (e,d) => {
+            if (this.ellipsisContainer && e.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
                 this.ellipsisMenu.setMenuVisibility(false);
             }
         });

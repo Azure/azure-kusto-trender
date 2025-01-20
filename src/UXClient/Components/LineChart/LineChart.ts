@@ -1506,17 +1506,17 @@ class LineChart extends TemporalXAxisComponent {
                 .attr("transform", d => `translate(${( -this.horizontalLabelOffset + swimlaneLabelConstants.labelLeftPadding )},${(d.offset + d.height / 2)}) rotate(-90)`)
                 .text(d => d.label)
                 .each(function(d){truncateLabel(this, d)})
-                .on("click", d => {
+                .on("click", (e,d) => {
                     if(onClickPresentAndValid(d)){
                         d.onClick()
                     }
                 })
-                .on("mouseover", (d) => {
+                .on("mouseover", (e,d) => {
                     if(onClickPresentAndValid(d)){
                         boldYAxisText(true, lane);
                     }
                 })
-                .on("mouseout", () => {
+                .on("mouseout", (e,d) => {
                     boldYAxisText(false, lane);
                 })
                 .append("svg:title")
@@ -1590,7 +1590,7 @@ class LineChart extends TemporalXAxisComponent {
                 .attr("aria-label", () => this.getString("set axis state to") + ' ' + this.nextStackedState())
                 .attr("title", () => this.getString("Change y-axis type"))
                 .attr("type", "button")
-                .on("click", function () {
+                .on("click", function (e,d) {
                     self.overwriteSwimLanes();
                     self.render(self.data, {...self.chartOptions, yAxisState: self.nextStackedState()}, self.aggregateExpressionOptions);
                     d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
@@ -1780,9 +1780,9 @@ class LineChart extends TemporalXAxisComponent {
                     this.brush = d3.brushX()
                     .extent([[this.xLowerBound, Math.min(this.chartHeight, this.chartOptions.aggTopMargin)],
                              [this.xUpperBound, this.chartHeight]])
-                    .on("start", function(event) {
+                    .on("start", function(e,d) {
                         if (self.activeMarker !== null && self.isDroppingMarker) {
-                            self.voronoiClick(event,this);
+                            self.voronoiClick(e,this);
                         }
                         var handleHeight = self.getHandleHeight();
                         self.brushElem.selectAll('.handle')
@@ -1791,12 +1791,12 @@ class LineChart extends TemporalXAxisComponent {
                             .attr('rx', '4px')
                             .attr('ry', '4px');
                     })
-                    .on("brush", function (event) { 
-                        self.brushBrush(event); 
+                    .on("brush", function (e,d) { 
+                        self.brushBrush(e); 
                         self.drawBrushRange();
                     })
-                    .on("end", function (event) { 
-                        self.brushEnd(event,this);
+                    .on("end", function (e,d) { 
+                        self.brushEnd(e,this);
                         self.drawBrushRange();
                     });
                     this.brushElem.call(this.brush);
@@ -1959,32 +1959,32 @@ class LineChart extends TemporalXAxisComponent {
                     //if brushElem present then use the overlay, otherwise create a rect to put the voronoi on
                     var voronoiSelection = (this.brushElem ? this.brushElem.select(".overlay") : this.voronoiRegion);
                     
-                    voronoiSelection.on("mousemove", function (event,d) {
-                        const mouseEvent = d3.pointer(event);
+                    voronoiSelection.on("mousemove", function (evt,d) {
+                        const mouseEvent = d3.pointer(evt);
                         self.voronoiMousemove(mouseEvent);
                     })
-                    .on("mouseout", function (event,d)  {
+                    .on("mouseout", function (evt,d)  {
                         if (!self.filteredValueExist() || !self.voronoiExists()) return;
-                        const [mx, my] = d3.pointer(event,this);
+                        const [mx, my] = d3.pointer(evt,this);
                         const site = self.voronoiDiagram.find(mx, my);
-                        self.voronoiMouseout(event,site.data); 
+                        self.voronoiMouseout(evt,site.data); 
                         self.chartOptions.onMouseout();
                         if (self.tooltip)
                             self.tooltip.hide();
                     })
-                    .on("contextmenu", function (event,d) {
-                        self.voronoiContextMenu(event,this);
+                    .on("contextmenu", function (evt,d) {
+                        self.voronoiContextMenu(evt,this);
                     })
-                    .on("click", function (event,d) {
-                       self.voronoiClick(event,this);
+                    .on("click", function (evt,d) {
+                       self.voronoiClick(evt,this);
                     });
 
                     if (this.brushElem) {
-                        this.brushElem.selectAll(".selection, .handle").on("contextmenu", function (event,d) {
+                        this.brushElem.selectAll(".selection, .handle").on("contextmenu", function (evt,d) {
                             if (!self.chartOptions.brushContextMenuActions || self.chartOptions.brushContextMenuActions.length == 0 || self.chartOptions.autoTriggerBrushContextMenu)
                                 return;
-                            var mousePosition = d3.pointer(event,<any>self.targetElement.node());
-                            event.preventDefault();
+                            var mousePosition = d3.pointer(evt,<any>self.targetElement.node());
+                            evt.preventDefault();
                             self.brushContextMenu.draw(self.chartComponentData, self.renderTarget, self.chartOptions, 
                                                 mousePosition, null, null, null, self.brushStartTime, self.brushEndTime);
                         });
@@ -2049,8 +2049,8 @@ class LineChart extends TemporalXAxisComponent {
             this.importMarkers();
         }
 
-        d3.select("html").on("click." + Utils.guid(), (event) => {
-            if (this.ellipsisContainer && event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
+        d3.select("html").on("click." + Utils.guid(), (evt,d) => {
+            if (this.ellipsisContainer && evt.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
                 this.ellipsisMenu.setMenuVisibility(false);
             }
         });

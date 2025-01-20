@@ -37,19 +37,20 @@ class DateTimeButtonSingle extends DateTimeButton {
 
         let targetElement = <any>d3.select(this.renderTarget);
         var dateTimeTextChildren = (targetElement.select(".tsi-dateTimePickerContainer")).selectAll("*");
-        d3.select("html").on("click." + Utils.guid(), (event) => {
+        d3.select("html").on("click." + Utils.guid(), (e,d) => {
             let pickerContainerChildren = this.dateTimePickerContainer.selectAll("*");
-            var outside = dateTimeTextChildren.filter(Utils.equalToEventTarget(event)).empty() 
-                && targetElement.selectAll(".tsi-dateTimePickerContainer").filter(Utils.equalToEventTarget(event)).empty()
-                && targetElement.selectAll(".tsi-dateTimeButton").filter(Utils.equalToEventTarget(event)).empty()
-                && targetElement.selectAll(".tsi-saveButton").filter(Utils.equalToEventTarget(event)).empty();
-            var inClickTarget = pickerContainerChildren.filter(Utils.equalToEventTarget(event)).empty();
+            let isTargetSame=Utils.equalToEventTarget(e);
+            var outside = dateTimeTextChildren.filter(isTargetSame).empty() 
+                && targetElement.selectAll(".tsi-dateTimePickerContainer").filter(isTargetSame).empty()
+                && targetElement.selectAll(".tsi-dateTimeButton").filter(isTargetSame).empty()
+                && targetElement.selectAll(".tsi-saveButton").filter(isTargetSame).empty();
+            var inClickTarget = pickerContainerChildren.filter(isTargetSame).empty();
             if (outside && inClickTarget && (this.dateTimePickerContainer.style('display') !== 'none')) {
                 this.closeSDTP();
             }
         });
 
-        this.dateTimeButton.on("click", () => {
+        this.dateTimeButton.on("click", (e,d) => {
                 this.chartOptions.dTPIsModal = true;
                 this.dateTimePickerContainer.style("display", "block");
                 this.dateTimePicker.render(this.chartOptions, this.minMillis, this.maxMillis, this.selectedMillis, this.sDTPOnSet);
