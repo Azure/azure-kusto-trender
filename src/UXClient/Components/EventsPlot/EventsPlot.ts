@@ -161,17 +161,17 @@ class EventsPlot extends Plot {
             .attr('x', 0)
             .attr('width', this.eventHeight)
             .attr('height', this.eventHeight)
-            .on('mouseover', function (d) {
+            .on('mouseover', function (e,d) {
                 d3.select(this).raise();
                 self.onMouseover(d, splitByIndex);
             })
-            .on('mouseout', () => {
+            .on('mouseout', (e,d) => {
                 this.onMouseout();
             })
-            .on('click', (d) => {
+            .on('click', (e,d) => {
                 this.eventOnClick(d);
             })
-            .on('touchstart', (d) => {
+            .on('touchstart', (e,d) => {
                 this.eventOnClick(d);
             })
             .on('keydown', function (event,d: any)  {
