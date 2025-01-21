@@ -181,7 +181,7 @@ class Legend extends Component {
         var isSame = Object.keys(this.chartComponentData.displayState[aggKey].splitBys).reduce((isSame: boolean, curr: string) => {
             return (firstSplitByType == this.chartComponentData.displayState[aggKey].splitBys[curr].visibleType) && isSame;
         }, true);
-        let showMoreSplitBys = () => {
+        let showMoreSplitBys = (e,d) => {
             const oldShownSplitBys = this.chartComponentData.displayState[aggKey].shownSplitBys; 
             this.chartComponentData.displayState[aggKey].shownSplitBys = Math.min(oldShownSplitBys + 20, splitByLabelData.length);
             if (oldShownSplitBys != this.chartComponentData.displayState[aggKey].shownSplitBys) {
@@ -350,7 +350,7 @@ class Legend extends Component {
         splitByContainerEntered.on("scroll", function (e,d) {
             if (self.chartOptions.legend === 'shown') {
                 if ((<any>this).scrollTop + (<any>this).clientHeight + 40 > (<any>this).scrollHeight) {
-                    showMoreSplitBys();
+                    showMoreSplitBys(e,d);
                 }    
             }
         });
@@ -511,7 +511,7 @@ class Legend extends Component {
                     }    
                 }
             });
-            d3.select(this).on('scroll', function () {
+            d3.select(this).on('scroll', function (e,d) {
                 if (self.chartOptions.legend == "compact") {
                     if ((<any>this).scrollLeft + (<any>this).clientWidth + 40 > (<any>this).scrollWidth) {
                         const oldShownSplitBys = self.chartComponentData.displayState[aggKey].shownSplitBys; 
