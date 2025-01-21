@@ -50,10 +50,10 @@ class DateTimeButtonRange extends DateTimeButton {
         var selection = d3.select("html")
         selection.on("click." + Utils.guid(), (e,d) => {
             let pickerContainerChildren = this.dateTimePickerContainer.selectAll("*");
-            var outside = dateTimeTextChildren.filter(this == e.target).empty() 
-                && targetElement.selectAll(".tsi-dateTimeContainer").filter(this == e.target).empty()
-                && targetElement.selectAll(".tsi-dateTimeButton").filter(this == e.target).empty();
-            var inClickTarget = pickerContainerChildren.filter(this == e.target).empty();
+            var outside = dateTimeTextChildren.filter(function() { return Utils.equalToEventTarget(this, e); }).empty() 
+            && targetElement.selectAll(".tsi-dateTimeContainer").filter(function() { return Utils.equalToEventTarget(this, e); }).empty()
+            && targetElement.selectAll(".tsi-dateTimeButton").filter(function() { return Utils.equalToEventTarget(this, e); }).empty();
+        var inClickTarget = pickerContainerChildren.filter(function() { return Utils.equalToEventTarget(this, e); }).empty();
             if (outside && inClickTarget && (this.dateTimePickerContainer.style('display') !== 'none')) {
                 this.onClose();
             }
