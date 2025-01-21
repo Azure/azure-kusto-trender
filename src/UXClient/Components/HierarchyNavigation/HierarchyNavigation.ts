@@ -1061,9 +1061,10 @@ class HierarchyNavigation extends Component {
       let li, newListElem;
       let nodeNameToCheckIfExists =
         data[el] instanceof InstanceNode &&
-          data[el].name !== this.getString("Show More Instances")
+          (data[el] as any).name !== this.getString("Show More Instances")
           ? this.instanceNodeString(data[el])
           : el;
+
       if (locInTarget) {
         if (
           // ⛳️: performance hit
@@ -1135,8 +1136,8 @@ class HierarchyNavigation extends Component {
         data[el] instanceof HierarchyNode &&
         el !== this.getString("Show More Hierarchies") &&
         this.mode === State.Filter &&
-        data[el].cumulativeInstanceCount == 1 &&
-        !data[el].isExpanded
+        (data[el] as any).cumulativeInstanceCount == 1 &&
+        !(data[el] as any).isExpanded
       ) {
         //expand the last parent node by default to prevent additional click to see the filter results
         newListElem.node().click();
