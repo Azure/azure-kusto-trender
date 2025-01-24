@@ -130,7 +130,9 @@ class ContextMenu extends Component {
             .classed('tsi-hasSubMenu', d => d.isNested)
             .merge(actionElements)
             .text(d => d.name)
-            .on('mouseenter', function (d, i) {
+            .on('mouseenter', function (e,d) {
+                const aeNodes = actionElements.nodes();
+                const i = aeNodes.indexOf(this);
                 if (d.isNested) {
                     self.launchSubMenu(d3.select(this), d.subActions, subLevel + 1, self.getActionElementContainerTop(this));
                     self.subMenuFromActionIndex = i;
@@ -141,8 +143,11 @@ class ContextMenu extends Component {
                     self.removeSubMenusAboveLevel(d.subLevel);
                 }
             })
-            .on("click", (e,d) => {
-                if (e.isNested) {
+            .on("click", function (e,d) {
+                console.log('click');
+                console.log(d);
+                console.log(JSON.stringify(d));
+                if (d.isNested) {
                     return;
                 }
                 if (self.endTime) { // if endTime is present, this is a brush action
