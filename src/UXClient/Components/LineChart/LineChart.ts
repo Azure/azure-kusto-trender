@@ -819,9 +819,11 @@ class LineChart extends TemporalXAxisComponent {
                 this.stickySeries(site.data.aggregateKey, site.data.splitBy);    
             }
         } else {
-            if (!this.hasBrush) {
-                this.isDroppingMarker = false;
-            }
+            // ⛳️: This was conditional earlier. Has been removed based on some emperical tests
+            // if (!this.hasBrush) {
+            //     this.isDroppingMarker = false;
+            // }
+            this.isDroppingMarker = false;
         }
 
         this.destroyMarkerInstructions();
@@ -1542,7 +1544,9 @@ class LineChart extends TemporalXAxisComponent {
         this.originalSwimLanes = this.aggregateExpressionOptions.map((aEO) => {
             return aEO.swimLane;
         });
-        this.originalSwimLaneOptions = options && options.swimLaneOptions;
+        if(options?.swimLaneOptions) {
+            this.originalSwimLaneOptions = options.swimLaneOptions;
+        }
 
         this.hasBrush = options && (options.brushMoveAction || options.brushMoveEndAction || options.brushContextMenuActions);
         this.chartOptions.setOptions(options);
