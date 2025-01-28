@@ -838,19 +838,19 @@ class LineChart extends TemporalXAxisComponent {
         return Utils.getValueOfVisible(d, this.chartComponentData.getVisibleMeasure(d.aggregateKey, d.splitBy));
     }
 
-    private brushBrush (event) {
+    private brushBrush (evt) {
         var handleHeight = this.getHandleHeight();
         this.brushElem.selectAll('.handle')
             .attr('height', handleHeight)
             .attr('y', (this.chartHeight - handleHeight) / 2);
 
-        if (event.sourceEvent){
+        if (!evt.sourceEvent){
             return;
         } 
-        if (event.sourceEvent && event.sourceEvent.type === 'mousemove') {
+        if (evt.sourceEvent && evt.sourceEvent.type === 'mousemove') {
             this.brushElem.select(".selection").attr("visibility", "visible");
             //check boundary conditions for width of the brush
-            if (event.selection[1] - event.selection[0] < this.minBrushWidth) {
+            if (evt.selection[1] - evt.selection[0] < this.minBrushWidth) {
                 return;
             } else {
                 this.brushElem.selectAll(".handle").attr("visibility", "visible");
@@ -860,21 +860,21 @@ class LineChart extends TemporalXAxisComponent {
             this.surpressBrushTimeSet = false;
             return;
         }
-        if (!event.selection) return; 
+        if (!evt.selection) return; 
 
         if (this.contextMenu)
             this.contextMenu.hide();
         if (this.brushContextMenu)
             this.brushContextMenu.hide();
         
-        var newBrushStartPosition = event.selection[0];
-        var newBrushEndPosition = event.selection[1];
+        var newBrushStartPosition = evt.selection[0];
+        var newBrushEndPosition = evt.selection[1];
         if (newBrushStartPosition != this.brushStartPosition) {
-            this.brushStartTime = this.x.invert(event.selection[0]);
+            this.brushStartTime = this.x.invert(evt.selection[0]);
             this.brushStartPosition = newBrushStartPosition;
         }
         if (newBrushEndPosition != this.brushEndPosition) {
-            this.brushEndTime = this.x.invert(event.selection[1]);
+            this.brushEndTime = this.x.invert(evt.selection[1]);
             this.brushEndPosition = newBrushEndPosition;
         }
     
