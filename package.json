@@ -12,7 +12,7 @@
         "dist"
     ],
     "scripts": {
-        "start": "webpack-dev-server --config webpack.dev.js",
+        "start": "webpack-dev-server --config webpack.dev.js --host 0.0.0.0",
         "build": "npm run clean && npm run rollup && npm run webpack && npm run post-build",
         "clean": "shx rm -rf dist && shx rm -rf build_artifacts",
         "rollup": "rollup --c && shx rm dist/kustotrender.js",
