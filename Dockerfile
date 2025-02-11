@@ -1,5 +1,5 @@
 # Stage 1: Build the React App
-FROM node:20.11.1-alpine3.19 AS build
+FROM mcr.microsoft.com/azurelinux/distroless/nodejs:20.14-nonroot AS build
 # Set working directory
 WORKDIR /app
 # Copy package files and install dependencies
