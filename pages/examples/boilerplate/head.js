@@ -1,15 +1,52 @@
 window.addEventListener("DOMContentLoaded", function () {
-  var sdkJs = document.createElement("script");
-  sdkJs.src = "../../../dist/kustotrender.js";
+  // Multi-path fallback logic so examples work regardless of nesting or how dist was copied
+  var scriptPaths = [
+    "../../../dist/kustotrender.js",
+    "../../dist/kustotrender.js",
+    "../dist/kustotrender.js",
+    "/dist/kustotrender.js",
+    "dist/kustotrender.js"
+  ];
+  var cssCandidatesLocal = [
+    "../../../dist/kustotrender.css",
+    "../../dist/kustotrender.css",
+    "../dist/kustotrender.css",
+    "/dist/kustotrender.css",
+    "dist/kustotrender.css"
+  ];
+  var cssCandidatesProd = [
+    "../../../dist/kustotrender.min.css",
+    "../../dist/kustotrender.min.css",
+    "../dist/kustotrender.min.css",
+    "/dist/kustotrender.min.css",
+    "dist/kustotrender.min.css"
+  ];
 
-  var sdkCss = document.createElement("link");
-  sdkCss.rel = "stylesheet";
-  sdkCss.type = "text/css";
-  if (this.window.location.host.startsWith("localhost:")) {
-    sdkCss.href = "../../../dist/kustotrender.css";
-  } else {
-    sdkCss.href = "../../../dist/kustotrender.min.css";
+  function tryLoadScript(index) {
+    if (index >= scriptPaths.length) return;
+    var p = scriptPaths[index];
+    var s = document.createElement("script");
+    s.src = p;
+    s.onload = function () { };
+    s.onerror = function () { tryLoadScript(index + 1); };
+    document.head.appendChild(s);
   }
+
+  function tryLoadCss(list, idx) {
+    if (idx >= list.length) return;
+    var href = list[idx];
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.type = "text/css";
+    l.href = href;
+  l.onload = function () { };
+  l.onerror = function () { tryLoadCss(list, idx + 1); };
+    document.head.appendChild(l);
+  }
+
+  var isLocal = window.location.host.startsWith("localhost:");
+  tryLoadScript(0);
+  tryLoadCss(isLocal ? cssCandidatesLocal : cssCandidatesProd, 0);
 
   var metaCharset = document.createElement("meta");
   metaCharset.charSet = "utf-8";
@@ -18,8 +55,6 @@ window.addEventListener("DOMContentLoaded", function () {
   metaHttp["http-equiv"] = "cache-control";
   metaHttp.content = "no-cache";
 
-  document.getElementsByTagName("head")[0].appendChild(sdkJs);
-  document.getElementsByTagName("head")[0].appendChild(sdkCss);
   document.getElementsByTagName("head")[0].appendChild(metaCharset);
   document.getElementsByTagName("head")[0].appendChild(metaHttp);
 

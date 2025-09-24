@@ -24,6 +24,7 @@
         "post-build": "npm run copy-package && npm run copy-readme"
     },
     "devDependencies": {
+        "@playwright/test": "^1.55.0",
         "@rollup/plugin-commonjs": "^24.1.0",
         "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.0.2",
