@@ -11,6 +11,12 @@ module.exports = merge(common, {
       directory: "pages/examples",
     },
     port: 3002,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false    // disable warning overlay so tests aren’t blocked
+      }
+    }
   },
   plugins: [
     new MiniCssExtractPlugin({

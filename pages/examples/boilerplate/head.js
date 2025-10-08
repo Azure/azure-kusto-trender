@@ -1,92 +1,78 @@
-window.addEventListener("DOMContentLoaded", function () {
-  // Multi-path fallback logic so examples work regardless of nesting or how dist was copied
-  var scriptPaths = [
-    "../../../dist/kustotrender.js",
-    "../../dist/kustotrender.js",
-    "../dist/kustotrender.js",
-    "/dist/kustotrender.js",
-    "dist/kustotrender.js"
-  ];
-  var cssCandidatesLocal = [
-    "../../../dist/kustotrender.css",
-    "../../dist/kustotrender.css",
-    "../dist/kustotrender.css",
-    "/dist/kustotrender.css",
-    "dist/kustotrender.css"
-  ];
-  var cssCandidatesProd = [
-    "../../../dist/kustotrender.min.css",
-    "../../dist/kustotrender.min.css",
-    "../dist/kustotrender.min.css",
-    "/dist/kustotrender.min.css",
-    "dist/kustotrender.min.css"
-  ];
+window.addEventListener('DOMContentLoaded', () => {
+  // Load KustoTrender JS and CSS with a minimal, explicit 2-path fallback:
+  // 1. Absolute /dist/ (webpack-dev-server or hosted root)
+  // 2. Relative dist/   (static copied samples after build)
+  const JS_CANDIDATES = ['/dist/kustotrender.js', 'dist/kustotrender.js'];
+  const CSS_CANDIDATES = ['/dist/kustotrender.css', 'dist/kustotrender.css'];
 
-  function tryLoadScript(index) {
-    if (index >= scriptPaths.length) return;
-    var p = scriptPaths[index];
-    var s = document.createElement("script");
-    s.src = p;
-    s.onload = function () { };
-    s.onerror = function () { tryLoadScript(index + 1); };
-    document.head.appendChild(s);
+  function loadFirst(list, tagFactory, doneLabel) {
+    let index = 0;
+    function next() {
+      if (index >= list.length) {
+        console.warn(`[head.js] Failed to load any ${doneLabel} from candidates:`, list);
+        return;
+      }
+      const el = tagFactory(list[index], () => {/* success */}, () => {
+        index++;
+        next();
+      });
+      document.head.appendChild(el);
+    }
+    next();
   }
 
-  function tryLoadCss(list, idx) {
-    if (idx >= list.length) return;
-    var href = list[idx];
-    var l = document.createElement("link");
-    l.rel = "stylesheet";
-    l.type = "text/css";
+  loadFirst(JS_CANDIDATES, (src, _onOk, onErr) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => { /* loaded */ };
+    s.onerror = onErr;
+    return s;
+  }, 'script');
+
+  loadFirst(CSS_CANDIDATES, (href, _onOk, onErr) => {
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
     l.href = href;
-  l.onload = function () { };
-  l.onerror = function () { tryLoadCss(list, idx + 1); };
-    document.head.appendChild(l);
-  }
+    l.onerror = onErr;
+    return l;
+  }, 'stylesheet');
 
-  var isLocal = window.location.host.startsWith("localhost:");
-  tryLoadScript(0);
-  tryLoadCss(isLocal ? cssCandidatesLocal : cssCandidatesProd, 0);
+  // Meta tags (kept minimal)
+  const metaCharset = document.createElement('meta');
+  metaCharset.charSet = 'utf-8';
+  const metaCache = document.createElement('meta');
+  metaCache.httpEquiv = 'cache-control';
+  metaCache.content = 'no-cache';
+  document.head.appendChild(metaCharset);
+  document.head.appendChild(metaCache);
 
-  var metaCharset = document.createElement("meta");
-  metaCharset.charSet = "utf-8";
+  // GitHub ribbon/button (left as-is, minor restyle only if desired)
+  const isDotCom = window.location.href.includes('.com/');
+  const urlParts = window.location.href.split(isDotCom ? '.com/' : '.net/');
+  const relativeExamplePath = urlParts.length > 1 ? urlParts[1] : '';
+  const githubUrl = 'https://github.com/Azure/azure-kusto-trender/tree/master/pages/examples/' + relativeExamplePath;
 
-  var metaHttp = document.createElement("meta");
-  metaHttp["http-equiv"] = "cache-control";
-  metaHttp.content = "no-cache";
-
-  document.getElementsByTagName("head")[0].appendChild(metaCharset);
-  document.getElementsByTagName("head")[0].appendChild(metaHttp);
-
-  // github link html
-  var isDotCom = window.location.href.indexOf(".com") !== -1;
-  var githubUrl =
-    "https://github.com/Azure/azure-kusto-trender/tree/master/pages/examples/" +
-    window.location.href.split(isDotCom ? ".com/" : ".net/")[1];
-  var githubButton = document.createElement("button");
-  githubButton.setAttribute(
-    "onClick",
-    'window.open("' + githubUrl + '", "_blank")'
-  );
-  Object.assign(githubButton.style, {
-    marginBottom: "20px",
-    float: "right",
-    "font-size": "24px",
-    background: "#1D75BB",
-    color: "white",
-    border: "none",
-    display: "flex",
-    "align-items": "center",
-    padding: "0 0 0 12px",
-    transform: "rotate(-90deg)",
-    position: "fixed",
-    "z-index": 100000,
-    top: "30%",
-    right: "-86px",
-    "border-radius": "2px",
-    cursor: "pointer",
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.onclick = () => window.open(githubUrl, '_blank');
+  Object.assign(btn.style, {
+    marginBottom: '20px',
+    float: 'right',
+    fontSize: '24px',
+    background: '#1D75BB',
+    color: 'white',
+    border: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 0 0 12px',
+    transform: 'rotate(-90deg)',
+    position: 'fixed',
+    zIndex: 100000,
+    top: '30%',
+    right: '-86px',
+    borderRadius: '2px',
+    cursor: 'pointer'
   });
-  githubButton.innerHTML =
-    'View on Github <img style="transform: rotate(90deg)" width="48px" alt="GitHub Logomark" src="https://cdn3.iconfinder.com/data/icons/sociocons/256/github-sociocon.png">';
-  document.getElementsByTagName("body")[0].prepend(githubButton);
+  btn.innerHTML = 'View on Github <img style="transform: rotate(90deg)" width="48" alt="GitHub" src="https://cdn3.iconfinder.com/data/icons/sociocons/256/github-sociocon.png">';
+  document.body.prepend(btn);
 });

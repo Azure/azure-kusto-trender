@@ -6,3 +6,11 @@ scripts
 .vs
 build_artifacts/
 .DS_Store
+
+# Playwright artifacts
+playwright-report/
+test-results/
+*.trace.zip
+
+# Last run status
+test-results/.last-run.json
