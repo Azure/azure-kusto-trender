@@ -26,7 +26,7 @@
                     for (var k = 0; k < 60; k++) {
                         if (!(k % 2 && k % 3)) {  // if check is to create some sparseness in the data
                             var rawToMillis = from.valueOf() + 1000 * 60 * k;
-                            var to = new Date(Math.floor(new Date(rawToMillis / minute)) * minute);
+                            var to = new Date(Math.floor(rawToMillis / minute) * minute); // we normalize each timestamp to the minute boundary
                             var val = Math.random();
                             values[to.toISOString()] = { count: val };
                         }
