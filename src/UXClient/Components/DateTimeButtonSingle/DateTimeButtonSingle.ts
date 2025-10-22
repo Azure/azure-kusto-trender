@@ -37,19 +37,19 @@ class DateTimeButtonSingle extends DateTimeButton {
 
         let targetElement = <any>d3.select(this.renderTarget);
         var dateTimeTextChildren = (targetElement.select(".tsi-dateTimePickerContainer")).selectAll("*");
-        d3.select("html").on("click." + Utils.guid(), () => {
+        d3.select("html").on("click." + Utils.guid(), (e,d) => {
             let pickerContainerChildren = this.dateTimePickerContainer.selectAll("*");
-            var outside = dateTimeTextChildren.filter(Utils.equalToEventTarget).empty() 
-                && targetElement.selectAll(".tsi-dateTimePickerContainer").filter(Utils.equalToEventTarget).empty()
-                && targetElement.selectAll(".tsi-dateTimeButton").filter(Utils.equalToEventTarget).empty()
-                && targetElement.selectAll(".tsi-saveButton").filter(Utils.equalToEventTarget).empty();
-            var inClickTarget = pickerContainerChildren.filter(Utils.equalToEventTarget).empty();
+            var outside = dateTimeTextChildren.filter(function() { return Utils.equalToEventTarget(this, e); }).empty() 
+                && targetElement.selectAll(".tsi-dateTimePickerContainer").filter(function() { return Utils.equalToEventTarget(this, e); }).empty()
+                && targetElement.selectAll(".tsi-dateTimeButton").filter(function() { return Utils.equalToEventTarget(this, e); }).empty()
+                && targetElement.selectAll(".tsi-saveButton").filter(function() { return Utils.equalToEventTarget(this, e); }).empty();
+            var inClickTarget = pickerContainerChildren.filter(function() { return Utils.equalToEventTarget(this, e); }).empty();
             if (outside && inClickTarget && (this.dateTimePickerContainer.style('display') !== 'none')) {
                 this.closeSDTP();
             }
         });
 
-        this.dateTimeButton.on("click", () => {
+        this.dateTimeButton.on("click", (e,d) => {
                 this.chartOptions.dTPIsModal = true;
                 this.dateTimePickerContainer.style("display", "block");
                 this.dateTimePicker.render(this.chartOptions, this.minMillis, this.maxMillis, this.selectedMillis, this.sDTPOnSet);

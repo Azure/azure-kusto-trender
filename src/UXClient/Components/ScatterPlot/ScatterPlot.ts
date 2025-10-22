@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import * as d3v from 'd3-voronoi';
 import './ScatterPlot.scss';
 import { ChartVisualizationComponent } from './../../Interfaces/ChartVisualizationComponent';
 import Legend from './../Legend';
@@ -186,8 +187,8 @@ class ScatterPlot extends ChartVisualizationComponent {
         this.draw();
         this.gatedShowGrid();
         
-        d3.select("html").on("click." + Utils.guid(), () => {
-            if (this.ellipsisContainer && d3.event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
+        d3.select("html").on("click." + Utils.guid(), (e,d) => {
+            if (this.ellipsisContainer && e.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
                 this.ellipsisMenu.setMenuVisibility(false);
             }
         });
@@ -500,7 +501,7 @@ class ScatterPlot extends ChartVisualizationComponent {
         }
         const getOffset = () => (Math.random() < 0.5 ? -1 : 1) * getRandomInRange(0, .01);
         
-        this.voronoi = d3.voronoi()
+        this.voronoi = d3v.voronoi()
             .x((d:any) => this.xScale(d.measures[this.xMeasure]) + getOffset())
             .y((d:any) => this.yScale(d.measures[this.yMeasure]) + getOffset())
             .extent([[0, 0], [this.chartWidth, this.chartHeight]]);
@@ -508,22 +509,22 @@ class ScatterPlot extends ChartVisualizationComponent {
         this.voronoiDiagram = this.voronoi(voronoiData);
 
         this.voronoiGroup
-            .on("mousemove", function(){
-                let mouseEvent = d3.mouse(this);
+            .on("mousemove", function(e,d){
+                let mouseEvent = d3.pointer(e,this);
                 self.voronoiMouseMove(mouseEvent);
             })
-            .on("mouseover", function(){
-                let mouseEvent = d3.mouse(this);
+            .on("mouseover", function(e,d){
+                let mouseEvent = d3.pointer(e,this);
                 self.voronoiMouseMove(mouseEvent);
                 let site = self.voronoiDiagram.find(mouseEvent[0],  mouseEvent[1]);
                 if(site != null)
                     self.labelMouseOver(site.data.aggregateKey, site.data.splitBy);
             })
-            .on("mouseout", function(){
+            .on("mouseout", function(e,d){
                 self.voronoiMouseOut();
             }) 
-            .on("click", function(){
-                let mouseEvent = d3.mouse(this);
+            .on("click", function(e,d){
+                let mouseEvent = d3.pointer(e,this);
                 self.voronoiClick(mouseEvent);
             });
     }

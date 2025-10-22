@@ -1,10 +1,11 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 @mixin bcColors($grays){
-    $gray1: nth($grays, 1);
-    $gray2: nth($grays, 2); 
-    $gray3: nth($grays, 3); 
-    $gray4: nth($grays, 4); 
+    $gray1: list.nth($grays, 1);
+    $gray2: list.nth($grays, 2); 
+    $gray3: list.nth($grays, 3); 
+    $gray4: list.nth($grays, 4); 
     
     text {
         fill: $gray1;
@@ -22,20 +23,20 @@
             fill: $gray3;
         }        
     }    
-    @include chartColors($grays);
+    @include styles.chartColors($grays);
 }
 
 .tsi-barChart {
     
     &.tsi-dark{
-        $grays: grays('dark');
+        $grays: styles.grays('dark');
         @include bcColors($grays);
         .tsi-resizeGutter {
             background-image: url(./../../Icons/drag_handle_dark.svg);
         }
     }
     &.tsi-light{
-        $grays: grays('light');
+        $grays: styles.grays('light');
         @include bcColors($grays);
         .tsi-resizeGutter {
             background-image: url(./../../Icons/drag_handle_light.svg);
