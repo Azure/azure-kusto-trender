@@ -1,11 +1,12 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 @mixin dateTimeButtonColors($grays){
-    $gray1: nth($grays, 1);
-    $gray2: nth($grays, 2); 
-    $gray3: nth($grays, 3); 
-    $gray4: nth($grays, 4); 
-    $gray5: nth($grays, 5); 
+    $gray1: list.nth($grays, 1);
+    $gray2: list.nth($grays, 2); 
+    $gray3: list.nth($grays, 3); 
+    $gray4: list.nth($grays, 4); 
+    $gray5: list.nth($grays, 5); 
     
     color: $gray1;
     .tsi-dateTimeButton {
@@ -18,11 +19,11 @@
 }
 .tsi-dateTimeContainerRange {
     &.tsi-dark{
-        $grays: grays('dark');
+        $grays: styles.grays('dark');
         @include dateTimeButtonColors($grays);
     }
     &.tsi-light{
-        $grays: grays('light');
+        $grays: styles.grays('light');
         @include dateTimeButtonColors($grays);
     }
 

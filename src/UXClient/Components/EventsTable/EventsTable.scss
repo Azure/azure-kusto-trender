@@ -1,13 +1,14 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 
 @mixin tableColors($grays){
-    $gray1: nth($grays, 1); // text
-    $gray2: nth($grays, 2); // hover
-    $gray3: nth($grays, 3); // element
-    $gray4: nth($grays, 4); // background
-    $gray5: nth($grays, 5); // header background
-    $gray7: nth($grays, 7); // border color
+    $gray1: list.nth($grays, 1); // text
+    $gray2: list.nth($grays, 2); // hover
+    $gray3: list.nth($grays, 3); // element
+    $gray4: list.nth($grays, 4); // background
+    $gray5: list.nth($grays, 5); // header background
+    $gray7: list.nth($grays, 7); // border color
 
     background-color: $gray3;
     .tsi-eventsTable {
@@ -77,8 +78,8 @@
     position: relative;
     text-align: left;
 	&.tsi-dark{
-        $grays: grays('dark');
-        @include chartColors($grays);
+        $grays: styles.grays('dark');
+        @include styles.chartColors($grays);
         @include tableColors($grays);
         .tsi-downloadEventsIcon {
             background-image: url('../../Icons/Download_Icon_Dark.svg');
@@ -95,8 +96,8 @@
 
 	}
 	&.tsi-light{
-        $grays: grays('light');
-        @include chartColors($grays);
+        $grays: styles.grays('light');
+        @include styles.chartColors($grays);
         @include tableColors($grays);
         .tsi-downloadEventsIcon {
             background-image: url('../../Icons/Download_Icon_Light.svg');

@@ -1,16 +1,17 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 @mixin tColors($grays){
-    $gray1: nth($grays, 1); // text
-    $gray2: nth($grays, 2); // hover
-    $gray3: nth($grays, 3); // element
-    $gray4: nth($grays, 4); // background
-    $gray5: nth($grays, 5); 
-    $gray6: nth($grays, 6); // hover
+    $gray1: list.nth($grays, 1); // text
+    $gray2: list.nth($grays, 2); // hover
+    $gray3: list.nth($grays, 3); // element
+    $gray4: list.nth($grays, 4); // background
+    $gray5: list.nth($grays, 5); 
+    $gray6: list.nth($grays, 6); // hover
 
     box-shadow: 0 1px 3px 0 rgba($gray1, .16);
     border-color: rgba($gray1, .1);
-    @include chartColors($grays);
+    @include styles.chartColors($grays);
 
     .tsi-tooltipInner{
         color: $gray1;
@@ -52,11 +53,11 @@
     }
 
     &.tsi-dark{
-        $grays: grays('dark');
+        $grays: styles.grays('dark');
         @include tColors($grays);
     }
     &.tsi-light{
-        $grays: grays('light');
+        $grays: styles.grays('light');
         @include tColors($grays);
     }
 

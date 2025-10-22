@@ -1,10 +1,11 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 @mixin pcColors($grays){
-    $gray1: nth($grays, 1); // text
-    $gray2: nth($grays, 2); // hover
-    $gray3: nth($grays, 3); // element
-    $gray4: nth($grays, 4); // background
+    $gray1: list.nth($grays, 1); // text
+    $gray2: list.nth($grays, 2); // hover
+    $gray3: list.nth($grays, 3); // element
+    $gray4: list.nth($grays, 4); // background
     
     color: $gray1;
     background: $gray3;
@@ -18,20 +19,21 @@
             stroke: $gray1;
         }
     }
-    @include chartColors($grays);
+    
+    @include styles.chartColors($grays);
 }
 
 
 .tsi-pieChart {
     &.tsi-dark {
-        $grays: grays('dark');
+        $grays: styles.grays('dark');
         @include pcColors($grays);
         .tsi-resizeGutter {
             background-image: url(./../../Icons/drag_handle_dark.svg);
         }
     }
-    &.tsi-light{
-        $grays: grays('light');
+    &.tsi-light {
+        $grays: styles.grays('light');
         @include pcColors($grays);
         .tsi-resizeGutter {
             background-image: url(./../../Icons/drag_handle_light.svg);
