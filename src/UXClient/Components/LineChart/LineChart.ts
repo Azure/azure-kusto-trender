@@ -1532,8 +1532,9 @@ class LineChart extends TemporalXAxisComponent {
         var self = this;
         return function () {
             self.overwriteSwimLanes();
-            self.render(self.data, { ...self.chartOptions, yAxisState: self.nextStackedState() }, self.aggregateExpressionOptions);
-            d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
+            const nextState = self.nextStackedState();
+            self.render(self.data, {...self.chartOptions, yAxisState: nextState}, self.aggregateExpressionOptions);
+            d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + nextState);
             setTimeout(() => (d3.select(self.renderTarget).node() as any).focus(), 200);
         };
     }
