@@ -138,11 +138,11 @@ class DateTimePicker extends ChartComponent{
 
         let group = this.targetElement.append('div')
             .classed('tsi-dateTimeGroup', true)
-            .on('keydown', (e) => {
-                if (d3.event.keyCode <= 40 && d3.event.keyCode >= 37) { //arrow key
-                    d3.event.stopPropagation();
+            .on('keydown', (e,d) => {
+                if (e.keyCode <= 40 && e.keyCode >= 37) { //arrow key
+                    e.stopPropagation();
                 }
-                if (d3.event.keyCode === 27 && this.chartOptions.dTPIsModal) { //escape
+                if (e.keyCode === 27 && this.chartOptions.dTPIsModal) { //escape
                     this.onCancel();
                     this.onSaveOrCancel();
                 }
@@ -163,7 +163,7 @@ class DateTimePicker extends ChartComponent{
 
 
         var saveButton = saveButtonContainer.append("button").classed("tsi-saveButton", true).text(this.getString("Save"))
-            .on("click", function () {
+            .on("click", (e,d) => {
                 self.onSet(self.fromMillis, self.toMillis, self.chartOptions.offset, self.maxMillis === self.toMillis, self.getCurrentQuickTime());
                 self.onSaveOrCancel();
             });
@@ -171,17 +171,17 @@ class DateTimePicker extends ChartComponent{
         var cancelButton = saveButtonContainer.append('button')
             .attr('class', 'tsi-cancelButton')
             .text(this.getString('Cancel'))
-            .on('click', () => {
+            .on('click', (e,d) => {
                 this.onCancel();
                 this.onSaveOrCancel();
             })
-            .on('keydown', () => {
-                if (d3.event.keyCode === 9 && !d3.event.shiftKey && this.chartOptions.dTPIsModal) { // tab
+            .on('keydown', (e,d) => {
+                if (e.keyCode === 9 && !e.shiftKey && this.chartOptions.dTPIsModal) { // tab
                     this.quickTimesPanel.selectAll('.tsi-quickTime')
                         .filter((d, i) => i === 0)
                         .node()
                         .focus();
-                    d3.event.preventDefault();
+                    e.preventDefault();
                 }
             });
 
@@ -227,7 +227,7 @@ class DateTimePicker extends ChartComponent{
         let enteredQuickTimes = quickTimes.enter()
             .append('button')
             .attr('class', 'tsi-quickTime')
-            .on('click', (d) => {
+            .on('click', (e,d) => {
                 this.setFromQuickTimes(d[1]);
             })
             .text((d) => d[0])
@@ -236,10 +236,10 @@ class DateTimePicker extends ChartComponent{
         let firstQuickTime = enteredQuickTimes.filter((d, i) => {
             return (i === 0);
         })            
-        .on('keydown', () => {
-            if (d3.event.keyCode === 9 && d3.event.shiftKey && this.chartOptions.dTPIsModal) { // shift tab
+        .on('keydown', (e,d) => {
+            if (e.keyCode === 9 && e.shiftKey && this.chartOptions.dTPIsModal) { // shift tab
                 this.dateTimeSelectionPanel.select(".tsi-saveButtonContainer").select(".tsi-cancelButton").node().focus();
-                d3.event.preventDefault();
+                e.preventDefault();
             }
         });
 
@@ -361,7 +361,7 @@ class DateTimePicker extends ChartComponent{
                     return; 
                 var self = this;
                 this.calendar.select(".pika-single").selectAll(".pika-day")
-                    .on("mouseover", function (d) { 
+                    .on("mouseover", function (e,d) { 
                         var date = new Date( Number(d3.select(this).attr("data-pika-year")),
                                             Number(d3.select(this).attr("data-pika-month")), 
                                             Number(d3.select(this).attr("data-pika-day")));
@@ -564,7 +564,7 @@ class DateTimePicker extends ChartComponent{
                 .attr('aria-labelledby', inputLabelID)
                 .attr('required', true)
                 .attr('id', inputID)
-                .on('input', () => {
+                .on('input', (e,d) => {
                     let rangeErrorCheck: any = this.checkDateTimeValidity();
                     this.isSettingStartTime = true;
                     if (this.isValid) {
@@ -586,7 +586,7 @@ class DateTimePicker extends ChartComponent{
                     .attr("class", "tsi-snapToEndRangeButton")
                     .text(this.getString("Latest"))
                     .attr('aria-label', this.getString('snap end time to latest'))
-                    .on("click", () => {
+                    .on("click", (e,d) => {
                         if (!this.isSettingStartTime) {
                             this.setFromDate(this.startRange);
                         }

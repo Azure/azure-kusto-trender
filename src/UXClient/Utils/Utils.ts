@@ -690,9 +690,10 @@ export default class Utils {
         }
     }
 
-    static equalToEventTarget = (function ()  {
-        return (this == d3.event.target);
+    static equalToEventTarget = (function (ctx, e)  {
+        return (ctx == e.target);
     });
+
 
     static getAggKeys (data) {
         let aggregateCounterMap = {};
@@ -1022,16 +1023,19 @@ export default class Utils {
         }
 
         let splitByTag = options && options.splitByTag ? options.splitByTag : 'hit';
-        let splittedByHit = str.split(`<${splitByTag}>`);
-        splittedByHit.forEach((s, i) => {
-            if (i === 0) {
-                data = data.concat(splitByNullGuid(s));
-            } else {
-                let splittedByHitClose = s.split(`</${splitByTag}>`);
-                data.push({str: splittedByHitClose[0], isHit: true});
-                data = data.concat(splitByNullGuid(splittedByHitClose[1]));
-            }
-        });
+        if(str!=null){
+            let splittedByHit = str.split(`<${splitByTag}>`);
+            splittedByHit.forEach((s, i) => {
+                if (i === 0) {
+                    data = data.concat(splitByNullGuid(s));
+                } else {
+                    let splittedByHitClose = s.split(`</${splitByTag}>`);
+                    data.push({str: splittedByHitClose[0], isHit: true});
+                    data = data.concat(splitByNullGuid(splittedByHitClose[1]));
+                }
+            });
+        }
+
 
         let additionalClassName = options && options.additionalClassName ? options.additionalClassName : '';
         let children = targetElem.selectAll('.tsi-formattedChildren').data(data);

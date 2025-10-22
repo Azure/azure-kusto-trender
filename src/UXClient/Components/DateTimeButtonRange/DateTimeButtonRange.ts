@@ -40,29 +40,26 @@ class DateTimeButtonRange extends DateTimeButton {
         d3.select(this.renderTarget).classed('tsi-dateTimeContainerRange', true);
         this.fromMillis = fromMillis;
         this.toMillis = toMillis;
-
         this.onCancel = onCancel ? onCancel : () => {};
-
         if (!this.dateTimePicker) {
             this.dateTimePicker = new DateTimePicker(this.dateTimePickerContainer.node());
         }
-
         this.setButtonText(fromMillis, toMillis, toMillis === maxMillis, this.toMillis - this.fromMillis);
-
         let targetElement = <any>d3.select(this.renderTarget)
         var dateTimeTextChildren =   (targetElement.select(".tsi-dateTimeContainer")).selectAll("*");
-        d3.select("html").on("click." + Utils.guid(), () => {
+        var selection = d3.select("html")
+        selection.on("click." + Utils.guid(), (e,d) => {
             let pickerContainerChildren = this.dateTimePickerContainer.selectAll("*");
-            var outside = dateTimeTextChildren.filter(Utils.equalToEventTarget).empty() 
-                && targetElement.selectAll(".tsi-dateTimeContainer").filter(Utils.equalToEventTarget).empty()
-                && targetElement.selectAll(".tsi-dateTimeButton").filter(Utils.equalToEventTarget).empty();
-            var inClickTarget = pickerContainerChildren.filter(Utils.equalToEventTarget).empty();
+            var outside = dateTimeTextChildren.filter(function() { return Utils.equalToEventTarget(this, e); }).empty() 
+            && targetElement.selectAll(".tsi-dateTimeContainer").filter(function() { return Utils.equalToEventTarget(this, e); }).empty()
+            && targetElement.selectAll(".tsi-dateTimeButton").filter(function() { return Utils.equalToEventTarget(this, e); }).empty();
+        var inClickTarget = pickerContainerChildren.filter(function() { return Utils.equalToEventTarget(this, e); }).empty();
             if (outside && inClickTarget && (this.dateTimePickerContainer.style('display') !== 'none')) {
                 this.onClose();
             }
         });
 
-        this.dateTimeButton.on("click", () => {
+        this.dateTimeButton.on("click", (e,d) => {
             if(this.dateTimePickerContainer.style("display") !== "none"){
                 this.onClose();  // close if already open
             }

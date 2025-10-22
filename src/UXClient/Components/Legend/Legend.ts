@@ -32,7 +32,8 @@ class Legend extends Component {
 
     private labelMouseoutWrapper (labelMouseout, svgSelection) {
         return (svgSelection, aggKey) => {
-            d3.event.stopPropagation();
+            // TODO: A fix is needed here
+            // d3.event.stopPropagation();
             svgSelection.selectAll(".tsi-valueElement")
                         .filter(function () { return !d3.select(this).classed("tsi-valueEnvelope"); })
                         .attr("stroke-opacity", 1)
@@ -180,7 +181,7 @@ class Legend extends Component {
         var isSame = Object.keys(this.chartComponentData.displayState[aggKey].splitBys).reduce((isSame: boolean, curr: string) => {
             return (firstSplitByType == this.chartComponentData.displayState[aggKey].splitBys[curr].visibleType) && isSame;
         }, true);
-        let showMoreSplitBys = () => {
+        let showMoreSplitBys = (e,d) => {
             const oldShownSplitBys = this.chartComponentData.displayState[aggKey].shownSplitBys; 
             this.chartComponentData.displayState[aggKey].shownSplitBys = Math.min(oldShownSplitBys + 20, splitByLabelData.length);
             if (oldShownSplitBys != this.chartComponentData.displayState[aggKey].shownSplitBys) {
@@ -206,14 +207,14 @@ class Legend extends Component {
             .merge(splitByLabels)
             .attr('role', this.legendState === 'compact' ? 'button' : 'presentation')
             .attr('tabindex', this.legendState === 'compact' ? '0' : '-1')
-            .on('keypress', (splitBy: string) => {
-                if (this.legendState === 'compact' && (d3.event.keyCode === 13 || d3.event.keyCode === 32)) { //space or enter
+            .on('keypress', (e,splitBy: string) => {
+                if (this.legendState === 'compact' && (e.keyCode === 13 || e.keyCode === 32)) { //space or enter
                     this.toggleSplitByVisible(aggKey, splitBy);
                     this.drawChart();
-                    d3.event.preventDefault();
+                    e.preventDefault();
                 }
             })
-            .on("click", function (splitBy: string, i: number) {
+            .on("click", function (e,splitBy: string) {
                 if (self.legendState == "compact") {
                     self.toggleSplitByVisible(aggKey, splitBy);
                 } else {
@@ -221,12 +222,12 @@ class Legend extends Component {
                 }
                 self.drawChart();
             })
-            .on("mouseover", function(splitBy: string, i: number) {
-                d3.event.stopPropagation();
+            .on("mouseover", function(e,splitBy: string) {
+                e.stopPropagation();
                 self.labelMouseover(aggKey, splitBy);
             })
-            .on("mouseout", function(splitBy: string, i: number) {
-                d3.event.stopPropagation();
+            .on("mouseout", function(e,d) {
+                e.stopPropagation();
                 self.svgSelection.selectAll(".tsi-valueElement")
                             .attr("stroke-opacity", 1)
                             .attr("fill-opacity", 1);
@@ -276,8 +277,8 @@ class Legend extends Component {
 
                     })
                     .attr('title', () => self.getString('Show/Hide values'))
-                    .on("click", function (data: any, i: number) {
-                        d3.event.stopPropagation();
+                    .on("click",  (e,data: any) => {
+                        e.stopPropagation();
                         self.toggleSplitByVisible(aggKey, splitBy);
                         d3.select(this)
                             .classed("shown", Utils.getAgVisible(self.chartComponentData.displayState, aggKey, splitBy));
@@ -297,13 +298,13 @@ class Legend extends Component {
                     d3.select(this).append("select")
                         .attr('aria-label', `${self.getString("Series type selection for")} ${splitBy} ${self.getString('in group')} ${self.chartComponentData.displayState[aggKey].name}`)
                         .attr('class', 'tsi-seriesTypeSelection')
-                        .on("change", function (data: any) {
+                        .on("change", function (e,data: any) {
                             var seriesType: any = d3.select(this).property("value");
                             self.chartComponentData.displayState[aggKey].splitBys[splitBy].visibleType = seriesType; 
                             self.drawChart();
                         })
-                        .on("click", () => {
-                            d3.event.stopPropagation();
+                        .on("click", (e,d) => {
+                            e.stopPropagation();
                         });
                 }
                 d3.select(this).select('.tsi-seriesTypeSelection')
@@ -346,10 +347,10 @@ class Legend extends Component {
                 .on('click', showMoreSplitBys);
         }
 
-        splitByContainerEntered.on("scroll", function () {
+        splitByContainerEntered.on("scroll", function (e,d) {
             if (self.chartOptions.legend === 'shown') {
                 if ((<any>this).scrollTop + (<any>this).clientHeight + 40 > (<any>this).scrollHeight) {
-                    showMoreSplitBys();
+                    showMoreSplitBys(e,d);
                 }    
             }
         });
@@ -432,7 +433,7 @@ class Legend extends Component {
                     let showOrHide = self.chartComponentData.displayState[agg].visible ? self.getString('hide group') : self.getString('show group');
                     return `${showOrHide} ${self.getString('group')} ${Utils.stripNullGuid(self.chartComponentData.displayState[agg].name)}`;
                 })   
-                .on("click", function (d: string, i: number) {
+                .on("click", (e,d: string) => {
                     var newState = !self.chartComponentData.displayState[d].visible;
                     self.chartComponentData.displayState[d].visible = newState;
 
@@ -443,10 +444,10 @@ class Legend extends Component {
                     }
                     self.drawChart();
                 })
-                .on("mouseover", (d) => {
+                .on("mouseover", (e,d) => {
                     labelMouseover(d);
                 })
-                .on("mouseout", (d) => {
+                .on("mouseout", (e,d) => {
                     self.labelMouseout(svgSelection, d);
                 });
             let dataType = self.chartComponentData.displayState[aggKey].dataType;
@@ -499,7 +500,7 @@ class Legend extends Component {
             let aggSelection = d3.select(this);
             
             var sBs = self.renderSplitBys(aggKey, aggSelection, dataType, noSplitBys);
-            splitByContainerEntered.on("scroll", function () {
+            splitByContainerEntered.on("scroll", function (e,d) {
                 if (self.chartOptions.legend == "shown") {
                     if ((<any>this).scrollTop + (<any>this).clientHeight + 40 > (<any>this).scrollHeight) {
                         const oldShownSplitBys = self.chartComponentData.displayState[aggKey].shownSplitBys; 
@@ -510,7 +511,7 @@ class Legend extends Component {
                     }    
                 }
             });
-            d3.select(this).on('scroll', function () {
+            d3.select(this).on('scroll', function (e,d) {
                 if (self.chartOptions.legend == "compact") {
                     if ((<any>this).scrollLeft + (<any>this).clientWidth + 40 > (<any>this).scrollWidth) {
                         const oldShownSplitBys = self.chartComponentData.displayState[aggKey].shownSplitBys; 

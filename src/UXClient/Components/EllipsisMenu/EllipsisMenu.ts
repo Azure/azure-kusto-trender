@@ -32,24 +32,24 @@ class EllipsisMenu extends Component {
         menuItem.node().focus();
     }
 
-    private menuItemKeyHandler (d, i) {
-        switch(d3.event.keyCode) {
+    private menuItemKeyHandler (event,d, i) {
+        switch(event.keyCode) {
             case 9: //tab
                 this.focusOnMenuItem(i + 1);
-                d3.event.preventDefault();
+                event.preventDefault();
                 break;
             case 27: //escape
                 this.setMenuVisibility(false);
                 this.buttonElement.node().focus();
-                d3.event.preventDefault();
+                event.preventDefault();
                 break;
             case 38: // up arrow
                 this.focusOnMenuItem(i - 1);
-                d3.event.preventDefault();
+                event.preventDefault();
                 break;
             case 40: // down arrow
                 this.focusOnMenuItem(i + 1);
-                d3.event.preventDefault();
+                event.preventDefault();
                 break;
         }
     }
@@ -70,7 +70,7 @@ class EllipsisMenu extends Component {
             .attr("role", "menu")
             .attr("title", this.getString("Show ellipsis menu"))
             .attr("type", "button")
-            .on("click", function () {
+            .on("click", function (e,d) {
                 d3.select(this).attr("aria-label", !self.menuIsVisible ? self.getString("Show ellipsis menu") : self.getString("Hide ellipsis menu"))
                                .attr("title", !self.menuIsVisible ? self.getString("Show ellipsis menu") : self.getString("Hide ellipsis menu"));
                 self.setMenuVisibility(!self.menuIsVisible);
@@ -89,8 +89,12 @@ class EllipsisMenu extends Component {
             .attr("aria-label", d => d.label)
             .attr("type", "button")
             .attr("role", "menuitem")
-            .on('keydown', (d, i) => {this.menuItemKeyHandler(d, i)})
-            .on("click", (d: any) => {
+            .on('keydown', function(e, d) {
+                const menuItemNodes = self.menuElement.nodes();
+                const i = menuItemNodes.indexOf(this);
+                self.menuItemKeyHandler(e, d, i);
+            })
+            .on("click", (e,d: any) => {
                 d.action();
             })
             .each(function () {

@@ -137,16 +137,16 @@ class LinePlot extends Plot {
 
         // If yAxisOnClick present, attach to yAxis
         if(yAxisHasOnClick){
-            yAxis.on("click", () => {
+            yAxis.on("click", (e,d) => {
                 yAxisOnClick();
             })
             let label = document.getElementsByClassName(`tsi-swimLaneLabel-${agg.swimLane}`)[0];
             if(label){
-                yAxis.on("mouseover", () => {
+                yAxis.on("mouseover", (e,d) => {
                     label.classList.add("tsi-axisHover");
                     yAxis.selectAll("text").classed("tsi-boldYAxisText", true)
                 })
-                yAxis.on("mouseout", () => {
+                yAxis.on("mouseout", (e,d) => {
                     label.classList.remove("tsi-axisHover");
                     yAxis.selectAll("text").classed("tsi-boldYAxisText", false)
                 })

@@ -41,11 +41,11 @@ class ColorPicker extends Component{
             .attr("title", this.getString('Select color'))
             .attr("aria-label", (this.selectedColor ? this.selectedColor : this.getString('No color')) + ' ' + this.getString('Select color'))
             .attr("aria-controls", `tsi-colorGrid_${this.componentId}`)
-            .on('click', () => {
+            .on('click', (event,d) => {
                 if (this.isColorGridVisible) {
                     this.hideColorGrid(true);
                 } else {
-                    this.chartOptions.onClick(d3.event); this.showColorGrid();
+                    this.chartOptions.onClick(event); this.showColorGrid();
                 }
             });
         if (this.selectedColor) {
@@ -68,33 +68,34 @@ class ColorPicker extends Component{
                 .attr("aria-label", c)
                 .attr("aria-selected", c === this.selectedColor)
                 .style("background-color", c)
-                .on('click', () => {
-                    d3.event.preventDefault();
-                    d3.event.stopPropagation();
+                .on('click', (e,d) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     this.chartOptions.onSelect(c); this.hideColorGrid(true); this.setSelectedColor(c, gridItem);
                 })
-                .on('keydown', () => {
-                    if (d3.event.keyCode === KeyCodes.Tab && !d3.event.shiftKey && idx === this.chartOptions.colors.length - 1) { // tab
-                        d3.event.preventDefault();
+                .on('keydown', (e,d) => {
+                    if (e.keyCode === KeyCodes.Tab && !e.shiftKey && idx === this.chartOptions.colors.length - 1) { // tab
+                        e.preventDefault();
                         this.colorPickerElem.selectAll(".tsi-colorItem").nodes()[0].focus();
-                    } else if (d3.event.keyCode === KeyCodes.Enter) {
-                        d3.event.preventDefault();
-                        d3.event.stopPropagation();
+                    } else if (e.keyCode === KeyCodes.Enter) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         this.chartOptions.onSelect(c); 
                         this.hideColorGrid(true); 
                         this.setSelectedColor(c, gridItem);
-                    } else if (d3.event.keyCode === KeyCodes.Esc) {
-                        d3.event.preventDefault();
-                        d3.event.stopPropagation();
+                    } else if (e.keyCode === KeyCodes.Esc) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         this.hideColorGrid(true);
                     }
                 });
         });
 
-        d3.select("html").on("click." + this.componentId, () => {
-            if (this.colorPickerElem.select(".tsi-colorPickerButton").filter(Utils.equalToEventTarget).empty() && 
-                this.colorPickerElem.select(".tsi-colorPickerButton").selectAll("*").filter(Utils.equalToEventTarget).empty() &&
-                this.colorPickerElem.selectAll(".tsi-colorGrid").filter(Utils.equalToEventTarget).empty()) {
+
+        d3.select("html").on("click." + this.componentId, (e,d) => {
+            if (this.colorPickerElem.select(".tsi-colorPickerButton").filter(function() { return Utils.equalToEventTarget(this, e); }).empty() && 
+                this.colorPickerElem.select(".tsi-colorPickerButton").selectAll("*").filter(function() { return Utils.equalToEventTarget(this, e); }).empty() &&
+                this.colorPickerElem.selectAll(".tsi-colorGrid").filter(function() { return Utils.equalToEventTarget(this, e); }).empty()) {
                     this.hideColorGrid();
             }
         });

@@ -1,17 +1,18 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 
 @mixin modelAutocompleteColors($grays){
-	$gray1: nth($grays, 1); // text
-    $gray2: nth($grays, 2); // hover
-    $gray3: nth($grays, 3); // element
-    $gray4: nth($grays, 4); // background
-	$gray5: nth($grays, 5); // alt element
-    $gray6: nth($grays, 6);
+	$gray1: list.nth($grays, 1); // text
+    $gray2: list.nth($grays, 2); // hover
+    $gray3: list.nth($grays, 3); // element
+    $gray4: list.nth($grays, 4); // background
+	$gray5: list.nth($grays, 5); // alt element
+    $gray6: list.nth($grays, 6);
     
     background: $gray3;
     color: $gray1;
-    @include baseContextMenuColors($grays);
+    @include styles.baseContextMenuColors($grays);
 
         .awesomplete > ul {
             background: $gray4;
@@ -38,7 +39,7 @@
     position: relative;
 
     &.tsi-dark{
-        $grays: grays('dark');
+        $grays: styles.grays('dark');
         @include modelAutocompleteColors($grays);
         .tsi-clear{
             background-image: url(../../Icons/Close_Icon_Dark_Theme.svg);                    
@@ -48,7 +49,7 @@
         }
     }
     &.tsi-light{
-        $grays: grays('light');
+        $grays: styles.grays('light');
         @include modelAutocompleteColors($grays);
         .tsi-clear{
             background-image: url(../../Icons/Close_Icon_Light_Theme.svg);                    

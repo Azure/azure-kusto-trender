@@ -1,13 +1,14 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 
 @mixin dateTimePickerColors($grays){
-    $gray1: nth($grays, 1); // text
-    $gray2: nth($grays, 2); // hover
-    $gray3: nth($grays, 3); // element
-    $gray4: nth($grays, 4); // background
-    $gray5: nth($grays, 5);
-    $gray6: nth($grays, 6);
+    $gray1: list.nth($grays, 1); // text
+    $gray2: list.nth($grays, 2); // hover
+    $gray3: list.nth($grays, 3); // element
+    $gray4: list.nth($grays, 4); // background
+    $gray5: list.nth($grays, 5);
+    $gray6: list.nth($grays, 6);
 
     background-color: $gray3;
     color: $gray1;
@@ -53,7 +54,7 @@
     animation: tsi-slideIn 0.367s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     &.tsi-dark{
-		$grays: grays('dark');
+		$grays: styles.grays('dark');
         @include dateTimePickerColors($grays);
         .pika-single {
             .is-inrange {
@@ -80,7 +81,7 @@
         
 	}
 	&.tsi-light{
-		$grays: grays('light');
+		$grays: styles.grays('light');
         @include dateTimePickerColors($grays);
         
         .pika-single {

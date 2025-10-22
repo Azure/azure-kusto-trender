@@ -1,10 +1,11 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 @mixin sliderColors($grays){
-    $gray1: nth($grays, 1); // text
-    $gray3: nth($grays, 3);
-    $gray4: nth($grays, 4); // text
-    $gray6: nth($grays, 6); // text hover
+    $gray1: list.nth($grays, 1); // text
+    $gray3: list.nth($grays, 3);
+    $gray4: list.nth($grays, 4); // text
+    $gray6: list.nth($grays, 6); // text hover
    
     .tsi-sliderTrack {
         stroke: $gray1;
@@ -31,11 +32,11 @@
     right: 0px;
 
 	&.tsi-dark{
-		$grays: grays('dark');
+		$grays: styles.grays('dark');
 		@include sliderColors($grays);
 	}
 	&.tsi-light{
-		$grays: grays('light');
+		$grays: styles.grays('light');
 		@include sliderColors($grays);
     }
     

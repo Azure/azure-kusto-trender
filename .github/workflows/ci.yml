@@ -1,0 +1,70 @@
+name: CI Build & Playwright
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  push:
+    branches: [ main, master ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library
+        run: npm run build
+
+      - name: Prepare sample pages
+        run: |
+          npm run prepare-samples
+          npm run post-build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Start dev server
+        run: |
+          npm start &
+          npx wait-on http://localhost:3002
+        env:
+          CI: true
+
+      - name: Run smoke suite (reduced workers)
+        env:
+          PLAYWRIGHT_HTML_REPORT: playwright-report-smoke
+        run: npx playwright test tests/smoke_pages.spec.ts --workers=1
+
+      - name: Run behavior tests
+        env:
+          PLAYWRIGHT_HTML_REPORT: playwright-report-behavior
+        run: npx playwright test --grep-invert " smoke$"
+
+      - name: Upload smoke report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-smoke
+          path: playwright-report-smoke
+
+      - name: Upload behavior report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-behavior
+          path: playwright-report-behavior

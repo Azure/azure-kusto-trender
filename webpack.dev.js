@@ -7,10 +7,18 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
+    allowedHosts: "all",
     static: {
       directory: "pages/examples",
     },
+    compress: true,
     port: 3002,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false    // disable warning overlay so tests aren’t blocked
+      }
+    }
   },
   plugins: [
     new MiniCssExtractPlugin({

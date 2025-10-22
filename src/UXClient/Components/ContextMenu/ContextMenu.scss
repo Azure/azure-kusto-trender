@@ -1,10 +1,11 @@
-@import "../../styles";
+@use 'sass:list';
+@use "../../styles" as styles;
 
 
 
 .tsi-dark{
-    $grays: grays('dark');
-    @include baseContextMenuColors($grays);
+    $grays: styles.grays('dark');
+    @include styles.baseContextMenuColors($grays);
     .tsi-actionElementContainer {
         .tsi-actionElement {
             &.tsi-hasSubMenu {
@@ -14,8 +15,8 @@
     }
 }
 .tsi-light{
-    $grays: grays('light');
-    @include baseContextMenuColors($grays);
+    $grays: styles.grays('light');
+    @include styles.baseContextMenuColors($grays);
     .tsi-actionElementContainer {
         .tsi-actionElement {
             &.tsi-hasSubMenu {
