@@ -89,10 +89,10 @@ class EllipsisMenu extends Component {
             .attr("aria-label", d => d.label)
             .attr("type", "button")
             .attr("role", "menuitem")
-            .on('keydown', (e,d) => {
-                const enode = this.menuElement.nodes();
-                const i = enode.indexOf(this);
-                this.menuItemKeyHandler(e,d,i)
+            .on('keydown', function(e, d) {
+                const menuItemNodes = self.menuElement.nodes();
+                const i = menuItemNodes.indexOf(this);
+                self.menuItemKeyHandler(e, d, i);
             })
             .on("click", (e,d: any) => {
                 d.action();

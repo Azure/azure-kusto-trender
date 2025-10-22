@@ -116,7 +116,7 @@ class HeatmapCanvas extends ChartComponent {
         var self = this;
 
         gradientRect.on("mousemove", function(e,d) {
-            var yPos = d3.pointer(d,this)[1];
+            var yPos = d3.pointer(e, this)[1];
             var percentile = 1 - ((yPos - 6) / (self.height - 12));
 
             self.highlightedValue = self.colorScale.domain()[0] + (range * percentile);

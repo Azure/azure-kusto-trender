@@ -819,7 +819,7 @@ class LineChart extends TemporalXAxisComponent {
                 this.stickySeries(site.data.aggregateKey, site.data.splitBy);    
             }
         } else {
-            // ⛳️: This was conditional earlier. Has been removed based on some emperical tests
+            // ⛳️: This was conditional earlier. Has been removed based on some empirical tests
             // if (!this.hasBrush) {
             //     this.isDroppingMarker = false;
             // }
@@ -1606,8 +1606,9 @@ class LineChart extends TemporalXAxisComponent {
                 .attr("type", "button")
                 .on("click", function (e,d) {
                     self.overwriteSwimLanes();
-                    self.render(self.data, {...self.chartOptions, yAxisState: self.nextStackedState()}, self.aggregateExpressionOptions);
-                    d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
+                    const nextState = self.nextStackedState();
+                    self.render(self.data, {...self.chartOptions, yAxisState: nextState}, self.aggregateExpressionOptions);
+                    d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + nextState);
                     setTimeout (() => (d3.select(this).node() as any).focus(), 200);
                 });
         } else if (this.chartOptions.hideChartControlPanel && this.chartControlsPanel !== null){
@@ -1780,7 +1781,7 @@ class LineChart extends TemporalXAxisComponent {
                 var timeSet = new Set(allPossibleTimes);
                 this.possibleTimesArray = new Set(Array.from(timeSet).map((ts: string) => {
                     return new Date(ts);
-                }).sort((d1, d2) => d1.getUTCMilliseconds() - d2.getUTCMilliseconds()));
+                }).sort((d1, d2) => d1.getTime() - d2.getTime()));
 
                 if (this.voronoiRegion) {
                     this.voronoiRegion.attr("x", xOffsetPercentage * this.chartWidth)
@@ -1883,7 +1884,7 @@ class LineChart extends TemporalXAxisComponent {
                 this.svgSelection.select(".svgGroup").selectAll(".tsi-aggGroup").remove()
 
                 let aggregateGroups = this.svgSelection.select('.svgGroup').selectAll('.tsi-aggGroup')
-                    .filter((agg) => !isNaN(agg.aggKey))
+                    .filter((agg) => typeof agg.aggKey === 'number' && !isNaN(agg.aggKey))
                     .data(visibleCDOs, (agg) => agg.aggKey);
                     var self = this;
 

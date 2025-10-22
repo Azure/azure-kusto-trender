@@ -144,9 +144,6 @@ class ContextMenu extends Component {
                 }
             })
             .on("click", function (e,d) {
-                console.log('click');
-                console.log(d);
-                console.log(JSON.stringify(d));
                 if (d.isNested) {
                     return;
                 }
