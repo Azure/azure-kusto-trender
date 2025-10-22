@@ -109,7 +109,7 @@
                     "value": "new \n line"
                 }
             }];
-            var eventsTable = kustoTrender.ux.EventsTable(document.getElementById('chart2'));
+            var eventsTable = new kustoTrender.ux.EventsTable(document.getElementById('chart2'));
             eventsTable.render(events, { theme: 'light', offset: 'Local' }, true);
 
         };
