@@ -86,7 +86,7 @@ class Heatmap extends TemporalXAxisComponent {
             heatmapCanvas.render(this.chartComponentData, this.chartOptions, hoveredAggKey, null, null, null, null, this.visibleAggs.length === 1);
     }
 
-    public render (data, chartOptions, aggregateExpressionOptions) {
+    public render (data: any, chartOptions?: any, aggregateExpressionOptions?: any) {
         super.render(data, chartOptions, aggregateExpressionOptions);
         // override visibleSplitByCap
         this.aggregateExpressionOptions = this.aggregateExpressionOptions.map((aE: AggregateExpression) => {

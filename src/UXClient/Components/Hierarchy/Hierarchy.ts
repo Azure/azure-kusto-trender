@@ -16,7 +16,7 @@ class Hierarchy extends Component {
         super(renderTarget);
     }
 
-    public render(data: any, options: any){
+    public render(data: any, options?: any){
         var self = this;
         var targetElement = d3.select(this.renderTarget).classed('tsi-hierarchy', true);
         targetElement.html('');

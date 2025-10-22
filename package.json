@@ -2,12 +2,15 @@
     "name": "azure-kusto-trender",
     "main": "dist/kustotrender.js",
     "description": "",
-    "version": "0.0.12",
+    "version": "0.0.20",
     "types": "dist/kustotrender.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/Azure/azure-kusto-trender"
     },
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "start": "webpack-dev-server --config webpack.dev.js",
         "build": "npm run clean && npm run rollup && npm run webpack && npm run post-build",
@@ -25,11 +28,10 @@
         "@rollup/plugin-json": "^6.0.0",
         "@rollup/plugin-node-resolve": "^15.0.2",
         "@rollup/plugin-terser": "^0.4.1",
-        "css-loader": "^6.7.3",
+        "css-loader": "^7.1.2",
         "css-minimizer-webpack-plugin": "^5.0.0",
         "file-loader": "^6.2.0",
         "mini-css-extract-plugin": "^2.7.5",
-        "node-sass": "^8.0.0",
         "postcss-url": "^10.1.3",
         "rollup": "^3.21.5",
         "rollup-plugin-auto-external": "^2.0.0",
@@ -37,7 +39,8 @@
         "rollup-plugin-postcss": "^4.0.2",
         "rollup-plugin-typescript2": "^0.34.1",
         "rollup-plugin-visualizer": "^5.9.2",
-        "sass-loader": "^13.2.2",
+        "sass": "^1.82.0",
+        "sass-loader": "^13.3.3",
         "shx": "^0.3.4",
         "style-loader": "^3.3.2",
         "terser-webpack-plugin": "^5.3.7",

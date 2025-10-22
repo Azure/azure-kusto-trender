@@ -643,8 +643,6 @@ class LineChart extends TemporalXAxisComponent {
                             checkAllLines(numberOfAttempts + 1);
                         }
                     }, Math.max(this.TRANSDURATION, 250));
-                } else {
-                    reject();
                 }
             }
             checkAllLines(0);
@@ -652,15 +650,16 @@ class LineChart extends TemporalXAxisComponent {
     }
 
     private importMarkers () {
+        // delete all the old markers
+        if (Object.keys(this.markerGuidMap).length) {
+            Object.keys(this.markerGuidMap).forEach((guid) => {
+                this.markerGuidMap[guid].destroyMarker();
+                delete this.markerGuidMap[guid];
+            });
+        }
+        this.markerGuidMap = {};
         if (this.chartOptions.markers && this.chartOptions.markers.length > 0) {
-            // delete all the old markers
-            if (Object.keys(this.markerGuidMap).length) {
-                Object.keys(this.markerGuidMap).forEach((guid) => {
-                    this.markerGuidMap[guid].destroyMarker();
-                    delete this.markerGuidMap[guid];
-                });
-            }
-            this.markerGuidMap = {};            
+            
             this.chartOptions.markers.forEach((markerValueTuples, markerIndex) => {
                 if (markerValueTuples === null || markerValueTuples === undefined) {
                     return;
@@ -1286,11 +1285,13 @@ class LineChart extends TemporalXAxisComponent {
                 aEO.swimLane = 0;
             });
             // consolidate horizontal markers
-            const horizontalMarkers = [];
-            Object.values(this.chartOptions.swimLaneOptions).forEach((lane) => {
-                horizontalMarkers.push(...lane.horizontalMarkers);
-            });
-            this.chartOptions.swimLaneOptions = {0: {yAxisType: this.chartOptions.yAxisState, horizontalMarkers: horizontalMarkers}};
+            if (this.chartOptions.swimLaneOptions) {
+                const horizontalMarkers = [];
+                Object.values(this.chartOptions.swimLaneOptions).forEach((lane) => {
+                    horizontalMarkers.push(...lane.horizontalMarkers);
+                });
+                this.chartOptions.swimLaneOptions = {0: {yAxisType: this.chartOptions.yAxisState, horizontalMarkers: horizontalMarkers}};
+            }
         } else {
             let minimumPresentSwimLane = this.aggregateExpressionOptions.reduce((currMin, aEO) => {
                 return Math.max(aEO.swimLane, currMin); 
@@ -1521,13 +1522,24 @@ class LineChart extends TemporalXAxisComponent {
         })
     }
 
-    public render (data: any, options: any, aggregateExpressionOptions: any) {
+    public toggleAxis(): any {
+        console.log('toggleAxis- LineChart');
+        var self = this;
+        return function () {
+            self.overwriteSwimLanes();
+            self.render(self.data, { ...self.chartOptions, yAxisState: self.nextStackedState() }, self.aggregateExpressionOptions);
+            d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
+            setTimeout(() => (d3.select(self.renderTarget).node() as any).focus(), 200);
+        };
+    }
+
+    public render (data: any, options?: any, aggregateExpressionOptions?: any) {
         super.render(data, options, aggregateExpressionOptions);
 
         this.originalSwimLanes = this.aggregateExpressionOptions.map((aEO) => {
             return aEO.swimLane;
         });
-        this.originalSwimLaneOptions = options.swimLaneOptions;
+        this.originalSwimLaneOptions = options && options.swimLaneOptions;
 
         this.hasBrush = options && (options.brushMoveAction || options.brushMoveEndAction || options.brushContextMenuActions);
         this.chartOptions.setOptions(options);
@@ -1585,12 +1597,7 @@ class LineChart extends TemporalXAxisComponent {
                 .attr("aria-label", () => this.getString("set axis state to") + ' ' + this.nextStackedState())
                 .attr("title", () => this.getString("Change y-axis type"))
                 .attr("type", "button")
-                .on("click", function () {
-                    self.overwriteSwimLanes();
-                    self.render(self.data, {...self.chartOptions, yAxisState: self.nextStackedState()}, self.aggregateExpressionOptions);
-                    d3.select(this).attr("aria-label", () => self.getString("set axis state to") + ' ' + self.nextStackedState());
-                    setTimeout (() => (d3.select(this).node() as any).focus(), 200);
-                });
+                .on("click", this.toggleAxis());
         } else if (this.chartOptions.hideChartControlPanel && this.chartControlsPanel !== null){
             this.hasStackedButton = false;
             this.removeControlPanel();
@@ -2038,9 +2045,8 @@ class LineChart extends TemporalXAxisComponent {
 
         this.renderSeriesLabelsMarker();
 
-        if (this.chartOptions.markers && this.chartOptions.markers.length > 0) {
-            this.importMarkers();
-        }
+        this.importMarkers();
+        
 
         d3.select("html").on("click." + Utils.guid(), () => {
             if (this.ellipsisContainer && d3.event.target != this.ellipsisContainer.select(".tsi-ellipsisButton").node()) {
