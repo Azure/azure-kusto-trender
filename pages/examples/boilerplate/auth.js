@@ -11,8 +11,8 @@ msalJs.onload = function() {
 function initializeMsal() {
   const msalConfig = {
     auth: {
-      clientId: "8a950f54-f491-4831-93f1-e93715569a7f",
-      authority: "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
+      clientId: "<client-id>",
+      authority: "https://login.microsoftonline.com/<tenant-id>",
       redirectUri: window.location.origin + window.location.pathname
     },
     cache: {
@@ -33,8 +33,10 @@ function initializeMsal() {
     })
     .catch(err => {
       console.error("Redirect error:", err);
-      document.getElementById("api_response").textContent = err.message || err;
-      document.getElementById("loginModal").style.display = "block";
+      const apiResponse = document.getElementById("api_response");
+      const loginModal = document.getElementById("loginModal");
+      if (apiResponse) apiResponse.textContent = err.message || err;
+      if (loginModal) loginModal.style.display = "block";
     });
 }
 
@@ -72,11 +74,14 @@ function initAuth(title) {
 
 function displayUserInfo() {
   const accounts = msalInstance.getAllAccounts();
+  const username = document.getElementById("username");
+  const loginModal = document.getElementById("loginModal");
+  
   if (accounts.length > 0) {
-    document.getElementById("username").textContent = accounts[0].username;
-    document.getElementById("loginModal").style.display = "none";
+    if (username) username.textContent = accounts[0].username;
+    if (loginModal) loginModal.style.display = "none";
   } else {
-    document.getElementById("username").textContent = "Not signed in.";
+    if (username) username.textContent = "Not signed in.";
   }
 }
 
@@ -103,13 +108,16 @@ var getTsiTokenInterval = setInterval(function() {
     clearInterval(getTsiTokenInterval);
     
     msalInstance.getTsiToken = async function () {
-      document.getElementById("api_response2").textContent = "Getting ADX token...";
+      const apiResponse2 = document.getElementById("api_response2");
+      if (apiResponse2) apiResponse2.textContent = "Getting ADX token...";
       
       const accounts = msalInstance.getAllAccounts();
       if (accounts.length === 0) {
-        document.getElementById("api_response").textContent = "No user signed in. Please log in first.";
-        document.getElementById("loginModal").style.display = "block";
-        document.getElementById("api_response2").textContent = "";
+        const apiResponse = document.getElementById("api_response");
+        const loginModal = document.getElementById("loginModal");
+        if (apiResponse) apiResponse.textContent = "No user signed in. Please log in first.";
+        if (loginModal) loginModal.style.display = "block";
+        if (apiResponse2) apiResponse2.textContent = "";
         throw new Error("No user signed in");
       }
 
@@ -120,30 +128,38 @@ var getTsiTokenInterval = setInterval(function() {
 
       try {
         const response = await msalInstance.acquireTokenSilent(tokenRequest);
-        document.getElementById("api_response").textContent = "";
-        document.getElementById("api_response2").textContent = "";
-        document.getElementById("loginModal").style.display = "none";
+        const apiResponse = document.getElementById("api_response");
+        const loginModal = document.getElementById("loginModal");
+        if (apiResponse) apiResponse.textContent = "";
+        if (apiResponse2) apiResponse2.textContent = "";
+        if (loginModal) loginModal.style.display = "none";
         return response.accessToken;
       } catch (error) {
         if (error instanceof msal.InteractionRequiredAuthError) {
           try {
             const response = await msalInstance.acquireTokenPopup(tokenRequest);
-            document.getElementById("api_response").textContent = "";
-            document.getElementById("api_response2").textContent = "";
-            document.getElementById("loginModal").style.display = "none";
+            const apiResponse = document.getElementById("api_response");
+            const loginModal = document.getElementById("loginModal");
+            if (apiResponse) apiResponse.textContent = "";
+            if (apiResponse2) apiResponse2.textContent = "";
+            if (loginModal) loginModal.style.display = "none";
             return response.accessToken;
           } catch (popupError) {
             console.error("Token acquisition error:", popupError);
-            document.getElementById("api_response").textContent = popupError.message || popupError;
-            document.getElementById("loginModal").style.display = "block";
-            document.getElementById("api_response2").textContent = "";
+            const apiResponse = document.getElementById("api_response");
+            const loginModal = document.getElementById("loginModal");
+            if (apiResponse) apiResponse.textContent = popupError.message || popupError;
+            if (loginModal) loginModal.style.display = "block";
+            if (apiResponse2) apiResponse2.textContent = "";
             throw popupError;
           }
         } else {
           console.error("Token acquisition error:", error);
-          document.getElementById("api_response").textContent = error.message || error;
-          document.getElementById("loginModal").style.display = "block";
-          document.getElementById("api_response2").textContent = "";
+          const apiResponse = document.getElementById("api_response");
+          const loginModal = document.getElementById("loginModal");
+          if (apiResponse) apiResponse.textContent = error.message || error;
+          if (loginModal) loginModal.style.display = "block";
+          if (apiResponse2) apiResponse2.textContent = "";
           throw error;
         }
       }
