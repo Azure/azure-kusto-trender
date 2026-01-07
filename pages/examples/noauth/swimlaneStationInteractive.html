@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>Swimlane Station Isolate</title>
+
+    <!-- boilerplate headers are injected with head.js, grab them from the live example header, or include a link to head.js -->
+    <script src="../boilerplate/head.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: inline-block;
+            width: 180px;
+            font-weight: bold;
+        }
+
+        select {
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 6px 12px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #106ebe;
+        }
+
+        button.reset {
+            background: #dc3545;
+        }
+
+        button.reset:hover {
+            background: #c82333;
+        }
+
+        #chart1 {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="controls">
+        <h3>Station Controls</h3>
+        <div class="control-group">
+            <label>Power Assembly:</label>
+            <select id="powerStation">
+                <option value="">-- Select Station --</option>
+                <option value="0">Station 0</option>
+                <option value="1">Station 1</option>
+                <option value="2">Station 2</option>
+                <option value="3">Station 3</option>
+                <option value="4">Station 4</option>
+            </select>
+            <button onclick="isolateStation('power')">Isolate Station</button>
+        </div>
+        <div class="control-group">
+            <label>Hydraulic Assembly:</label>
+            <select id="hydraulicStation">
+                <option value="">-- Select Station --</option>
+                <option value="0">Station 0</option>
+                <option value="1">Station 1</option>
+                <option value="2">Station 2</option>
+                <option value="3">Station 3</option>
+                <option value="4">Station 4</option>
+            </select>
+            <button onclick="isolateStation('hydraulic')">Isolate Station</button>
+        </div>
+        <div class="control-group">
+            <button class="reset" onclick="resetView()">Reset to All Stations</button>
+        </div>
+    </div>
+
+    <div id="chart1"></div>
+
+    <script>
+        let kustoTrender;
+        let lineChart;
+        let allData = [];
+        let isolatedStations = [];
+
+        window.onload = function () {
+            kustoTrender = new KustoTrender();
+            lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart1'));
+
+            // Create data
+            allData = createFactoryData();
+
+            // Initial render
+            renderChart();
+        }
+
+        function createFactoryData() {
+            var data = [];
+            var from = new Date();
+            from.setMinutes(0);
+            from.setSeconds(0);
+            from.setMilliseconds(0);
+
+            // Power Assembly
+            var powerAssembly = {};
+            data.push({ 'Power Assembly': powerAssembly });
+            for (var j = 0; j < 5; j++) {
+                var values = {};
+                powerAssembly[`Station${j}`] = values;
+                for (var k = 0; k <= 60; k++) {
+                    if (!(k % 2 && k % 3)) {
+                        var to = new Date(from.valueOf() + 1000 * 60 * k);
+                        values[to.toISOString()] = {
+                            Voltage: 220 + Math.random() * 20,
+                            Current: 15 + Math.random() * 10,
+                            PowerOutput: 100 + Math.random() * 50
+                        };
+                    }
+                }
+            }
+
+            // Hydraulic Assembly
+            var hydraulicAssembly = {};
+            data.push({ 'Hydraulic Assembly': hydraulicAssembly });
+            for (var j = 0; j < 5; j++) {
+                var values = {};
+                hydraulicAssembly[`Station${j}`] = values;
+                for (var k = 0; k <= 60; k++) {
+                    if (!(k % 2 && k % 3)) {
+                        var to = new Date(from.valueOf() + 1000 * 60 * k);
+                        values[to.toISOString()] = {
+                            Pressure: 50 + Math.random() * 100,
+                            FlowRate: 20 + Math.random() * 40,
+                            Temperature: 30 + Math.random() * 20
+                        };
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        function isolateStation(assembly) {
+            var stationIndex;
+            var assemblyIndex;
+            var assemblyName;
+
+            if (assembly === 'power') {
+                stationIndex = document.getElementById('powerStation').value;
+                assemblyIndex = 0;
+                assemblyName = 'Power Assembly';
+            } else {
+                stationIndex = document.getElementById('hydraulicStation').value;
+                assemblyIndex = 1;
+                assemblyName = 'Hydraulic Assembly';
+            }
+
+            if (stationIndex === '') {
+                alert('Please select a station first');
+                return;
+            }
+
+            // Check if this station is already isolated
+            var key = `${assemblyIndex}-${stationIndex}`;
+            var exists = isolatedStations.find(s => s.key === key);
+            if (exists) {
+                alert('This station is already isolated');
+                return;
+            }
+
+            isolatedStations.push({
+                key: key,
+                assemblyIndex: assemblyIndex,
+                stationIndex: parseInt(stationIndex),
+                assemblyName: assemblyName
+            });
+
+            renderChart();
+        }
+
+        function resetView() {
+            isolatedStations = [];
+            document.getElementById('powerStation').value = '';
+            document.getElementById('hydraulicStation').value = '';
+            renderChart();
+        }
+
+        function renderChart() {
+            var dataToRender = [];
+            var chartDataOptions = [];
+            var swimLaneOptions = {};
+
+            // Always show all data in 2 base swimlanes
+            dataToRender = allData.slice();
+            chartDataOptions = [
+                { dataType: 'numeric', swimLane: 0, onElementClick: createClickHandler(0) },
+                { dataType: 'numeric', swimLane: 1, onElementClick: createClickHandler(1) }
+            ];
+            swimLaneOptions = {
+                0: { yAxisType: 'shared', label: 'Power Assembly' },
+                1: { yAxisType: 'shared', label: 'Hydraulic Assembly' }
+            };
+
+            // Add isolated stations as additional swimlanes
+            var laneIndex = 2;
+            isolatedStations.forEach(function(station) {
+                var factoryData = allData[station.assemblyIndex];
+                var factoryKey = Object.keys(factoryData)[0];
+                var stationKey = `Station${station.stationIndex}`;
+                var stationData = factoryData[factoryKey][stationKey];
+
+                // Create isolated data
+                var isolatedData = {};
+                isolatedData[stationKey] = stationData;
+                dataToRender.push({ [factoryKey]: isolatedData });
+
+                chartDataOptions.push({
+                    dataType: 'numeric',
+                    swimLane: laneIndex
+                });
+
+                swimLaneOptions[laneIndex] = {
+                    yAxisType: 'shared',
+                    label: `${station.assemblyName} - ${stationKey} (Isolated)`
+                };
+
+                laneIndex++;
+            });
+
+            lineChart.render(
+                dataToRender,
+                {
+                    theme: 'light',
+                    legend: 'shown',
+                    grid: true,
+                    tooltip: true,
+                    swimLaneOptions: swimLaneOptions
+                },
+                chartDataOptions
+            );
+        }
+
+        function createClickHandler(assemblyIndex) {
+            return function(aggKey, splitBy, timestamp, measures) {
+                // Extract station number from splitBy
+                var match = splitBy.match(/Station(\d+)/);
+                if (!match) return;
+
+                var stationIndex = parseInt(match[1]);
+                var assemblyName = assemblyIndex === 0 ? 'Power Assembly' : 'Hydraulic Assembly';
+                var key = `${assemblyIndex}-${stationIndex}`;
+
+                // Check if already isolated
+                var exists = isolatedStations.find(s => s.key === key);
+                if (exists) {
+                    alert(`${assemblyName} - Station${stationIndex} is already isolated`);
+                    return;
+                }
+
+                // Add to isolated stations
+                isolatedStations.push({
+                    key: key,
+                    assemblyIndex: assemblyIndex,
+                    stationIndex: stationIndex,
+                    assemblyName: assemblyName
+                });
+
+                // Update dropdown to reflect the selection
+                if (assemblyIndex === 0) {
+                    document.getElementById('powerStation').value = stationIndex.toString();
+                } else {
+                    document.getElementById('hydraulicStation').value = stationIndex.toString();
+                }
+
+                renderChart();
+            };
+        }
+    </script>
+</body>
+
+</html>
