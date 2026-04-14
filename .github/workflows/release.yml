@@ -1,0 +1,60 @@
+name: Release
+permissions:
+  checks: write
+  pull-requests: write
+  packages: write
+  deployments: write
+  contents: write
+  id-token: write
+
+on:
+  push:
+    tags:
+      - 'v\d.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        registry-url: https://registry.npmjs.org/
+        cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+
+    - name: Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: Build
+      run: npm run build
+
+    - name: Package
+      run: npm pack
+
+    - name: Extract changelog for this version
+      id: changelog
+      run: |
+        version="${GITHUB_REF#refs/tags/v}"
+        changelog=$(awk "/^## \[${version}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md)
+        echo "body<<EOF" >> $GITHUB_OUTPUT
+        echo "$changelog" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: "${{ github.ref_name }}"
+        body: ${{ steps.changelog.outputs.body }}
+        draft: false
+        prerelease: ${{ contains(github.ref_name, '-') }}
+        files: '*.tgz'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish to npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
