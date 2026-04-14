@@ -352,7 +352,7 @@ class Marker extends Component {
     private inBounds (path: any, millis: number) {
         let pdata = path.data()[0];
         if (!pdata) return false;
-        let filteredData = pdata.data()[0].filter((d) => {
+        let filteredData = pdata.filter((d) => {
             return d.measures && this.getValueOfVisible(d) !== null;
         })
         if (filteredData.length > 0) {
