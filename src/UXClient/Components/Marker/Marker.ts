@@ -350,7 +350,9 @@ class Marker extends Component {
 
     //check if a value is within the time constrained bounds of a path
     private inBounds (path: any, millis: number) {
-        let filteredData = path.data()[0].filter((d) => {
+        let pdata = path.data()[0];
+        if (!pdata) return false;
+        let filteredData = pdata.data()[0].filter((d) => {
             return d.measures && this.getValueOfVisible(d) !== null;
         })
         if (filteredData.length > 0) {
