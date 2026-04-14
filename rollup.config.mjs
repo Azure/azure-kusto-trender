@@ -1,5 +1,5 @@
 // import typescript from '@wessberg/rollup-plugin-ts';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
@@ -49,13 +49,9 @@ const directImports = {
 
 const commonPlugins = [
     nodeResolve(), // Resolve node_module imports
-    typescript({ // Compile typescript, but leave declaration generatation to dts package
-        tsconfigOverride: {
-            compilerOptions: {
-                declaration: false,
-            }
-        },
-        exclude: 'src/packages'
+    typescript({
+        declaration: false,
+        exclude: ['src/packages/**']
     }),
     autoExternal(), // Auto mark prod dependencies as external
     commonjs(), // Convert cjs imports to esm
