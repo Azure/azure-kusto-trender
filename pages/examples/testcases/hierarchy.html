@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hierarchy Test</title>
+    <script src="../boilerplate/head.js"></script>
+</head>
+
+<body style="font-family: 'Segoe UI', sans-serif;">
+    <div id="hierarchy1" style="width: 400px; height: 500px;"></div>
+
+    <script>
+        window.leafClickCount = 0;
+        window.lastClickedLeaf = null;
+
+        window.onload = function () {
+            var kustoTrender = new KustoTrender();
+            var hierarchy = new kustoTrender.ux.Hierarchy(document.getElementById('hierarchy1'));
+
+            var data = {
+                'Branch A': {
+                    'Sub Branch': {
+                        'Leaf 1': {
+                            '$leaf': true,
+                            click: function (n) {
+                                window.leafClickCount++;
+                                window.lastClickedLeaf = n.name;
+                                console.log('Leaf clicked: ' + n.name);
+                            }
+                        },
+                        'Leaf 2': {
+                            '$leaf': true,
+                            click: function (n) {
+                                window.leafClickCount++;
+                                window.lastClickedLeaf = n.name;
+                                console.log('Leaf clicked: ' + n.name);
+                            }
+                        }
+                    }
+                },
+                'Branch B': {
+                    'Leaf 3': {
+                        '$leaf': true,
+                        click: function (n) {
+                            window.leafClickCount++;
+                            window.lastClickedLeaf = n.name;
+                            console.log('Leaf clicked: ' + n.name);
+                        }
+                    }
+                }
+            };
+
+            hierarchy.render(data, { theme: 'light' });
+        };
+    </script>
+</body>
+
+</html>

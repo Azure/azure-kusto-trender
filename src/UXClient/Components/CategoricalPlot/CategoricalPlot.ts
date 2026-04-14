@@ -134,7 +134,7 @@ class CategoricalPlot extends Plot {
                     })
                     .on('mouseover', (e,d:any) => {
                         const nodes = categoricalBuckets.nodes();
-                        const i = nodes.indexOf(this);
+                        const i = nodes.indexOf(e.currentTarget);
 
                         let y = self.yTop + (j * (self.chartDataOptions.height / series.length));
                         let x = self.x(new Date(d.dateTime)) + (getWidth(d, i));
