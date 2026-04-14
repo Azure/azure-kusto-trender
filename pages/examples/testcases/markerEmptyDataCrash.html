@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bug Repro: Marker crash with empty data curve</title>
+    <script src="../boilerplate/head.js"></script>
+</head>
+
+<body style="font-family: 'Segoe UI', sans-serif;">
+    <h3>Bug Repro: Marker crash when a curve has no data points</h3>
+    <p>
+        Steps to reproduce: Select "add Marker" and hover the mouse over the chart area.
+        The marker tries to interpolate values for all visible curves,
+        but <strong>Factory2</strong> has no data points. This causes
+        <code>Marker.inBounds()</code> to crash with
+        <em>"Cannot read properties of undefined (reading 'filter')"</em>
+        because <code>path.data()[0]</code> is undefined for that curve.
+    </p>
+    <div id="chart1" style="width: 100%; height: 500px;"></div>
+
+    <script>
+        window.onload = function () {
+            var from = new Date(Math.floor(Date.now() / (1000 * 60 * 60)) * (1000 * 60 * 60));
+            var to = new Date(from.valueOf() + 1000 * 60 * 60); // 1 hour window
+
+            // Curve 0: normal data across the full interval
+            var values0 = {};
+            for (var k = 0; k < 60; k++) {
+                var t = new Date(from.valueOf() + 1000 * 60 * k);
+                values0[t.toISOString()] = { avg: Math.sin(k / 10) * 50 + 50 };
+            }
+
+            // Curve 1: normal data across the full interval
+            var values1 = {};
+            for (var k = 0; k < 60; k++) {
+                var t = new Date(from.valueOf() + 1000 * 60 * k);
+                values1[t.toISOString()] = { avg: Math.cos(k / 10) * 30 + 40 };
+            }
+
+            // Curve 2: EMPTY — no data points at all (triggers the bug)
+            var values2 = {};
+
+            var data = [
+                { 'Factory0': { 'Station0': values0 } },
+                { 'Factory1': { 'Station0': values1 } },
+                { 'Factory2': { 'Station0': values2 } }
+            ];
+
+            var kustoTrender = new KustoTrender();
+            var lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart1'));
+            lineChart.render(data, {
+                theme: 'light',
+                legend: 'shown',
+                tooltip: true
+            }, data.map(function () {
+                return {
+                    searchSpan: {
+                        from: from.toISOString(),
+                        to: to.toISOString(),
+                        bucketSize: '1m'
+                    }
+                };
+            }));
+        };
+    </script>
+</body>
+
+</html>
