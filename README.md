@@ -6,7 +6,7 @@
 The KustoTrender JavaScript SDK is a JavaScript library for Microsoft Azure Data Explorer, featuring components for data visualization and analytics, utilities for making calls directly to the KQL Cluster, and more.  **KustoTrender** also ships with an associated CSS file (which you must include using your preferred css linking method), which makes the components look great out of the box.
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT) [![npm version](https://badge.fury.io/js/azure-kusto-trender.svg)](https://badge.fury.io/js/azure-kusto-trender) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT) [![npm version](https://badge.fury.io/js/azure-kusto-trender-v2.svg)](https://badge.fury.io/js/azure-kusto-trender-v2) 
 
 ## Resources
 
@@ -16,12 +16,12 @@ The KustoTrender JavaScript SDK is a JavaScript library for Microsoft Azure Data
 
 ## Installing
 
-If you use npm, `npm install azure-kusto-trender`.
+If you use npm, `npm install azure-kusto-trender-v2`.
 
 To import all of **KustoTrender** into an ES2015 application, import everything into a namespace, like so:
 
 ```js
-import KustoTrender from "azure-kusto-trender";
+import KustoTrender from "azure-kusto-trender-v2";
 
 // later, when you want a line chart
 let kustoTrender = new KustoTrender();
@@ -31,7 +31,7 @@ let lineChart = new kustoTrender.ux.LineChart(document.getElementById('chart'));
 You can also import components individually.  If you only need the LineChart, you can import it like so...
 
 ```js
-import LineChart from 'azure-kusto-trender/LineChart'
+import LineChart from 'azure-kusto-trender-v2/LineChart'
 
 // later when you want a line chart
 let lineChart = new LineChart(document.getElementById('chart'));
@@ -41,8 +41,8 @@ Importing individual components can help significantly reduce your bundle size a
 To import the kustotrender stylesheet into an ES2015 application, import either `kustotrender.css` or `kustotrender.min.css`, like so...
 
 ```js
-import 'azure-kusto-trender/kustotrender.css' // Standard styles
-import 'azure-kusto-trender/kustotrender.min.css' // Minified styles
+import 'azure-kusto-trender-v2/kustotrender.css' // Standard styles
+import 'azure-kusto-trender-v2/kustotrender.min.css' // Minified styles
 ```
 
 ## How to run Trender on your Kusto

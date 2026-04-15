@@ -1,8 +1,9 @@
-name:  Build and deploy on prod
+name: Build and deploy on prod
 on:
   push:
     branches:
       - master
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,9 +19,9 @@ jobs:
       matrix:
         node-version: [20.x]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.5.0
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
@@ -30,9 +31,5 @@ jobs:
     - run: npm run build
     - run: npm run prepare-samples
     - run: npm run post-build
-    - uses: JS-DevTools/npm-publish@v1
-      with:
-        token: ${{ secrets.NPM_TOKEN }}
-        package: "./package.json"
     - run: git push
-    
+

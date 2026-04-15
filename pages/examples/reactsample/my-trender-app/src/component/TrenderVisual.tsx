@@ -1,5 +1,5 @@
-import KustoTrender from 'azure-kusto-trender/kustotrender';
-import 'azure-kusto-trender/kustotrender.css';
+import KustoTrender from 'azure-kusto-trender-v2/kustotrender';
+import 'azure-kusto-trender-v2/kustotrender.css';
 import React from 'react';
 const data: any[] = [];
 const from = new Date(Math.floor(new Date().valueOf() / (1000 * 60 * 60)) * 1000 * 60 * 60);
