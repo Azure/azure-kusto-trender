@@ -1,5 +1,5 @@
 {
-    "name": "azure-kusto-trender",
+    "name": "azure-kusto-trender-v2",
     "main": "dist/kustotrender.js",
     "description": "",
     "version": "0.0.20",
