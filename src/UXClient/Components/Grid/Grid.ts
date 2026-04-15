@@ -141,14 +141,15 @@ class Grid extends Component {
     private addHeaderCells () {
         let headerCellData = this.filteredTimestamps;// this.chartComponentData.allTimestampsArray;
         let headerCells = this.tableHeaderRow.selectAll('.tsi-headerCell').data(headerCellData);
+        let self = this;
         let headerCellsEntered = headerCells.enter()
             .append('th')
             .attr("tabindex", 1)
             .merge(headerCells)
             .attr("class", (d, i) => this.cellClass(0, i+1) + ' tsi-headerCell')
             .on("keydown", (e,d) => {
-                const hn = headerCells.nodes();
-                const i = hn.indexOf(this);
+                const hn = self.tableHeaderRow.selectAll('.tsi-headerCell').nodes();
+                const i = hn.indexOf(e.currentTarget);
                 this.arrowNavigate(e, 0, i+1)})
                     .text(this.getFormattedDate)
                     .attr('aria-label', (h) => {

@@ -107,7 +107,7 @@ class Hierarchy extends Component {
             }
         });
 
-        this.expandCollapseList(event,this.root, list, false);
+        this.expandCollapseList(null,this.root, list, false);
         list.select('ul').classed('tsi-noPad', true);
     }
 
@@ -147,10 +147,10 @@ class Hierarchy extends Component {
                 node.children.forEach(n => {
                     if(isFromClick || n.selfInFilter || n.childrenInFilter || (node.isExpanded && this.filterText.length == 0)){
                         var self = this;
-                        var clickMethod = function(){
+                        var clickMethod = function(event, d){
                             if(n.isLeaf){
                                 var parent = n.parent;
-                                while(parent != this.root){
+                                while(parent != self.root){
                                     parent.isExpanded = true;
                                     parent = parent.parent;
                                 }
@@ -161,9 +161,9 @@ class Hierarchy extends Component {
                                 selector.classed('tsi-selected', n.isSelected);
                             }
                             else{
-                                self.expandCollapseList(evt,n, d3.select(this), true);
+                                self.expandCollapseList(event,n, d3.select(this), true);
                             }
-                            evt.stopPropagation();
+                            event.stopPropagation();
                         }
 
                         var li = list.append('li').classed('tsi-leaf', n.isLeaf)

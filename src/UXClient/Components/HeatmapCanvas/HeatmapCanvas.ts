@@ -202,12 +202,12 @@ class HeatmapCanvas extends ChartComponent {
                         return ((new Date(a)).valueOf() < (new Date(b)).valueOf()) ? -1 : 1;
                     });
                 var startDate = new Date(sortedDates[self.focusedXIndex]);
-                this.highlightedTime = startDate;
+                self.highlightedTime = startDate;
                 self.onCellFocus(startDate, new Date(startDate.valueOf() + self.heatmapData.bucketSize), 
                                  Math.max(0, cellX), cellX + self.calcCellWidth(self.focusedXIndex), 
                                  self.calcCellY(self.focusedYIndex), highlightedSplitBy);
             }
-            self.render(self.data, self.chartOptions, self.aggKey, highlightedSplitBy, this.highlightedTime, self.onCellFocus, null, self.isOnlyAgg);
+            self.render(self.data, self.chartOptions, self.aggKey, highlightedSplitBy, self.highlightedTime, self.onCellFocus, null, self.isOnlyAgg);
         }).on("mouseout", function () {
             self.focusedXIndex = -1;
             self.focusedYIndex = -1;
