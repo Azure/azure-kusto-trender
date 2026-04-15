@@ -38,7 +38,7 @@ jobs:
       id: changelog
       run: |
         version="${GITHUB_REF#refs/tags/v}"
-        changelog=$(awk "/^## \[${version}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md)
+        changelog=$(awk -v version="$version" 'index($0, "## [") == 1 { if ($0 == "## [" version "]") { found=1; next } if (found) exit } found { print }' CHANGELOG.md)
         echo "body<<EOF" >> $GITHUB_OUTPUT
         echo "$changelog" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT

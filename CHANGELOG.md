@@ -5,21 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2026-04-14
-
-### Changed
-- Renamed package to `azure-kusto-trender-v2`
-- Release pipeline changed to dispatch with CHANGELOG-based workflow
-
-### Fixed
-- Fixed marker crash when a curve has no data points in the selected interval
-- Updated Node.js version in CI
+## [1.0.2-beta]
 
 ### Added
-- New manual-dispatch publish workflow (`.github/workflows/publish.yaml`)
-- Playwright test infrastructure
+- Tag-push triggered release pipeline (`.github/workflows/release.yml`)
+- Playwright test infrastructure for all test cases
 
-## [1.0.1-Beta] - 2025-01-01
+### Changed
+- Replaced `rollup-plugin-typescript2` with `@rollup/plugin-typescript` for Rollup 4 compatibility
+- Updated sass-loader to use modern compiler API
+- Updated Node.js version in CI to 18.x
+- Separated build and release pipelines
+
+### Fixed
+- Fixed marker crash when adding marker to a curve with no data points
+- Fixed Rollup build failure caused by incompatible TypeScript plugin
+- Suppressed sass deprecation warning overlay in dev server
+- CVE fixes for vulnerable dependencies
+
+## [1.0.1-beta]
 
 ### Changed
 - Updated Node.js version
