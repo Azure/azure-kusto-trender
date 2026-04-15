@@ -30,10 +30,6 @@ jobs:
     - run: npm run build
     - run: npm run prepare-samples
     - run: npm run post-build
-    - uses: JS-DevTools/npm-publish@v1
-      with:
-        token: ${{ secrets.NPM_TOKEN }}
-        package: "./package.json"
     - run: git push
     
     # - name: Azure Static Website Deploy
