@@ -1,8 +1,8 @@
 {
-    "name": "azure-kusto-trender",
+    "name": "azure-kusto-trender-v2",
     "main": "dist/kustotrender.js",
     "description": "",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "types": "dist/kustotrender.d.ts",
     "repository": {
         "type": "git",
