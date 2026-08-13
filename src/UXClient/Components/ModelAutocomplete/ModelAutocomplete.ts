@@ -66,7 +66,11 @@ class ModelAutocomplete extends Component {
       .attr("aria-live", "assertive");
 
     let Awesomplete = (window as any).Awesomplete;
-    this.ap = new Awesomplete(input.node(), { minChars: 1 });
+    this.ap = new Awesomplete(input.node(), {
+      minChars: 1,
+      item: (text, searchText, itemId) =>
+        this.renderSuggestionItem(text, searchText, itemId),
+    });
     let noSuggest = false;
     let justAwesompleted = false;
     (input.node() as any).addEventListener(
@@ -134,6 +138,36 @@ class ModelAutocomplete extends Component {
       noSuggest = false;
       clear.classed("tsi-shown", searchText.length);
     });
+  }
+
+  private renderSuggestionItem(text: string, searchText: string, itemId: number) {
+    const suggestionText = String(text);
+    const item = document.createElement("li");
+    item.setAttribute("role", "option");
+    item.setAttribute("aria-selected", "false");
+    item.setAttribute("tabindex", "-1");
+    item.id = `awesomplete_list_${this.ap ? this.ap.count : 1}_item_${itemId}`;
+
+    const filterText = searchText.trim();
+    if (!filterText) {
+      item.textContent = suggestionText;
+      return item;
+    }
+
+    const lowerText = suggestionText.toLocaleLowerCase();
+    const lowerFilterText = filterText.toLocaleLowerCase();
+    let currentIndex = 0;
+    let matchIndex = lowerText.indexOf(lowerFilterText, currentIndex);
+    while (matchIndex !== -1) {
+      item.appendChild(document.createTextNode(suggestionText.slice(currentIndex, matchIndex)));
+      const mark = document.createElement("mark");
+      mark.textContent = suggestionText.slice(matchIndex, matchIndex + filterText.length);
+      item.appendChild(mark);
+      currentIndex = matchIndex + filterText.length;
+      matchIndex = lowerText.indexOf(lowerFilterText, currentIndex);
+    }
+    item.appendChild(document.createTextNode(suggestionText.slice(currentIndex)));
+    return item;
   }
 }
 

@@ -1,8 +1,6 @@
-import Utils from "../Utils";
-
 class HierarchyNode {
     public name: string;
-    public markedName: string;
+    public matchedFilter: string = '';
     public children: Array<HierarchyNode> = [];
     public parent: HierarchyNode;
     public isExpanded: boolean = false;
@@ -18,7 +16,6 @@ class HierarchyNode {
 	constructor(name: string, level: number){
         this.name = name;
         this.level = level;
-        this.markedName = name;
     }
     
     public filter(filterText){
@@ -29,7 +26,7 @@ class HierarchyNode {
                 return p;
             }, false);
             var selfInFilter = regExp.test(node.name);
-            node.markedName = selfInFilter ? Utils.mark(filterText, node.name) : node.name;
+            node.matchedFilter = selfInFilter ? filterText : '';
             if(node.parent != null)
                 node.parent.childrenInFilter = (selfInFilter || childrenInFilter) && filterText.length > 0;
             node.selfInFilter = selfInFilter && filterText.length > 0;
