@@ -154,8 +154,8 @@ class ModelAutocomplete extends Component {
       return item;
     }
 
-    const lowerText = suggestionText.toLocaleLowerCase();
-    const lowerFilterText = filterText.toLocaleLowerCase();
+    const lowerText = suggestionText.toLowerCase();
+    const lowerFilterText = filterText.toLowerCase();
     let currentIndex = 0;
     let matchIndex = lowerText.indexOf(lowerFilterText, currentIndex);
     while (matchIndex !== -1) {
