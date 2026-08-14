@@ -46,7 +46,10 @@ test('model autocomplete renders untrusted suggestions as text', async ({ page }
 
     (window as any).__autocompleteXss = false;
     const delegate = {
-      getInstancesSuggestions: async () => [{ searchString: maliciousSuggestion }]
+      getInstancesSuggestions: async () => [
+        { searchString: maliciousSuggestion },
+        { searchString: 'İXINDIGO' }
+      ]
     };
     const trender = new (window as any).KustoTrender();
     const autocomplete = new trender.ux.ModelAutocomplete(host, delegate);
@@ -66,6 +69,11 @@ test('model autocomplete renders untrusted suggestions as text', async ({ page }
   await suggestion.click();
   await expect(input).toHaveValue(payload);
   expect(await page.evaluate(() => (window as any).__autocompleteXss)).toBe(false);
+
+  await input.fill('indigo');
+  const unicodeSuggestion = autocomplete.locator('li[role="option"]');
+  await expect(unicodeSuggestion).toHaveText('İXINDIGO');
+  await expect(unicodeSuggestion.locator('mark')).toHaveText('INDIGO');
 });
 
 test('model search renders entity-encoded highlights as text', async ({ page }) => {
@@ -86,7 +94,7 @@ test('model search renders entity-encoded highlights as text', async ({ page }) 
           hits: [{
             timeSeriesId: ['test-id'],
             highlights: {
-              name: maliciousHighlight,
+              name: `${maliciousHighlight}<hit>unfinished`,
               timeSeriesId: ['test-id'],
               typeName: 'TestType',
               description: maliciousHighlight,
@@ -111,6 +119,7 @@ test('model search renders entity-encoded highlights as text', async ({ page }) 
 
   const result = modelSearch.locator('.tsi-modelResult').first();
   await expect(result).toContainText('Danger');
+  await expect(result).toContainText('<hit>unfinished');
   await expect(result.locator('mark')).not.toHaveCount(0);
   await expect(modelSearch.locator('img')).toHaveCount(0);
   expect(await page.evaluate(() => (window as any).__modelSearchXss)).toBe(false);

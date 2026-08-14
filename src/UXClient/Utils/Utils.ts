@@ -1024,16 +1024,21 @@ export default class Utils {
 
         let splitByTag = options && options.splitByTag ? options.splitByTag : 'hit';
         if(str!=null){
-            let splittedByHit = str.split(`<${splitByTag}>`);
-            splittedByHit.forEach((s, i) => {
-                if (i === 0) {
-                    data = data.concat(splitByNullGuid(s));
-                } else {
-                    let splittedByHitClose = s.split(`</${splitByTag}>`);
-                    data.push({str: splittedByHitClose[0], isHit: true});
-                    data = data.concat(splitByNullGuid(splittedByHitClose[1]));
+            let openTag = `<${splitByTag}>`;
+            let closeTag = `</${splitByTag}>`;
+            let currentIndex = 0;
+            let openIndex = str.indexOf(openTag, currentIndex);
+            while (openIndex !== -1) {
+                let closeIndex = str.indexOf(closeTag, openIndex + openTag.length);
+                if (closeIndex === -1) {
+                    break;
                 }
-            });
+                data = data.concat(splitByNullGuid(str.slice(currentIndex, openIndex)));
+                data.push({str: str.slice(openIndex + openTag.length, closeIndex), isHit: true});
+                currentIndex = closeIndex + closeTag.length;
+                openIndex = str.indexOf(openTag, currentIndex);
+            }
+            data = data.concat(splitByNullGuid(str.slice(currentIndex)));
         }
 
 

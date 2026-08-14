@@ -154,17 +154,16 @@ class ModelAutocomplete extends Component {
       return item;
     }
 
-    const lowerText = suggestionText.toLowerCase();
-    const lowerFilterText = filterText.toLowerCase();
+    const escapedFilterText = filterText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regExp = new RegExp(escapedFilterText, "gi");
     let currentIndex = 0;
-    let matchIndex = lowerText.indexOf(lowerFilterText, currentIndex);
-    while (matchIndex !== -1) {
-      item.appendChild(document.createTextNode(suggestionText.slice(currentIndex, matchIndex)));
+    let match;
+    while ((match = regExp.exec(suggestionText)) !== null) {
+      item.appendChild(document.createTextNode(suggestionText.slice(currentIndex, match.index)));
       const mark = document.createElement("mark");
-      mark.textContent = suggestionText.slice(matchIndex, matchIndex + filterText.length);
+      mark.textContent = match[0];
       item.appendChild(mark);
-      currentIndex = matchIndex + filterText.length;
-      matchIndex = lowerText.indexOf(lowerFilterText, currentIndex);
+      currentIndex = match.index + match[0].length;
     }
     item.appendChild(document.createTextNode(suggestionText.slice(currentIndex)));
     return item;
