@@ -47,9 +47,9 @@ class Hierarchy extends Component {
                         if(splitFilterText[i].length){
                             var nodesInFilter = self.root.traverse(n => n.selfInFilter);
                             nodesInFilter.forEach(n => {
-                                var markedName = n.markedName;
+                                var matchedFilter = n.matchedFilter;
                                 n.filter(splitFilterText[i], false)
-                                n.markedName = markedName;
+                                n.matchedFilter = matchedFilter;
                             });
                             nodesInFilter.forEach(n => {
                                 if(!n.childrenInFilter)
@@ -171,7 +171,9 @@ class Hierarchy extends Component {
                                 .classed('tsi-selected', n.isSelected).on('click', clickMethod)
 
                         li.append('span').classed('tsi-caret', true).attr('style', `left: ${(n.level - 1) * 18}px`);
-                        li.append('span').classed('tsi-markedName', true).html(n.markedName)  // known unsafe usage of .html
+                                                li.append('span').classed('tsi-markedName', true).each(function() {
+                                                        self.renderHighlightedName(this, n.name, n.matchedFilter);
+                                                })
                           .attr('style', `padding-left: ${40 + (n.level - 1) * 18 - (n.isLeafParent && this.withContextMenu ? 16 : 0)}px`)
                           .attr('title', n.isLeafParent && this.withContextMenu ? n.name : '');
                         n.colorify(li);
@@ -207,6 +209,27 @@ class Hierarchy extends Component {
             return node;
         }
         return traverse(data, '', 0);
+    }
+
+    private renderHighlightedName(element: Element, name: string, filterText: string) {
+        if(!filterText){
+            element.textContent = name;
+            return;
+        }
+
+        var regExp = new RegExp(filterText, 'gi');
+        var lastIndex = 0;
+        var match;
+        while((match = regExp.exec(name)) !== null){
+            element.appendChild(document.createTextNode(name.slice(lastIndex, match.index)));
+            var mark = document.createElement('mark');
+            mark.textContent = match[0];
+            element.appendChild(mark);
+            lastIndex = match.index + match[0].length;
+            if(match[0].length == 0)
+                break;
+        }
+        element.appendChild(document.createTextNode(name.slice(lastIndex)));
     }
 
     private closeContextMenu() {

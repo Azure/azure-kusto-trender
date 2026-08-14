@@ -236,9 +236,10 @@ class ModelSearch extends Component {
               self.clickedInstance = null;
             }
           };
-          this.instanceResults
-            .append("div")
-            .html(self.getInstanceHtml(i)) // known unsafe usage of .html
+          let result = this.instanceResults
+            .append("div");
+          result.node().appendChild(self.createInstanceElem(i).node());
+          result
             .on("click", function (event,d) {
               let mouseWrapper = d3.pointer(event,self.wrapper.node());
               let mouseElt = d3.pointer(event,this as any);
@@ -307,72 +308,60 @@ class ModelSearch extends Component {
     d3.selectAll(".tsi-resultSelected").classed("tsi-resultSelected", false);
   }
 
-  private stripHits = (str) => {
-    return str
-      .split("<hit>")
-      .map((h) =>
-        h
-          .split("</hit>")
-          .map((h2) => Utils.strip(h2))
-          .join("</hit>")
-      )
-      .join("<hit>");
-  };
+  private createInstanceElem(i) {
+    let instanceElem = d3.create("div").classed("tsi-modelResult", true);
+    let firstLine = instanceElem.append("div").classed("tsi-modelPK", true);
+    let highlightedTimeSeriesIds = i.highlights.timeSeriesIds
+      ? i.highlights.timeSeriesIds.join(" ")
+      : i.highlights.timeSeriesId.join(" ");
+    Utils.appendFormattedElementsFromString(
+      firstLine,
+      i.highlights.name || highlightedTimeSeriesIds
+    );
 
-  private getInstanceHtml(i) {
-    return `<div class="tsi-modelResult">
-                    <div class="tsi-modelPK">
-                        ${
-                          i.highlights.name
-                            ? this.stripHits(i.highlights.name)
-                            : this.stripHits(
-                                i.highlights.timeSeriesIds
-                                  ? i.highlights.timeSeriesIds.join(" ")
-                                  : i.highlights.timeSeriesId.join(" ")
-                              )
-                        }
-                    </div>
-                    <div class="tsi-modelHighlights">
-                        ${this.stripHits(
-                          i.highlights.description &&
-                            i.highlights.description.length
-                            ? i.highlights.description
-                            : this.getString("No description")
-                        )}
-                        <br/><table>
-                        ${
-                          i.highlights.name
-                            ? "<tr><td>" +
-                              this.getString("Time Series ID") +
-                              "</td><td>" +
-                              this.stripHits(
-                                i.highlights.timeSeriesIds
-                                  ? i.highlights.timeSeriesIds.join(" ")
-                                  : i.highlights.timeSeriesId.join(" ")
-                              ) +
-                              "</td></tr>"
-                            : ""
-                        }                        
-                        ${i.highlights.instanceFieldNames
-                          .map((ifn, idx) => {
-                            var val = i.highlights.instanceFieldValues[idx];
-                            if (
-                              ifn.indexOf("<hit>") !== -1 ||
-                              val.indexOf("<hit>") !== -1
-                            ) {
-                              return val.length === 0
-                                ? ""
-                                : "<tr><td>" +
-                                    this.stripHits(ifn) +
-                                    "</td><td>" +
-                                    this.stripHits(val) +
-                                    "</tr>";
-                            }
-                          })
-                          .join("")}
-                        </table>
-                    </div>
-                </div>`;
+    let secondLine = instanceElem
+      .append("div")
+      .classed("tsi-modelHighlights", true);
+    Utils.appendFormattedElementsFromString(
+      secondLine,
+      i.highlights.description && i.highlights.description.length
+        ? i.highlights.description
+        : this.getString("No description")
+    );
+    secondLine.append("br");
+
+    let hitTuples = [];
+    if (i.highlights.name) {
+      hitTuples.push([this.getString("Time Series ID"), highlightedTimeSeriesIds]);
+    }
+    i.highlights.instanceFieldNames.forEach((ifn, idx) => {
+      let value = i.highlights.instanceFieldValues[idx];
+      if (
+        value.length &&
+        (ifn.indexOf("<hit>") !== -1 || value.indexOf("<hit>") !== -1)
+      ) {
+        hitTuples.push([ifn, value]);
+      }
+    });
+
+    let rows = secondLine
+      .append("table")
+      .selectAll("tr")
+      .data(hitTuples)
+      .enter()
+      .append("tr");
+    rows
+      .selectAll("td")
+      .data(function (d) {
+        return d;
+      })
+      .enter()
+      .append("td")
+      .each(function (d) {
+        Utils.appendFormattedElementsFromString(d3.select(this), d);
+      });
+
+    return instanceElem;
   }
 }
 
