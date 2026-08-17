@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3-beta]
+
+### Fixed
+- Prevented DOM XSS when rendering untrusted hierarchy labels
+- Prevented DOM XSS in model autocomplete suggestions
+- Prevented DOM XSS when rendering model search results
+- Corrected Unicode-safe autocomplete highlighting
+- Preserved malformed `<hit>` markers as literal text without rendering HTML
+
 ## [1.0.2-beta]
 
 ### Added
